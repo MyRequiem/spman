@@ -7,7 +7,7 @@ bin/*
 
 # Byte-compiled/optimized
 __pycache__/
-# *.pyc
+*.pyc
 
 # Distribution/packaging
 include/

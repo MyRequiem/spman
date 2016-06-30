@@ -1,0 +1,5 @@
+- Slackware Linux
+- Python 3.0+
+- GNU coreutils
+- GNU diffutils
+- GNU wget

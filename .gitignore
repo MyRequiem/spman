@@ -1,18 +1,19 @@
 # PyCharm
 .idea/
 
-# Byte-compiled/optimized
-# __pycache__/
-# *.pyc
-
-# Distribution/packaging
-lib64
-lib/python*/site-packages/*
-!lib/python*/site-packages/spman
-
 # bin
 bin/*
 !bin/spman
+
+# Byte-compiled/optimized
+__pycache__/
+# *.pyc
+
+# Distribution/packaging
+include/
+lib/python3.5/site-packages/*
+!lib/python3.5/site-packages/spman
+lib64
 
 # virtualenv
 pyvenv.cfg

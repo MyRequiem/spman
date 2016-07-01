@@ -11,8 +11,9 @@ __pycache__/
 
 # Distribution/packaging
 include/
-lib/python3.5/site-packages/*
-!lib/python3.5/site-packages/spman
+lib/python3.5/site-packages/pip-7.1.0-py3.5.egg/*
+lib/python3.5/site-packages/easy-install.pth
+lib/python3.5/site-packages/setuptools*
 lib64
 
 # virtualenv

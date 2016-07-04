@@ -29,6 +29,7 @@ import sys
 from spman.checkuser import check_root_user
 from spman.checkmaindeps import check_main_deps
 from spman.main import main
+from spman.checkexistsmaindirs import check_exists_main_dirs
 
 
 def start():
@@ -39,6 +40,8 @@ def start():
     check_root_user()
     # check dependencies for program
     check_main_deps()
+    # check exists dirs from /etc/spman/spman.conf
+    check_exists_main_dirs()
     main()
 
 if __name__ == '__main__':

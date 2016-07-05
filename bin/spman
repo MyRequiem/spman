@@ -26,7 +26,6 @@ spman - Slackware package manager
 
 import sys
 
-from spman.checkexistsmaindirs import check_exists_main_dirs
 from spman.checkmaindeps import check_main_deps
 from spman.checkuser import check_root_user
 from spman.main import Main
@@ -40,8 +39,6 @@ def start():
     check_root_user()
     # check dependencies for program
     check_main_deps()
-    # check exists dirs from /etc/spman/spman.conf
-    check_exists_main_dirs()
     Main().start()
 
 if __name__ == '__main__':

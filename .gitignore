@@ -4,16 +4,17 @@
 # bin
 bin/*
 !bin/spman
-
-# Byte-compiled/optimized
-# __pycache__/
-# *.pyc
+!bin/*.py
 
 # Distribution/packaging
 include/
 lib/python3.5/site-packages/*
-!lib/python3.5/site-packages/spman
+!lib/python3.5/site-packages/spman/*.py
 lib64
+
+# Working directories
+root/
+var/
 
 # virtualenv config
 pyvenv.cfg

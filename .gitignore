@@ -6,13 +6,12 @@ bin/*
 !bin/spman
 !bin/*.py
 
-# Compile
-*.pyc
-
 # Distribution/packaging
 include/
 lib/python3.5/site-packages/*
 !lib/python3.5/site-packages/spman
+lib/python3.5/site-packages/spman/*.pyc
+lib/python3.5/site-packages/spman/__pycache__
 lib64
 
 # Working directories

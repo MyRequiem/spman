@@ -1,0 +1,13 @@
+# blacklist packages (only package name):
+
+kernel-firmware
+kernel-generic
+kernel-generic-smp
+kernel-headers
+kernel-huge
+kernel-huge-smp
+kernel-modules
+kernel-modules-smp
+kernel-source
+
+lilo

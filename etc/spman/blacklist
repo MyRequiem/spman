@@ -9,5 +9,3 @@ kernel-huge-smp
 kernel-modules
 kernel-modules-smp
 kernel-source
-
-lilo

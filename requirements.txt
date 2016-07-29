@@ -3,3 +3,4 @@
 - GNU coreutils
 - GNU diffutils
 - GNU wget
+- pkgtools

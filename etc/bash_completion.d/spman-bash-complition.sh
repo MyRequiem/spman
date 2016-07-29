@@ -3,11 +3,13 @@ _spman() {
     cur="${COMP_WORDS[COMP_CWORD]}"
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
-        --update --health --new-config --check-upgrade --download"
+        --update --health --new-config --check-upgrade --download --queue"
 
     subcommands_download="--pkg --src"
-    subcommands_repo="alienbob multilib sbo slack"
-    subcommands_pkgname="list_pkg_names"
+    subcommands_repo_pkg="alienbob multilib slack"
+    subcommands_repo_src="alienbob sbo slack"
+    subcommands_pkgname="pkg(s)"
+    subcommands_queue="--add --remove --clear --show --install"
 
     if [[ ${COMP_CWORD} == 1 ]] ; then
         COMPREPLY=( $(compgen -W "${subcommands_main}" -- ${cur}) )
@@ -67,7 +69,15 @@ _spman() {
             fi
 
             if [[ ${COMP_CWORD} == 3 ]] ; then
-                COMPREPLY=($(compgen -W "${subcommands_repo}" -- ${cur}))
+                case "${COMP_WORDS[2]}" in
+                    --pkg)
+                        COMPREPLY=($(compgen -W "${subcommands_repo_pkg}" -- ${cur}))
+                        ;;
+
+                    --src)
+                        COMPREPLY=($(compgen -W "${subcommands_repo_src}" -- ${cur}))
+                        ;;
+                esac
                 return 0
             fi
 
@@ -75,7 +85,29 @@ _spman() {
                 COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- ${cur}))
                 return 0
             fi
+            ;;
+
+        --queue)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${subcommands_queue}" -- ${cur}) )
+                return 0
+            fi
+
+            case "${COMP_WORDS[2]}" in
+                --add|--remove)
+                    if [[ ${COMP_CWORD} == 3 ]] ; then
+                        COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- ${cur}))
+                        return 0
+                    fi
+                    ;;
+
+                --clear|--show|--install)
+                    COMPREPLY=()
+                    return 0
+                    ;;
+            esac
     esac
+
     return 0
 }
 

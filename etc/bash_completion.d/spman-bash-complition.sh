@@ -4,7 +4,7 @@ _spman() {
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
         --update --health --new-config --check-upgrade --download --queue \
-        --find-deps"
+        --find-deps --view-slackbuild"
 
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
@@ -110,7 +110,7 @@ _spman() {
             esac
             ;;
 
-        --find-deps)
+        --find-deps|--view-slackbuild)
             if [[ ${COMP_CWORD} == 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${subcommands_find_deps}" -- ${cur}) )
                 return 0

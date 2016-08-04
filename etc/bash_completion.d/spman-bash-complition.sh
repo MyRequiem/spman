@@ -4,7 +4,7 @@ _spman() {
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
         --update --health --new-config --check-upgrade --download --queue \
-        --find-deps --view-slackbuild --find-pkg"
+        --find-deps --view-slackbuild --find-pkg --sbbcheck"
 
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
@@ -20,7 +20,7 @@ _spman() {
 
     case "${COMP_WORDS[1]}" in
         --help|--check-version|--repolist|--repoinfo|--blacklist|--update|\
-            --health|--new-config|--check-upgrade)
+            --health|--new-config|--check-upgrade|--sbbcheck)
             COMPREPLY=()
             return 0
             ;;

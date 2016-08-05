@@ -4,7 +4,7 @@ _spman() {
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
         --update --health --new-config --check-upgrade --download --queue \
-        --find-deps --view-slackbuild --find-pkg --sbbcheck"
+        --find-deps --view-slackbuild --find-pkg --check-deps"
 
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
@@ -12,6 +12,7 @@ _spman() {
     subcommands_pkgname="pkg(s)"
     subcommands_queue="--add --remove --clear --show --install"
     subcommands_find_deps="pkg"
+    subcommands_check_deps="--sbbdep --ldd"
 
     if [[ ${COMP_CWORD} == 1 ]] ; then
         COMPREPLY=( $(compgen -W "${subcommands_main}" -- ${cur}) )
@@ -20,7 +21,7 @@ _spman() {
 
     case "${COMP_WORDS[1]}" in
         --help|--check-version|--repolist|--repoinfo|--blacklist|--update|\
-            --health|--new-config|--check-upgrade|--sbbcheck)
+            --health|--new-config|--check-upgrade)
             COMPREPLY=()
             return 0
             ;;
@@ -74,6 +75,13 @@ _spman() {
         --find-deps|--view-slackbuild|--find-pkg)
             if [[ ${COMP_CWORD} == 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${subcommands_find_deps}" -- ${cur}) )
+                return 0
+            fi
+            ;;
+
+        --check-deps)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${subcommands_check_deps}" -- ${cur}) )
                 return 0
             fi
             ;;

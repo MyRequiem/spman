@@ -4,3 +4,6 @@
 - GNU diffutils
 - GNU wget
 - pkgtools
+
+[OPTIONAL]
+- sbbdep (Slackware binary dependency checker)

@@ -4,7 +4,7 @@ _spman() {
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
         --update --health --new-config --check-upgrade --download --queue \
-        --find-deps --view-slackbuild --find-pkg --check-deps"
+        --find-deps --view-slackbuild --find-pkg --check-deps --bad-links"
 
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
@@ -13,6 +13,7 @@ _spman() {
     subcommands_queue="--add --remove --clear --show --install"
     subcommands_find_deps="pkg"
     subcommands_check_deps="--sbbdep --ldd"
+    subcommands_badlinks="path_to_dir"
 
     if [[ ${COMP_CWORD} == 1 ]] ; then
         COMPREPLY=( $(compgen -W "${subcommands_main}" -- ${cur}) )
@@ -82,6 +83,13 @@ _spman() {
         --check-deps)
             if [[ ${COMP_CWORD} == 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${subcommands_check_deps}" -- ${cur}) )
+                return 0
+            fi
+            ;;
+
+        --bad-links)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=( $(compgen -d -- ${cur}) )
                 return 0
             fi
             ;;

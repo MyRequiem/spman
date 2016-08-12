@@ -1,0 +1,53 @@
+#!/bin/sh
+
+if [ "$(id -u)" != "0" ]; then
+    echo "spman.SlackBuild script can only be run as root."
+    exit
+fi
+
+PRGNAME=spman
+VERSION=$(cat ../lib/python3.5/site-packages/spman/maindata.py | \
+    grep "self.prog_version = " | cut -d \' -f 2)
+
+BUILD=${BUILD:-1}
+TAG=${TAG:-_myreq}
+PKGTYPE=${PKGTYPE:-txz}
+ARCH="noarch"
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp}
+PKG=$TMP/$PRGNAME
+OUTPUT=${OUTPUT:-/tmp}
+PYVER=$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 1,2)
+
+LIBDIRSUFFIX=""
+if [ $(uname -m) == "x86_64" ]; then
+    LIBDIRSUFFIX="64"
+fi
+
+
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $PKG
+
+mkdir -p install usr/bin
+cp ${CWD}/doinst.sh install/
+cp ${CWD}/slack-desc install/
+cp ${CWD}/../bin/spman usr/bin/
+
+cp -R ${CWD}/../etc .
+mv etc/spman/blacklist etc/spman/blacklist.new
+mv etc/spman/repo-list etc/spman/repo-list.new
+mv etc/spman/spman.conf etc/spman/spman.conf.new
+
+libs=usr/lib${LIBDIRSUFFIX}/python${PYVER}/site-packages/${PRGNAME}
+mkdir -p ${libs}
+find ${CWD}/../lib/python3.5/site-packages/${PRGNAME} -type f -name "*.py" \
+    -exec cp {} ${libs} \;
+
+docs=usr/doc/${PRGNAME}-${VERSION}
+mkdir -p ${docs}
+cp ${CWD}/spman.SlackBuild ${docs}
+cp ${CWD}/../{AUTHORS,ChangeLog.txt,INSTALL,LICENSE,requirements.txt} ${docs}
+
+/sbin/makepkg -l y -c n ${OUTPUT}/${PRGNAME}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKGTYPE}

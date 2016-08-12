@@ -11,10 +11,10 @@ Available repositories:
 
 Build and install spman:
 
-1) Downlad source code:
-    https://github.com/MyRequiem/spman/archive/1.0.0.tar.gz
-2) tar -xvzf 1.0.0.tar.gz
-3) cd spman-1.0.0/slackbuild
+1) Downlad source code:<br>
+    https://github.com/MyRequiem/spman/archive/1.0.0.tar.gz<br>
+2) tar -xvzf 1.0.0.tar.gz<br>
+3) cd spman-1.0.0/slackbuild<br>
 4) ./spman.SlackBuild<br>
-    The package will be created in the /tmp directory
-5) upgradepkg --install-new --reinstall /tmp/spman-1.0.0-noarch-1_myreq.txz
+    The package will be created in the /tmp directory<br>
+5) upgradepkg --install-new --reinstall /tmp/spman-1.0.0-noarch-1_myreq.txz<br>

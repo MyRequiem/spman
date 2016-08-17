@@ -1,2 +1,5 @@
+1.0.1 [17.08.2016]
+Fix check version for virtualbox-kernel* packages from sbo repository
+
 1.0.0 [12.08.2016]
 Released version 1.0.0

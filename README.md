@@ -21,10 +21,10 @@ Slackware package manager
 
 #####Build and install spman:
 1) Downlad source code:<br>
-    https://github.com/MyRequiem/spman/archive/1.0.1.tar.gz<br>
-2) tar -xvzf 1.0.1.tar.gz<br>
-3) cd spman-1.0.1/slackbuild<br>
+   wget https://github.com/MyRequiem/spman/archive/1.0.2.tar.gz<br>
+2) tar -xvzf 1.0.2.tar.gz<br>
+3) cd spman-1.0.2/slackbuild<br>
 4) ./spman.SlackBuild<br>
     The package will be created in the /tmp directory<br>
-5) upgradepkg --install-new --reinstall /tmp/spman-1.0.1-noarch-1_myreq.txz
+5) upgradepkg --install-new --reinstall /tmp/spman-1.0.2-noarch-1_myreq.txz
 <br>

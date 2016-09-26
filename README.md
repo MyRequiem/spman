@@ -20,7 +20,7 @@ Slackware package manager
 <br><br>
 
 #####Build and install spman:
-1) Downlad source code:<br>
+1) Download source code:<br>
    wget https://github.com/MyRequiem/spman/archive/1.0.2.tar.gz<br>
 2) tar -xvzf 1.0.2.tar.gz<br>
 3) cd spman-1.0.2/slackbuild<br>

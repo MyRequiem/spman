@@ -9,7 +9,7 @@ fi
 CWD=$(pwd)
 PY3VER=$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 1,2)
 VERSION=$(grep "self.prog_version = " \
-    "${CWD}"/../lib/python${PY3VER}/site-packages/${PRGNAME}/maindata.py | \
+    "${CWD}"/../lib/python"${PY3VER}"/site-packages/${PRGNAME}/maindata.py | \
     cut -d \' -f 2)
 
 BUILD=${BUILD:-1}
@@ -42,7 +42,9 @@ mv etc/${PRGNAME}/${PRGNAME}.conf etc/${PRGNAME}/${PRGNAME}.conf.new
 
 LIBS=usr/lib${LIBDIRSUFFIX}/python${PY3VER}/site-packages/${PRGNAME}
 mkdir -p "${LIBS}"
-find "${CWD}"/../lib/python3.6/site-packages/${PRGNAME} -type f -name "*.py" \
+find "${CWD}"/../lib/python"${PY3VER}"/site-packages/${PRGNAME} \
+    -type f \
+    -name "*.py" \
     -exec cp {} "${LIBS}" \;
 
 DOCS=usr/doc/${PRGNAME}-${VERSION}

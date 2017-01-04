@@ -8,10 +8,10 @@ bin/*
 
 # Distribution/packaging
 include/
-lib/python3/site-packages/*
-!lib/python3/site-packages/spman
-lib/python3/site-packages/spman/*.pyc
-lib/python3/site-packages/spman/__pycache__
+lib/python3.6/site-packages/*
+!lib/python3.6/site-packages/spman
+lib/python3.6/site-packages/spman/*.pyc
+lib/python3.6/site-packages/spman/__pycache__
 lib64
 
 # Working directories

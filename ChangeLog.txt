@@ -1,3 +1,6 @@
+1.2.1 [17.01.2017]
+fix badlinks.py module
+
 1.2.0 [13.01.2017]
 fixed download kernel packages and kernel source from slack repository
 fixed updating local data (ChangeLog.txt, PACKAGES.TXT)

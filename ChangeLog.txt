@@ -1,3 +1,6 @@
+1.2.2 [17.01.2017]
+Fix check version for nvidia-*-kernel packages from sbo repository.
+
 1.2.1 [17.01.2017]
 fix badlinks.py module
 

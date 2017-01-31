@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Buiding package spman for Slackware linux
+# Author: MyRequiem
+
+set -e
+
 PRGNAME=spman
 if [ "$(id -u)" != "0" ]; then
     echo "${PRGNAME}.SlackBuild script can only be run as root."
@@ -8,17 +13,15 @@ fi
 
 CWD=$(pwd)
 PY3VER=$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 1,2)
-VERSION=$(grep "self.prog_version = " \
-    "${CWD}"/../lib/python"${PY3VER}"/site-packages/${PRGNAME}/maindata.py | \
-    cut -d \' -f 2)
+VERSION=$(grep "self.prog_version = " ../src/maindata.py | cut -d \' -f 2)
 
 BUILD=${BUILD:-1}
-TAG=${TAG:-_myreq}
+TAG=${TAG:-myreq}
 PKGTYPE=${PKGTYPE:-txz}
 ARCH="noarch"
 
 TMP=${TMP:-/tmp}
-PKG=$TMP/$PRGNAME
+PKG=$TMP/$PRGNAME-build
 OUTPUT=${OUTPUT:-/tmp}
 
 LIBDIRSUFFIX=""
@@ -30,28 +33,37 @@ rm -rf "${PKG}"
 mkdir -p "${TMP}" "${PKG}" "${OUTPUT}"
 cd "${PKG}" || exit 1
 
-mkdir -p install usr/bin
-cp "${CWD}"/doinst.sh install/
-cp "${CWD}"/slack-desc install/
-cp "${CWD}"/../bin/${PRGNAME} usr/bin/
+# install/
+mkdir install
+cp "${CWD}"/{doinst.sh,slack-desc} install/
 
+# /usr/sbin/spman
+mkdir -p usr/sbin
+cp "${CWD}"/../src/${PRGNAME} usr/sbin/
+chmod 744 usr/sbin/${PRGNAME}
+
+# /etc/spman/
 cp -R "${CWD}"/../etc .
-mv etc/${PRGNAME}/blacklist etc/${PRGNAME}/blacklist.new
-mv etc/${PRGNAME}/repo-list etc/${PRGNAME}/repo-list.new
-mv etc/${PRGNAME}/${PRGNAME}.conf etc/${PRGNAME}/${PRGNAME}.conf.new
+(
+    cd etc/${PRGNAME}
+    CONFIGS=$(ls)
+    for CONFIG in ${CONFIGS}; do
+        chmod 644 "${CONFIG}" && mv "${CONFIG}" "${CONFIG}".new
+    done
+)
+chmod 755 etc/bash_completion.d/spman-bash-complition.sh
 
 LIBS=usr/lib${LIBDIRSUFFIX}/python${PY3VER}/site-packages/${PRGNAME}
 mkdir -p "${LIBS}"
-find "${CWD}"/../lib/python"${PY3VER}"/site-packages/${PRGNAME} \
-    -type f \
-    -name "*.py" \
-    -exec cp {} "${LIBS}" \;
+find "${CWD}"/../src/ -type f -name "*.py" -exec cp {} "${LIBS}" \;
 
 DOCS=usr/doc/${PRGNAME}-${VERSION}
 mkdir -p "${DOCS}"
 cp "${CWD}"/${PRGNAME}.SlackBuild "${DOCS}"
 cp "${CWD}"/../{AUTHORS,ChangeLog.txt,INSTALL,LICENSE,requirements.txt} \
     "${DOCS}"
+
+chown -R root:root ./*
 
 /sbin/makepkg -l y -c n "${OUTPUT}"/"${PRGNAME}"-"${VERSION}"-"${ARCH}"-\
 "${BUILD}""${TAG}"."${PKGTYPE}"

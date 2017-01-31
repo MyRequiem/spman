@@ -16,6 +16,6 @@ CONFIGS="\
     spman.conf \
 "
 
-for file in ${CONFIGS}; do
-    config etc/spman/${file}.new
+for FILE in ${CONFIGS}; do
+    config etc/spman/${FILE}.new
 done

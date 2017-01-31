@@ -41,5 +41,6 @@ def start():
     check_main_deps()
     Main().start()
 
+
 if __name__ == '__main__':
     sys.exit(start())

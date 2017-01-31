@@ -1,11 +1,9 @@
-# blacklist packages (only package name):
+# Blacklisted packages (only package name)
 
-kernel-firmware
-kernel-generic
-kernel-generic-smp
-kernel-headers
-kernel-huge
-kernel-huge-smp
-kernel-modules
-kernel-modules-smp
-kernel-source
+# For example:
+# kernel-firmware
+# kernel-generic
+# kernel-huge
+# kernel-modules
+# kernel-headers
+# kernel-source

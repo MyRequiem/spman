@@ -1,22 +1,3 @@
 # PyCharm
 .idea/
 
-# bin
-bin/*
-!bin/spman
-!bin/*.py
-
-# Distribution/packaging
-include/
-lib/python3.6/site-packages/*
-!lib/python3.6/site-packages/spman
-lib/python3.6/site-packages/spman/*.pyc
-lib/python3.6/site-packages/spman/__pycache__
-lib64
-
-# Working directories
-root/
-var/
-
-# virtualenv config
-pyvenv.cfg

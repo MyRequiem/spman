@@ -7,7 +7,7 @@
 [sbo](http://slackbuilds.org/slackbuilds/)<br>
 [slack](http://ftp.osuosl.org/.2/slackware/)
 <br><br>
-![help](https://github.com/MyRequiem/spman/raw/master/screenshot/help.png)
+![help](https://github.com/MyRequiem/spman/raw/master/imgs/help.png)
 
 ######Requirements:
 * Slackware Linux

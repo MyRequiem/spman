@@ -32,7 +32,7 @@ from .utils import (
 )
 
 
-class Queue(object):
+class Queue:
     """
     Manage queue for 'sbo' repository
     """
@@ -42,7 +42,7 @@ class Queue(object):
         self.queue_file = '{0}queue'.format(self.spman_conf['QUEUE_PATH'])
         self.queue_list = self.get_queue_list()
 
-    def clear(self):
+    def clear(self) -> None:
         """
         clear queue
         """
@@ -54,7 +54,7 @@ class Queue(object):
                                                    self.queue_file,
                                                    self.meta.clrs['reset']))
 
-    def show(self):
+    def show(self) -> None:
         """
         print queue
         """
@@ -66,7 +66,7 @@ class Queue(object):
                                          pkg,
                                          self.meta.clrs['reset']))
 
-    def add(self, pkgs):
+    def add(self, pkgs: list) -> None:
         """
         add package(s) in the queue
         """
@@ -86,7 +86,7 @@ class Queue(object):
 
         fqueue.close()
 
-    def remove(self, pkgs):
+    def remove(self, pkgs: list) -> None:
         """
         remove package(s) from the queue
         """
@@ -107,7 +107,7 @@ class Queue(object):
                     self.print_message(
                         pkg, pkgs, 'removed from the queue', ('grey', 'red'))
 
-    def install(self):
+    def install(self) -> None:
         """
         download, build and install package(s) on the queue
         """
@@ -145,7 +145,7 @@ class Queue(object):
                                                     pkg_type)),
                              shell=True)
 
-    def get_queue_list(self):
+    def get_queue_list(self) -> list:
         """
         return list queue from queue file
         """
@@ -160,7 +160,7 @@ class Queue(object):
 
         return queue_list
 
-    def queue_is_empty_message(self):
+    def queue_is_empty_message(self) -> None:
         """
         print message if queue is empty
         """
@@ -169,7 +169,7 @@ class Queue(object):
                                                 self.meta.clrs['reset']))
 
     @staticmethod
-    def check_exists_pkgs(pkgs):
+    def check_exists_pkgs(pkgs: list) -> None:
         """
         check exists packages on 'sbo' repository
         """
@@ -181,7 +181,7 @@ class Queue(object):
                 raise SystemExit
 
     @staticmethod
-    def get_max_length_pkg_name(pkgs):
+    def get_max_length_pkg_name(pkgs: list) -> int:
         """
         return max length package name
         """
@@ -193,7 +193,8 @@ class Queue(object):
 
         return max_length
 
-    def print_message(self, pkg, pkgs, mess, colors):
+    def print_message(self, pkg: str, pkgs: list,
+                      mess: str, colors: tuple) -> None:
         """
         print message
         """

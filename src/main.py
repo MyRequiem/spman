@@ -30,7 +30,7 @@ from .helpmess import show_help_mess
 from .maindata import MainData
 
 
-class Main(object):
+class Main:
     """
     class Main
     """
@@ -75,7 +75,7 @@ class Main(object):
             '--bad-links': self.bad_links
         }
 
-    def start(self):
+    def start(self) -> None:
         """
         parse arguments and launch of the relevant options
         """
@@ -112,7 +112,7 @@ class Main(object):
         else:
             show_help_mess('error')
 
-    def show_help(self):
+    def show_help(self) -> None:
         """
         show help message
         """
@@ -121,7 +121,7 @@ class Main(object):
         else:
             show_help_mess('error')
 
-    def show_repo_list(self):
+    def show_repo_list(self) -> None:
         """
         show repo list from /etc/spman/repo-list
         """
@@ -131,7 +131,7 @@ class Main(object):
         from .repolist import show_repo_list
         show_repo_list()
 
-    def update(self):
+    def update(self) -> None:
         """
         Update PACKAGES.TXT, SLACKBUILDS.TXT and
         ChangeLog.txt for each repository
@@ -142,7 +142,7 @@ class Main(object):
         from .update import Update
         Update().start()
 
-    def show_info_repos(self):
+    def show_info_repos(self) -> None:
         """
         show information about all repositories.
         """
@@ -152,7 +152,7 @@ class Main(object):
         from .showinforepos import ShowInfoRepos
         ShowInfoRepos().start()
 
-    def check_version(self):
+    def check_version(self) -> None:
         """
         check program version
         """
@@ -162,7 +162,7 @@ class Main(object):
         from .checkprgver import check_prg_ver
         check_prg_ver()
 
-    def check_health(self):
+    def check_health(self) -> None:
         """
         Check health installed packages
         """
@@ -172,7 +172,7 @@ class Main(object):
         from .checkhealth import CheckHealth
         CheckHealth().start()
 
-    def find_new_configs(self):
+    def find_new_configs(self) -> None:
         """
         Find all '*.new' files from /etc/ and /usr/share/ folders and subfolders
         """
@@ -182,7 +182,7 @@ class Main(object):
         from .findnewconfigs import FindNewConfigs
         FindNewConfigs().start()
 
-    def check_upgrade(self):
+    def check_upgrade(self) -> None:
         """
         Check packages for upgrade
         """
@@ -192,7 +192,7 @@ class Main(object):
         from .checkupgrade import CheckUpgrade
         CheckUpgrade().start()
 
-    def show_blacklist(self):
+    def show_blacklist(self) -> None:
         """
         Show blacklist
         """
@@ -207,7 +207,7 @@ class Main(object):
                                               self.meta.configs_path,
                                               self.meta.clrs['reset']))
 
-    def download_pkg(self):
+    def download_pkg(self) -> None:
         """
         Download package or source + SlackBuild script
         """
@@ -240,7 +240,7 @@ class Main(object):
         from .downloadpkg import DownloadPkg
         DownloadPkg(mode, repo, pkglist).start()
 
-    def processing_queue(self):
+    def processing_queue(self) -> None:
         """
         processing queue for 'sbo' repository
         """
@@ -271,7 +271,7 @@ class Main(object):
             else:
                 show_help_mess('error')
 
-    def find_deps(self):
+    def find_deps(self) -> None:
         """
         show list all dependencies for package from 'sbo' repository
         """
@@ -285,7 +285,7 @@ class Main(object):
         from .finddeps import FindDeps
         FindDeps().start(self.args[1])
 
-    def view_slackbuild(self):
+    def view_slackbuild(self) -> None:
         """
         View README, slack-desc, doinst.sh and .SlackBuild
         files from sbo repository.
@@ -300,7 +300,7 @@ class Main(object):
         from .viewslackbuild import ViewSlackBuild
         ViewSlackBuild(self.args[1]).start()
 
-    def find_pkg(self):
+    def find_pkg(self) -> None:
         """
         Find package from each enabled repository and view info.
         """
@@ -310,9 +310,10 @@ class Main(object):
         from .findpkg import FindPkg
         FindPkg(self.args[1]).start()
 
-    def checkdeps(self):
+    def checkdeps(self) -> None:
         """
-        Search dependency problems in the system packages using 'sbbdep' tool.
+        Search dependency problems in the system packages
+        using 'sbbdep' or 'ldd' tool.
         """
 
         if len(self.args) != 2 or self.args[1] not in ['--sbbdep', '--ldd']:
@@ -321,7 +322,7 @@ class Main(object):
         from .checkdeps import CheckDeps
         CheckDeps(self.args[1]).start()
 
-    def bad_links(self):
+    def bad_links(self) -> None:
         """
         find links to non-existent files/directories
         """

@@ -30,7 +30,7 @@ from .getrepodata import GetRepoData
 from .maindata import MainData
 
 
-class FindDeps(object):
+class FindDeps:
     """
     Show list all dependencies for package from 'sbo' repository
     """
@@ -39,7 +39,7 @@ class FindDeps(object):
         self.sbodata = GetRepoData('sbo').start()
         self.alldeps = []
 
-    def start(self, pkgname):
+    def start(self, pkgname: str) -> None:
         """
         find all deps for package
         """
@@ -76,13 +76,13 @@ class FindDeps(object):
 
         self.print_deps_list(no_dupl)
 
-    def get_deps(self, pkgname):
+    def get_deps(self, pkgname: str) -> list:
         """
         return list of dependencies for package
         """
         return self.sbodata['pkgs'][pkgname][4]
 
-    def get_all_deps(self, pkgname):
+    def get_all_deps(self, pkgname: str) -> None:
         """
         create list of the dependencies list for each package
         """
@@ -93,7 +93,7 @@ class FindDeps(object):
             for dep in deps:
                 self.get_all_deps(dep)
 
-    def print_deps_list(self, deps):
+    def print_deps_list(self, deps: list) -> None:
         """
         print dependencies list
         """

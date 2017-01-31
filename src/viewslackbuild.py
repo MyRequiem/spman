@@ -33,19 +33,19 @@ from .getrepodata import GetRepoData
 from .maindata import MainData
 
 
-class ViewSlackBuild(object):
+class ViewSlackBuild:
     """
     View README, slack-desc, doinst.sh and .SlackBuild
     files from sbo repository.
     """
-    def __init__(self, pkgname):
+    def __init__(self, pkgname: str):
         self.meta = MainData()
         self.pkgname = pkgname
         self.sbodata = GetRepoData('sbo').start()
         self.pkgdata = []
         self.filelist = []
 
-    def start(self):
+    def start(self) -> None:
         """
         start show slackbuilds files
         """
@@ -79,7 +79,7 @@ class ViewSlackBuild(object):
             if choice == 'b' or choice == 'B':
                 self.show_file('{0}{1}.SlackBuild'.format(url, self.pkgname))
 
-    def create_interface(self):
+    def create_interface(self) -> None:
         """
         create interface of choice for the user
         """
@@ -107,7 +107,7 @@ class ViewSlackBuild(object):
                                   self.meta.clrs['reset']), end='\n\n')
 
     @staticmethod
-    def show_file(url):
+    def show_file(url: str) -> None:
         """
         show file
         """

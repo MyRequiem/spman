@@ -32,7 +32,7 @@ from os import (
 from .maindata import MainData
 
 
-class MajorTests(object):
+class MajorTests:
     """
     check exists dirs and files from /etc/spman/spman.conf
     """
@@ -41,14 +41,14 @@ class MajorTests(object):
         self.repos = self.meta.get_repo_dict()
         self.spman_conf = self.meta.get_spman_conf()
 
-    def start(self):
+    def start(self) -> None:
         """
         start checks
         """
         self.check_exists_dirs()
         self.check_exists_libs()
 
-    def check_exists_dirs(self):
+    def check_exists_dirs(self) -> None:
         """
         check exists dirs
         """
@@ -73,7 +73,7 @@ class MajorTests(object):
                     if not path.isfile(queue_file):
                         open(queue_file, 'w').close()
 
-    def check_exists_libs(self):
+    def check_exists_libs(self) -> None:
         """
         check exists files
         """

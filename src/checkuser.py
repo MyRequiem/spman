@@ -27,7 +27,7 @@ Check super user
 import getpass
 
 
-def check_root_user():
+def check_root_user() -> None:
     """
     Check super user
     """

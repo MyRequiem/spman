@@ -37,11 +37,11 @@ from .maindata import MainData
 from .utils import download
 
 
-class DownloadPkg(object):
+class DownloadPkg:
     """
     Download packages or sources (SlackBuilds)
     """
-    def __init__(self, mode, repo, pkglist):
+    def __init__(self, mode: str, repo: str, pkglist: list):
         self.meta = MainData()
         self.os_ver = self.meta.get_os_version()
         # download src or pkg
@@ -57,7 +57,7 @@ class DownloadPkg(object):
                         '--cut-dirs={0} --no-parent -R *.meta4,*.mirrorlist,'
                         'index.html*')
 
-    def start(self):
+    def start(self) -> None:
         """
         start download
         """
@@ -77,7 +77,7 @@ class DownloadPkg(object):
                 if self.repo == 'sbo':
                     self.download_sbo(pkg, pkgdata)
 
-    def download_alienbob(self, pkg, pkgdata):
+    def download_alienbob(self, pkg: str, pkgdata: list) -> None:
         """
         download from alienbob repository
         """
@@ -109,7 +109,7 @@ class DownloadPkg(object):
                 rename(downdir, new_dir_name)
                 self.set_chmod(new_dir_name)
 
-    def download_multilib(self, pkgdata):
+    def download_multilib(self, pkgdata: list) -> None:
         """
         download binary package(s) from multilib repository
         """
@@ -121,7 +121,7 @@ class DownloadPkg(object):
                                      fname)
         download(url, self.wgetprefix)
 
-    def download_slack(self, pkg, pkgdata):
+    def download_slack(self, pkg: str, pkgdata: list) -> None:
         """
         download from slackware repository (directory 'patches')
         """
@@ -165,7 +165,7 @@ class DownloadPkg(object):
                 if path.isdir(downdir):
                     self.set_chmod(downdir)
 
-    def download_sbo(self, pkg, pkgdata):
+    def download_sbo(self, pkg: str, pkgdata: list) -> None:
         """
         download SlackBuild script and sources from 'sbo' repository
         """
@@ -197,7 +197,7 @@ class DownloadPkg(object):
             download(url, slackbuil_dir)
 
     @staticmethod
-    def set_chmod(path_to_dir):
+    def set_chmod(path_to_dir: str) -> None:
         """
         chmod 744 for *.SlackBuild and *.sh into dir
         """
@@ -209,21 +209,21 @@ class DownloadPkg(object):
               '-exec chmod 744 {{}} \\;').format(path_to_dir),
              shell=True)
 
-    def get_pkg_data(self, pkg):
+    def get_pkg_data(self, pkg: str) -> list:
         """
-        return dict data of package
+        return list data of package
         """
         return self.repodata['pkgs'][pkg]
 
     @staticmethod
-    def get_fname(pkgdata):
+    def get_fname(pkgdata: list) -> str:
         """
         return file name for download
         """
         return '{0}.{1}'.format('-'.join(pkgdata[0]),
                                 pkgdata[8])
 
-    def check_exist_pkg(self, pkg):
+    def check_exist_pkg(self, pkg: str) -> bool:
         """
         check exist package on repository
         """
@@ -235,7 +235,7 @@ class DownloadPkg(object):
         return True
 
     @staticmethod
-    def get_cut_dirs(url):
+    def get_cut_dirs(url: str) -> int:
         """
         return count cut dirs from url for wget, when download directory
         """

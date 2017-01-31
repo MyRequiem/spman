@@ -27,7 +27,7 @@ show repo list
 from .maindata import MainData
 
 
-def show_repo_list():
+def show_repo_list() -> None:
     """
     show repo list
     """

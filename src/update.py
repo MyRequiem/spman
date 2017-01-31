@@ -41,7 +41,7 @@ from .utils import (
 )
 
 
-class Update(object):
+class Update:
     """
     Update PACKAGES.TXT, SLACKBUILDS.TXT and
     ChangeLog.txt for each repository
@@ -50,7 +50,7 @@ class Update(object):
         self.meta = MainData()
         self.spman_conf = self.meta.get_spman_conf()
 
-    def start(self):
+    def start(self) -> None:
         """
         start update all local repository
         """
@@ -143,7 +143,8 @@ class Update(object):
                                       self.meta.clrs['reset']))
         print()
 
-    def upd_and_show_diff(self, local_file, file_url, prefix):
+    def upd_and_show_diff(self, local_file: str,
+                          file_url: str, prefix: str) -> None:
         """
         update file and show diff with old file
         """
@@ -164,15 +165,14 @@ class Update(object):
         remove(old_file)
         print()
 
-    def check_file_size(self, local, remote):
+    def check_file_size(self, local: str, remote: str) -> bool:
         """
         check size local and remote ChangeLog.txt
         """
-        equal = self.get_remote_file_size(remote) == path.getsize(local)
-        return equal
+        return self.get_remote_file_size(remote) == path.getsize(local)
 
     @staticmethod
-    def get_remote_file_size(remote):
+    def get_remote_file_size(remote: str) -> int:
         """
         get remote file size
         """

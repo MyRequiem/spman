@@ -28,7 +28,7 @@ from .maindata import MainData
 from .pkgs import Pkgs
 
 
-def check_main_deps():
+def check_main_deps() -> None:
     """
     Checking dependencies for program:
         - GNU coreutils

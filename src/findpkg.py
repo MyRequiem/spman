@@ -29,17 +29,17 @@ from .maindata import MainData
 from .utils import get_line
 
 
-class FindPkg(object):
+class FindPkg:
     """
     Find package from each enabled repository and view info.
     """
-    def __init__(self, pkgname):
+    def __init__(self, pkgname: str):
         self.meta = MainData()
         self.repos = self.meta.get_repo_dict()
         self.pkgname = pkgname
         self.repo = ''
 
-    def start(self):
+    def start(self) -> None:
         """
         Find package from each enabled repository and view info.
         """
@@ -60,7 +60,7 @@ class FindPkg(object):
                                     self.pkgname,
                                     self.meta.clrs['reset']))
 
-    def print_info(self, pkgdata):
+    def print_info(self, pkgdata: list) -> None:
         """
         print package info
         """
@@ -84,7 +84,7 @@ class FindPkg(object):
                                      line,
                                      self.meta.clrs['reset']))
 
-    def print_data(self, dataname, data, color='reset'):
+    def print_data(self, dataname: str, data: str, color: str='reset') -> None:
         """
         print data string
         """

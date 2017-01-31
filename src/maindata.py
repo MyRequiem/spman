@@ -27,7 +27,7 @@ Main data for program
 from platform import machine
 
 
-class MainData(object):
+class MainData:
     """
     Main data for program
     """
@@ -58,7 +58,7 @@ class MainData(object):
             'reset': '\x1b[0m'
         }
 
-    def get_repo_dict(self):
+    def get_repo_dict(self) -> dict:
         """
         return dict: {'repo_name': 'url', ...} from /etc/spman/repo-list
         """
@@ -84,7 +84,7 @@ class MainData(object):
         return repo_dict
 
     @staticmethod
-    def get_os_version():
+    def get_os_version() -> str:
         """
         return slackware version
         """
@@ -93,7 +93,7 @@ class MainData(object):
         ver_file.close()
         return slack_ver
 
-    def get_spman_conf(self):
+    def get_spman_conf(self) -> dict:
         """
         return dict all options from /etc/spman/spman.conf
         """
@@ -125,7 +125,7 @@ class MainData(object):
 
         return spman_conf
 
-    def get_blacklist(self):
+    def get_blacklist(self) -> list:
         """
         return list blacklisted packages from /etc/spman/blacklist
         """
@@ -138,7 +138,7 @@ class MainData(object):
         return blacklist
 
     @staticmethod
-    def process_config_line(line, sep=None):
+    def process_config_line(line: str, sep: str=None) -> list:
         """
         return list [name, value] from line of config file
         """

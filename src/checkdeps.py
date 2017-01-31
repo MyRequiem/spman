@@ -21,7 +21,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-Search dependency problems in the system packages using 'sbbdep' tool.
+Search dependency problems in the system packages using 'sbbdep' or 'ldd' tool.
 """
 
 import os
@@ -35,16 +35,17 @@ from .utils import (
 )
 
 
-class CheckDeps(object):
+class CheckDeps:
     """
-    Search dependency problems in the system packages using 'sbbdep' tool.
+    Search dependency problems in the system packages
+    using 'sbbdep' or 'ldd' tool.
     """
-    def __init__(self, tool):
+    def __init__(self, tool: str):
         self.tool = tool
         self.meta = MainData()
         self.pkgs = Pkgs()
 
-    def start(self):
+    def start(self) -> None:
         """
         start search dependency problems
         """
@@ -64,7 +65,7 @@ class CheckDeps(object):
         else:
             self.ldd()
 
-    def sbbdep(self):
+    def sbbdep(self) -> None:
         """
         check using 'sbbdep' tool
         """
@@ -121,7 +122,7 @@ class CheckDeps(object):
                                'problems with dependencies.'), 'green')
             print()
 
-    def ldd(self):
+    def ldd(self) -> None:
         """
         check using 'ldd' tool
         """
@@ -195,7 +196,7 @@ class CheckDeps(object):
                                'problems with dependencies.'), 'green')
             print()
 
-    def get_error_lines(self, command):
+    def get_error_lines(self, command: str) -> list:
         """
         return list lines with errors
         """
@@ -218,7 +219,7 @@ class CheckDeps(object):
 
         return errors
 
-    def print_error_string(self, line):
+    def print_error_string(self, line: str) -> None:
         """
         print error string
         """
@@ -227,7 +228,7 @@ class CheckDeps(object):
                                     line,
                                     self.meta.clrs['reset']))
 
-    def print_rezult(self, string, color, pkgname=''):
+    def print_rezult(self, string: str, color: str, pkgname: str='') -> None:
         """
         print rezult string
         """
@@ -237,7 +238,7 @@ class CheckDeps(object):
                                     self.meta.clrs['reset']))
 
     @staticmethod
-    def is_binary(filepath):
+    def is_binary(filepath: str) -> bool:
         """
         return True, if file is binary
         """

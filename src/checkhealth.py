@@ -34,7 +34,7 @@ from .utils import (
 )
 
 
-class CheckHealth(object):
+class CheckHealth:
     """
     Check health installed packages
     """
@@ -48,7 +48,7 @@ class CheckHealth(object):
         self.count_broken_packages = 0
         self.pkgname = ''
 
-    def start(self):
+    def start(self) -> None:
         """
         start check health installed packages
         """
@@ -66,7 +66,7 @@ class CheckHealth(object):
 
         self.show_rezult()
 
-    def check_exists_files(self, line, pkgname):
+    def check_exists_files(self, line: str, pkgname: str) -> None:
         """
         check exists file
         """
@@ -88,7 +88,7 @@ class CheckHealth(object):
                                            check_file,
                                            self.meta.clrs['reset']))
 
-    def show_rezult(self):
+    def show_rezult(self) -> None:
         """
         Display general statistics
         """

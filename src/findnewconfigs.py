@@ -28,7 +28,7 @@ from .maindata import MainData
 from .utils import get_all_files
 
 
-class FindNewConfigs(object):
+class FindNewConfigs:
     """
     Find all '*.new' files from /etc/ and /usr/share/ folders and subfolders
     """
@@ -36,7 +36,7 @@ class FindNewConfigs(object):
         self.meta = MainData()
         self.newconfigs = []
 
-    def start(self):
+    def start(self) -> None:
         """
         start find *.new files
         """
@@ -49,7 +49,7 @@ class FindNewConfigs(object):
 
         self.print_new_configs()
 
-    def print_new_configs(self):
+    def print_new_configs(self) -> None:
         """
         Print *.new files
         """

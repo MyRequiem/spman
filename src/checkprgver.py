@@ -34,7 +34,7 @@ from urllib.request import urlopen
 from .maindata import MainData
 
 
-def check_prg_ver():
+def check_prg_ver() -> None:
     """
     check program version
     """

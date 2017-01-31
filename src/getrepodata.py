@@ -28,11 +28,11 @@ from .maindata import MainData
 from .pkgs import Pkgs
 
 
-class GetRepoData(object):
+class GetRepoData:
     """
     get data from the repository
     """
-    def __init__(self, reponame):
+    def __init__(self, reponame: str):
         self.reponame = reponame
         self.meta = MainData()
         self.pkgs = Pkgs()
@@ -65,7 +65,7 @@ class GetRepoData(object):
             }
         }
 
-    def start(self):
+    def start(self) -> dict:
         """
         start grab data from PACKAGES.TXT (SLACKBUILDS.TXT)
         """
@@ -113,7 +113,7 @@ class GetRepoData(object):
 
         return self.rdata
 
-    def get_non_sbo_data(self, line):
+    def get_non_sbo_data(self, line: str) -> None:
         """
         get non sbo data
         """
@@ -139,7 +139,7 @@ class GetRepoData(object):
             val = self.get_line_desc(line, '{0}:'.format(self.pkgname))
             self.rdata['pkgs'][self.pkgname][5].append(val)
 
-    def get_sbo_data(self, line):
+    def get_sbo_data(self, line: str) -> None:
         """
         get sbo data
         """
@@ -167,7 +167,7 @@ class GetRepoData(object):
               line.startswith('SLACKBUILD DOWNLOAD_x86_64: ')):
             self.get_dwnld_urls(line)
 
-    def get_dwnld_urls(self, line):
+    def get_dwnld_urls(self, line: str) -> None:
         """
         get download urls
         """
@@ -180,13 +180,13 @@ class GetRepoData(object):
             self.rdata['pkgs'][self.pkgname][7] = urls
 
     @staticmethod
-    def get_line_desc(line, sep):
+    def get_line_desc(line: str, sep: str) -> str:
         """
         get description line value
         """
         return sep.join(line.split(sep)[1:]).strip()
 
-    def get_req_pkg(self, line, sep=None):
+    def get_req_pkg(self, line: str, sep: str=None) -> None:
         """
         get list dependencies for package
         """
@@ -195,7 +195,7 @@ class GetRepoData(object):
             if req and req != '%README%':
                 self.rdata['pkgs'][self.pkgname][4].append(req.strip())
 
-    def process_size_pkg(self, line, ind):
+    def process_size_pkg(self, line: str, ind: int) -> None:
         """
         process size package
         """
@@ -206,21 +206,21 @@ class GetRepoData(object):
         self.rdata['pkgs'][self.pkgname][ind + 2] = hval
 
     @staticmethod
-    def get_list_new_pkg():
+    def get_list_new_pkg() -> list:
         """
         return list data for new package
         """
         return ['', '', '', '', [], [], [], [], '']
 
     @staticmethod
-    def get_line_value(line, sep):
+    def get_line_value(line: str, sep: str) -> str:
         """
         return value of line parameter
         """
         return line.split(sep)[1].strip()
 
     @staticmethod
-    def get_human_readable_size(val):
+    def get_human_readable_size(val: int) -> str:
         """
         return human readable size package
         """

@@ -30,7 +30,7 @@ from .pkgs import Pkgs
 from .utils import get_indent
 
 
-class CheckUpgrade(object):
+class CheckUpgrade:
     """
     Check packages for upgrade
     """
@@ -42,7 +42,7 @@ class CheckUpgrade(object):
         self.reposdata = [{}, {}, {}, {}]
         self.upgrpkgs = [[], [], [], []]
 
-    def start(self):
+    def start(self) -> None:
         """
         start check packages for upgrade
         """
@@ -68,7 +68,7 @@ class CheckUpgrade(object):
 
         self.show_rezult()
 
-    def get_repos_data(self):
+    def get_repos_data(self) -> None:
         """
         get data from PACKAGES.TXT (SLACKBUILDS.TXT)
         """
@@ -79,7 +79,7 @@ class CheckUpgrade(object):
                 self.reposdata[ind] = GetRepoData(repo).start()
             ind += 1
 
-    def check_pkg(self, parts, ind):
+    def check_pkg(self, parts: list, ind: int) -> None:
         """
         check pkg for upgrade
         """
@@ -126,7 +126,7 @@ class CheckUpgrade(object):
                                          self.meta.clrs['green'],
                                          newpkg))
 
-    def show_rezult(self):
+    def show_rezult(self) -> None:
         """
         show pkgs for upgrade
         """

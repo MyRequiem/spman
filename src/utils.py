@@ -29,21 +29,21 @@ from shutil import rmtree
 from .maindata import MainData
 
 
-def get_line(char, length):
+def get_line(char: str, length: int) -> str:
     """
-    return line
+    return string
     """
     return char * length
 
 
-def get_indent(width1, width2):
+def get_indent(width1: int, width2: int) -> str:
     """
     get space indent for format print
     """
     return ' ' * (width2 - width1)
 
 
-def pkg_not_found_mess(pkgname, reponame):
+def pkg_not_found_mess(pkgname: str, reponame: str) -> None:
     """
     print message if package not found in repository
     """
@@ -56,7 +56,8 @@ def pkg_not_found_mess(pkgname, reponame):
                                     meta.clrs['reset']))
 
 
-def download(url, prefix, wgetparam='', show_process=True):
+def download(url: str, prefix: str, wgetparam: str='',
+             show_process: bool=True) -> None:
     """
     download file/dir
     """
@@ -105,7 +106,7 @@ def download(url, prefix, wgetparam='', show_process=True):
                                                  meta.clrs['reset']))
 
 
-def get_all_files(pathdir):
+def get_all_files(pathdir: str) -> list:
     """
     return list of all files in directory and subdirectories
     """

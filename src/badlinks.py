@@ -34,11 +34,11 @@ from os import (
 from .maindata import MainData
 
 
-class BadLinks(object):
+class BadLinks:
     """
     Find links to non-existent files/directories
     """
-    def __init__(self, pathdir):
+    def __init__(self, pathdir: str):
         self.meta = MainData()
         self.pathdir = pathdir
         if not self.pathdir.endswith('/'):
@@ -48,7 +48,7 @@ class BadLinks(object):
         if not self.pathdir.startswith('/'):
             self.pathdir = '{0}/{1}'.format(getcwd(), self.pathdir)
 
-    def start(self):
+    def start(self) -> None:
         """
         start find bad links
         """
@@ -61,7 +61,7 @@ class BadLinks(object):
 
         from .utils import get_all_files
 
-        errors = 0
+        err_count = 0
         allfiles = get_all_files(self.pathdir)
         for lnk in allfiles:
             # if file is link
@@ -74,20 +74,20 @@ class BadLinks(object):
 
                 dest = readlink(lnk)
                 if not path.isfile(dest) and not path.isdir(dest):
-                    errors += 1
+                    err_count += 1
                     print('{0}{1}{2}'.format(self.meta.clrs['red'],
                                              lnk,
                                              self.meta.clrs['reset']))
 
-        self.print_rezult(errors)
+        self.print_rezult(err_count)
 
-    def print_rezult(self, errors):
+    def print_rezult(self, err_count: int) -> None:
         """
         print rezult
         """
-        if errors:
+        if err_count:
             print('\nIncorrect references in {0}: {1}'.format(self.pathdir,
-                                                              errors),
+                                                              err_count),
                   end='\n\n')
         else:
             print(('\n{0}Congratulations !!!\nNot found invalid '

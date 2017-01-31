@@ -28,7 +28,7 @@ from .maindata import MainData
 from .repolist import show_repo_list
 
 
-def show_help_mess(repo=''):
+def show_help_mess(repo: str='') -> None:
     """
 {0}Version: {1}{6}
 Usage: spman command [param[, param ...]]

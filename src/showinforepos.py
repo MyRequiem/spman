@@ -29,14 +29,14 @@ from .maindata import MainData
 from .utils import get_indent
 
 
-class ShowInfoRepos(object):
+class ShowInfoRepos:
     """
     Show information about all repositories.
     """
     def __init__(self):
         self.meta = MainData()
 
-    def start(self):
+    def start(self) -> None:
         """
         init show information
         """
@@ -56,7 +56,7 @@ class ShowInfoRepos(object):
 
         print()
 
-    def print_option(self, optname, val):
+    def print_option(self, optname: str, val: str) -> None:
         """
         print option
         """

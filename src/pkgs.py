@@ -29,14 +29,14 @@ import os
 from .maindata import MainData
 
 
-class Pkgs(object):
+class Pkgs:
     """
     Processing package
     """
     def __init__(self):
         self.meta = MainData()
 
-    def find_pkgs_on_system(self, pkg_name=''):
+    def find_pkgs_on_system(self, pkg_name: str='') -> list:
         """
         return list full name installed package(s) on system
         """
@@ -52,7 +52,7 @@ class Pkgs(object):
             return sorted(installed_pkgs)
 
     @staticmethod
-    def get_parts_pkg_name(pkg_name):
+    def get_parts_pkg_name(pkg_name: str) -> list:
         """
         return list of parts package name:
             [name, version, architecture, build]

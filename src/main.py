@@ -72,7 +72,9 @@ class Main:
             '-k': self.checkdeps,
             '--check-deps': self.checkdeps,
             '-a': self.bad_links,
-            '--bad-links': self.bad_links
+            '--bad-links': self.bad_links,
+            '-i': self.pkglist,
+            '--pkglist': self.pkglist
         }
 
     def start(self) -> None:
@@ -332,3 +334,25 @@ class Main:
 
         from .badlinks import BadLinks
         BadLinks(self.args[1]).start()
+
+    def pkglist(self) -> None:
+        """
+        Show complete list of the packages in the repository
+        """
+        arglen = len(self.args)
+        if arglen != 2 and arglen != 3:
+            show_help_mess('error')
+
+        repo = self.args[1]
+        if repo not in self.repos:
+            show_help_mess(repo)
+
+        only_installed = False
+        if arglen == 3:
+            if self.args[2] != '--only-installed':
+                show_help_mess('error')
+
+            only_installed = True
+
+        from .pkglist import PkgList
+        PkgList(repo, only_installed).start()

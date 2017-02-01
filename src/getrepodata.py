@@ -137,7 +137,9 @@ class GetRepoData:
             self.get_req_pkg(line, ',')
         elif line.startswith('{0}:'.format(self.pkgname)):
             val = self.get_line_desc(line, '{0}:'.format(self.pkgname))
-            self.rdata['pkgs'][self.pkgname][5].append(val)
+            # only not empty strings
+            if val:
+                self.rdata['pkgs'][self.pkgname][5].append(val)
 
     def get_sbo_data(self, line: str) -> None:
         """

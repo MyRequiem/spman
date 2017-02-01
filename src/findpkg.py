@@ -26,7 +26,6 @@ Find package from each enabled repository and view info.
 
 from .getrepodata import GetRepoData
 from .maindata import MainData
-from .utils import get_line
 
 
 class FindPkg:
@@ -43,18 +42,15 @@ class FindPkg:
         """
         Find package from each enabled repository and view info.
         """
-        findpkg = False
+        pkg_is_found = False
         for repo in sorted(self.repos):
             repodata = GetRepoData(repo).start()
             if self.pkgname in repodata['pkgs']:
                 self.repo = repo
-                print('\n{0}'.format(get_line('-', 80)))
                 self.print_info(repodata['pkgs'][self.pkgname])
-                findpkg = True
+                pkg_is_found = True
 
-        if findpkg:
-            print(get_line('-', 80), end='\n\n')
-        else:
+        if not pkg_is_found:
             print(('Package {0}\'{1}\'{2} not '
                    'found.').format(self.meta.clrs['lcyan'],
                                     self.pkgname,
@@ -77,12 +73,13 @@ class FindPkg:
         if sbo and pkgdata[4]:
             self.print_data('Package dependencies: ',
                             ', '.join(pkgdata[4]),
-                            'green')
+                            'grey')
         print('Description:')
         for line in pkgdata[5]:
-            print('{0}{1}{2}'.format(self.meta.clrs['magenta'],
+            print('{0}{1}{2}'.format(self.meta.clrs['green'],
                                      line,
                                      self.meta.clrs['reset']))
+        print()
 
     def print_data(self, dataname: str, data: str, color: str='reset') -> None:
         """
@@ -90,7 +87,7 @@ class FindPkg:
         """
         from .utils import get_indent
         print('{0}{1}{2}{3}{4}'.format(dataname,
-                                       get_indent(len(dataname), 25),
+                                       get_indent(len(dataname), 23),
                                        self.meta.clrs[color],
                                        data,
                                        self.meta.clrs['reset']))

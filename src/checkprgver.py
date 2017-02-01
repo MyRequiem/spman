@@ -57,7 +57,7 @@ def check_prg_ver() -> None:
     spl = '/{0}/archive/'.format('/'.join(meta.home_page.split('/')[3:]))
     version = '.'.join(html.split(spl)[1].split('.')[:3])
 
-    if version == local_ver:
+    if version != local_ver:
         print(('{0}New version are available:{1} {3}\n' +
                'Visit: {2}/releases\nor download new version source code:\n' +
                '{2}/archive/{3}.tar.gz').format(meta.clrs['lred'],

@@ -48,9 +48,9 @@ def pkg_not_found_mess(pkgname: str, reponame: str) -> None:
     print message if package not found in repository
     """
     meta = MainData()
-    print(('{0}Error!!! Package {1}\'{2}\' {0}not found in \'{3}\' '
+    print(('{0}Package {1}{2} {0}not found in \'{3}\' '
            'repository.{4}').format(meta.clrs['red'],
-                                    meta.clrs['cyan'],
+                                    meta.clrs['lcyan'],
                                     pkgname,
                                     reponame,
                                     meta.clrs['reset']))

@@ -46,13 +46,8 @@ class Queue:
         """
         clear queue
         """
-        if not self.queue_list:
-            self.queue_is_empty_message()
-        else:
-            open(self.queue_file, 'w').close()
-            print('File {0}{1}{2} cleaned.'.format(self.meta.clrs['magenta'],
-                                                   self.queue_file,
-                                                   self.meta.clrs['reset']))
+        open(self.queue_file, 'w').close()
+        self.queue_is_empty_message()
 
     def show(self) -> None:
         """
@@ -96,7 +91,7 @@ class Queue:
             for pkg in pkgs:
                 if pkg not in self.queue_list:
                     self.print_message(
-                        pkg, pkgs, 'is not in the queue', ('red', 'cyan'))
+                        pkg, pkgs, 'is not in the queue', ('red', 'lcyan'))
                 else:
                     self.queue_list.remove(pkg)
                     fqueue = open(self.queue_file, 'w')
@@ -105,7 +100,7 @@ class Queue:
                     fqueue.close()
 
                     self.print_message(
-                        pkg, pkgs, 'removed from the queue', ('grey', 'red'))
+                        pkg, pkgs, 'removed from the queue', ('grey', 'lcyan'))
 
     def install(self) -> None:
         """
@@ -164,9 +159,8 @@ class Queue:
         """
         print message if queue is empty
         """
-        print('File {0}{1}{2} is empty.'.format(self.meta.clrs['red'],
-                                                self.queue_file,
-                                                self.meta.clrs['reset']))
+        print('{0}Queue is empty{1}'.format(self.meta.clrs['grey'],
+                                            self.meta.clrs['reset']))
 
     @staticmethod
     def check_exists_pkgs(pkgs: list) -> None:

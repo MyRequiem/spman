@@ -56,8 +56,8 @@ Usage: spman command [param[, param ...]]
 {2}     --install{3}            download, build and install package(s)
 {2} -p|--find-deps pkg{3}   Show list all dependencies for package from 'sbo'
                         repository.
-{2} -s|--view-slackbuild{3} View README, slack-desc, doinst.sh and .SlackBuild
-                        files from sbo repository.
+{2} -s|--view-slackbuild{3} View the contents of files included in SlackBuild
+                        archive using pager.
 {2}         pkg{3}              package name
 {2} -f|--find-pkg pkg{3}    Find package from each enabled repository and
                         view info.

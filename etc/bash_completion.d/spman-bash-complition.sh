@@ -1,11 +1,13 @@
+#!/bin/bash
+
 _spman() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
         --update --health --new-config --check-upgrade --download --queue \
-        --find-deps --view-slackbuild --find-pkg --check-deps --bad-links"
-
+        --find-deps --view-slackbuild --find-pkg --check-deps --bad-links \
+        --pkglist"
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
     subcommands_repo_src="alienbob sbo slack"
@@ -13,10 +15,10 @@ _spman() {
     subcommands_queue="--add --remove --clear --show --install"
     subcommands_find_deps="pkg"
     subcommands_check_deps="--sbbdep --ldd"
-    subcommands_badlinks="path_to_dir"
+    subcommands_pkglist="alienbob multilib sbo slack"
 
     if [[ ${COMP_CWORD} == 1 ]] ; then
-        COMPREPLY=( $(compgen -W "${subcommands_main}" -- ${cur}) )
+        COMPREPLY=($(compgen -W "${subcommands_main}" -- "${cur}"))
         return 0
     fi
 
@@ -29,39 +31,39 @@ _spman() {
 
         --download)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${subcommands_download}" -- ${cur}) )
+                COMPREPLY=($(compgen -W "${subcommands_download}" -- "${cur}"))
                 return 0
             fi
 
             if [[ ${COMP_CWORD} == 3 ]] ; then
                 case "${COMP_WORDS[2]}" in
                     --pkg)
-                        COMPREPLY=($(compgen -W "${subcommands_repo_pkg}" -- ${cur}))
+                        COMPREPLY=($(compgen -W "${subcommands_repo_pkg}" -- "${cur}"))
                         ;;
 
                     --src)
-                        COMPREPLY=($(compgen -W "${subcommands_repo_src}" -- ${cur}))
+                        COMPREPLY=($(compgen -W "${subcommands_repo_src}" -- "${cur}"))
                         ;;
                 esac
                 return 0
             fi
 
             if [[ ${COMP_CWORD} == 4 ]] ; then
-                COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- ${cur}))
+                COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- "${cur}"))
                 return 0
             fi
             ;;
 
         --queue)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${subcommands_queue}" -- ${cur}) )
+                COMPREPLY=($(compgen -W "${subcommands_queue}" -- "${cur}"))
                 return 0
             fi
 
             case "${COMP_WORDS[2]}" in
                 --add|--remove)
                     if [[ ${COMP_CWORD} == 3 ]] ; then
-                        COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- ${cur}))
+                        COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- "${cur}"))
                         return 0
                     fi
                     ;;
@@ -75,21 +77,33 @@ _spman() {
 
         --find-deps|--view-slackbuild|--find-pkg)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${subcommands_find_deps}" -- ${cur}) )
+                COMPREPLY=($(compgen -W "${subcommands_find_deps}" -- "${cur}"))
                 return 0
             fi
             ;;
 
         --check-deps)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=( $(compgen -W "${subcommands_check_deps}" -- ${cur}) )
+                COMPREPLY=($(compgen -W "${subcommands_check_deps}" -- "${cur}"))
                 return 0
             fi
             ;;
 
         --bad-links)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=( $(compgen -d -- ${cur}) )
+                COMPREPLY=($(compgen -d -- "${cur}"))
+                return 0
+            fi
+            ;;
+
+        --pkglist)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=($(compgen -W "${subcommands_pkglist}" -- "${cur}"))
+                return 0
+            fi
+
+            if [[ ${COMP_CWORD} == 3 ]] ; then
+                COMPREPLY=($(compgen -W "--only-installed" -- "${cur}"))
                 return 0
             fi
             ;;
@@ -99,4 +113,3 @@ _spman() {
 }
 
 complete -F _spman spman
-

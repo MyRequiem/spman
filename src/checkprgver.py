@@ -41,9 +41,9 @@ def check_prg_ver() -> None:
     meta = MainData()
     local_ver = meta.prog_version
     print(('Installed version: {0}\n{1}Checking '
-           'latest release...{2}').format(local_ver,
-                                          meta.clrs['grey'],
-                                          meta.clrs['reset']))
+           'latest release version...{2}').format(local_ver,
+                                                  meta.clrs['grey'],
+                                                  meta.clrs['reset']))
 
     # search latest release on https://github.com/MyRequiem/spman/releases
     url = '{0}/releases'.format(meta.home_page)
@@ -57,15 +57,13 @@ def check_prg_ver() -> None:
     spl = '/{0}/archive/'.format('/'.join(meta.home_page.split('/')[3:]))
     version = '.'.join(html.split(spl)[1].split('.')[:3])
 
-    if version != local_ver:
-        print(('{0}New version are available:{2} {4}\nVisit: '
-               '{1}{3}/releases{2}\nor download new version '
-               'source code:\n{1}{3}/archive/'
-               '{4}.tar.gz{2}').format(meta.clrs['lred'],
-                                       meta.clrs['cyan'],
-                                       meta.clrs['reset'],
-                                       meta.home_page,
-                                       version))
+    if version == local_ver:
+        print(('{0}New version are available:{1} {3}\n' +
+               'Visit: {2}/releases\nor download new version source code:\n' +
+               '{2}/archive/{3}.tar.gz').format(meta.clrs['lred'],
+                                                meta.clrs['reset'],
+                                                meta.home_page,
+                                                version))
     else:
         print(('{0}You are using the latest program '
                'version{1}').format(meta.clrs['green'],

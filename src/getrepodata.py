@@ -53,7 +53,7 @@ class GetRepoData:
             'pkgs': {
                 # 'pkg_name': [
                 #   [0] - list parts of package name (for sbo - only version)
-                #   [1] - location package
+                #   [1] - location package (development, audio, system etc.)
                 #   [2] - size compressed package (only for NON sbo repo)
                 #   [3] - size uncompressed package (only for NON sbo repo)
                 #   [4] - list of dependencies for package

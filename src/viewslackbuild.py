@@ -41,70 +41,55 @@ class ViewSlackBuild:
     def __init__(self, pkgname: str):
         self.meta = MainData()
         self.pkgname = pkgname
-        self.sbodata = GetRepoData('sbo').start()
-        self.pkgdata = []
-        self.filelist = []
 
     def start(self) -> None:
         """
         start show slackbuilds files
         """
-        if self.pkgname not in self.sbodata['pkgs']:
+        sbodata = GetRepoData('sbo').start()
+        if self.pkgname not in sbodata['pkgs']:
             from .utils import pkg_not_found_mess
             pkg_not_found_mess(self.pkgname, 'sbo')
             raise SystemExit
 
-        self.pkgdata = self.sbodata['pkgs'][self.pkgname]
-        self.filelist = self.pkgdata[6]
-        self.create_interface()
+        pkgdata = sbodata['pkgs'][self.pkgname]
+        filelist = pkgdata[6]
+        url = '{0}{1}/{2}/{3}/'.format(self.meta.get_repo_dict()['sbo'],
+                                       self.meta.get_os_version(),
+                                       pkgdata[1],
+                                       self.pkgname).replace('http://',
+                                                             'https://')
+        print(('{0}{1} > {2}\n'
+               '{3}URL: {4}{5}{6}').format(self.meta.clrs['lcyan'],
+                                           pkgdata[1].capitalize(),
+                                           self.pkgname,
+                                           self.meta.clrs['yellow'],
+                                           self.meta.clrs['grey'],
+                                           url,
+                                           self.meta.clrs['reset']))
+
+        num = 1
+        for sl_file in filelist:
+            print('  {0} {1}{2}{3}'.format(num,
+                                           self.meta.clrs['cyan'],
+                                           sl_file,
+                                           self.meta.clrs['reset']))
+            num += 1
 
         while True:
-            choice = input('Your choice: ')
-            if choice == 'q' or choice == 'Q':
+            choice = input(('{0}Your choice {1}({2}q{1}uit){3}'
+                            ': ').format(self.meta.clrs['lyellow'],
+                                         self.meta.clrs['grey'],
+                                         self.meta.clrs['lred'],
+                                         self.meta.clrs['reset']))
+
+            if choice == 'q':
                 raise SystemExit
 
-            url = self.meta.get_repo_dict()['sbo'].replace('http://',
-                                                           'https://')
-            url = '{0}{1}/{2}/{3}/'.format(url,
-                                           self.meta.get_os_version(),
-                                           self.pkgdata[1],
-                                           self.pkgname)
-
-            if choice == 'r' or choice == 'R' and 'README' in self.filelist:
-                self.show_file('{0}README'.format(url))
-            if choice == 's' or choice == 'S':
-                self.show_file('{0}slack-desc'.format(url))
-            if choice == 'd' or choice == 'D' and 'doinst.sh' in self.filelist:
-                self.show_file('{0}doinst.sh'.format(url))
-            if choice == 'b' or choice == 'B':
-                self.show_file('{0}{1}.SlackBuild'.format(url, self.pkgname))
-
-    def create_interface(self) -> None:
-        """
-        create interface of choice for the user
-        """
-        location = self.pkgdata[1]
-        print('\n{0}{1} > {2}{3}'.format(self.meta.clrs['lcyan'],
-                                         location[0].upper() + location[1:],
-                                         self.pkgname,
-                                         self.meta.clrs['reset']),
-              end='\n\n')
-
-        if 'README' in self.filelist:
-            print('View {0}R{1}EADME'.format(self.meta.clrs['red'],
-                                             self.meta.clrs['reset']))
-        if 'slack-desc' in self.filelist:
-            print('View {0}s{1}lack-desc'.format(self.meta.clrs['red'],
-                                                 self.meta.clrs['reset']))
-        if 'doinst.sh' in self.filelist:
-            print('View {0}d{1}oinst.sh'.format(self.meta.clrs['red'],
-                                                self.meta.clrs['reset']))
-        if self.pkgname + '.SlackBuild' in self.filelist:
-            print('View {0}.Slack{1}B{2}uild'.format(self.pkgname,
-                                                     self.meta.clrs['red'],
-                                                     self.meta.clrs['reset']))
-        print('{0}Q{1}uit'.format(self.meta.clrs['red'],
-                                  self.meta.clrs['reset']), end='\n\n')
+            if choice.isdigit():
+                choice = int(choice)
+                if 0 < choice <= len(filelist):
+                    self.show_file('{0}{1}'.format(url, filelist[choice - 1]))
 
     @staticmethod
     def show_file(url: str) -> None:

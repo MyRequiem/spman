@@ -58,10 +58,10 @@ class FindNewConfigs:
                   'files found.{1}'.format(self.meta.clrs['green'],
                                            self.meta.clrs['reset']))
         else:
-            print('\n{0}Found *.new configuration '
+            print('{0}Found *.new configuration '
                   'files:{1}'.format(self.meta.clrs['yellow'],
                                      self.meta.clrs['reset']))
             for newconfig in self.newconfigs:
-                print('\t{0}'.format(newconfig))
-
-            print()
+                print('{0}{1}{2}'.format(self.meta.clrs['grey'],
+                                         newconfig,
+                                         self.meta.clrs['reset']))

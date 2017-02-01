@@ -199,13 +199,14 @@ class Main:
         if len(self.args) > 1:
             show_help_mess('error')
 
-        print()
+        print(('Blacklisted packages in '
+               '{0}{1}blacklist{2}:').format(self.meta.clrs['grey'],
+                                             self.meta.configs_path,
+                                             self.meta.clrs['reset']))
         for pkg in self.meta.get_blacklist():
-            print(pkg)
-
-        print('\n{0}{1}blacklist{2}\n'.format(self.meta.clrs['grey'],
-                                              self.meta.configs_path,
-                                              self.meta.clrs['reset']))
+            print('{0}{1}{2}'.format(self.meta.clrs['lred'],
+                                     pkg,
+                                     self.meta.clrs['reset']))
 
     def download_pkg(self) -> None:
         """

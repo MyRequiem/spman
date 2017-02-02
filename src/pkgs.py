@@ -48,6 +48,7 @@ class Pkgs:
                 if self.get_parts_pkg_name(pkg)[0] == pkg_name:
                     return [pkg]
 
+            return []
         else:
             return sorted(installed_pkgs)
 

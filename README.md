@@ -26,5 +26,5 @@
 3) cd spman-1.3.0/slackbuild<br>
 4) ./spman.SlackBuild<br>
     The package will be created in the /tmp directory<br>
-5) upgradepkg --install-new --reinstall /tmp/spman-1.3.0-noarch-1_myreq.txz
+5) upgradepkg --install-new --reinstall /tmp/spman-1.3.0-noarch-1myreq.txz
 <br>

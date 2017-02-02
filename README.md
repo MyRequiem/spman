@@ -21,10 +21,10 @@
 
 ######Build and install spman:
 1) Download source code:<br>
-   wget https://github.com/MyRequiem/spman/archive/1.2.2.tar.gz<br>
-2) tar -xvzf 1.2.2.tar.gz<br>
-3) cd spman-1.2.2/slackbuild<br>
+   wget https://github.com/MyRequiem/spman/archive/1.3.0.tar.gz<br>
+2) tar -xvzf 1.3.0.tar.gz<br>
+3) cd spman-1.3.0/slackbuild<br>
 4) ./spman.SlackBuild<br>
     The package will be created in the /tmp directory<br>
-5) upgradepkg --install-new --reinstall /tmp/spman-1.2.2-noarch-1_myreq.txz
+5) upgradepkg --install-new --reinstall /tmp/spman-1.3.0-noarch-1_myreq.txz
 <br>

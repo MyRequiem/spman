@@ -1,3 +1,9 @@
+1.3.0 [02.02.2017]
+New parameter:
+-i|--pkglist: Show complete list of the packages in the repository
+     reponame			name of repository
+     --only-installed	output only installed packages
+
 1.2.2 [17.01.2017]
 Fix check version for nvidia-*-kernel packages from sbo repository.
 

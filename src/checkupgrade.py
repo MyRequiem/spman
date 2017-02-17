@@ -141,7 +141,6 @@ class CheckUpgrade:
                     print(pkg)
 
         if not new_pkgs:
-            print(('\n{0}Packages for upgrade not '
+            print(('{0}Packages for upgrade not '
                    'found.{1}').format(self.meta.clrs['green'],
                                        self.meta.clrs['reset']))
-        print()

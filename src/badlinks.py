@@ -90,8 +90,7 @@ class BadLinks:
                                                               err_count),
                   end='\n\n')
         else:
-            print(('\n{0}Congratulations !!!\nNot found invalid '
+            print(('{0}Congratulations !!!\nNot found invalid '
                    'links in {1}{2}').format(self.meta.clrs['green'],
                                              self.pathdir,
-                                             self.meta.clrs['reset']),
-                  end='\n\n')
+                                             self.meta.clrs['reset']))

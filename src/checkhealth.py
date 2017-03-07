@@ -74,7 +74,9 @@ class CheckHealth:
         ends = ('/', '.new')
         if (not line.startswith(starts) and
                 not line.endswith(ends) and
-                '/incoming/' not in line):
+                '/incoming/' not in line and
+                '/autostart/' not in line and
+                '/ca-certificates/mozilla/' not in line):
 
             self.count_files += 1
             check_file = '/' + line

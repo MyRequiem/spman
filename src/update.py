@@ -56,12 +56,13 @@ class Update:
         """
         # dict {'repo_name': 'url', ...}
         repos = self.meta.get_repo_dict()
-        # slackware version
-        os_version = self.meta.get_os_version()
         # machine architecture
         arch = 'x86_64' if self.meta.arch == 'x86_64' else 'x86'
 
         for repo in sorted(repos):
+            # slackware version
+            os_version = self.spman_conf['OS_VERSION']
+
             print(('\n{0}{4}\n+ Update repository:{1} '
                    '{2}{3}\n{0}{4}{3}').format(self.meta.clrs['yellow'],
                                                self.meta.clrs['cyan'],
@@ -94,6 +95,9 @@ class Update:
                                                os_version,
                                                repo_txt)
             elif repo == 'sbo':
+                if os_version == 'current':
+                    os_version = self.spman_conf['OS_LAST_RELEASE']
+
                 log_url = '{0}{1}/{2}'.format(repos[repo],
                                               os_version,
                                               log_txt)
@@ -106,7 +110,10 @@ class Update:
                                                    arch_sl,
                                                    os_version)
                 log_url = '{0}/{1}'.format(rep, log_txt)
-                repo_url = '{0}/patches/{1}'.format(rep, repo_txt)
+                dep_dir = ('slackware{0}'.format(arch_sl)
+                           if os_version == 'current' else 'patches')
+
+                repo_url = '{0}/{1}/{2}'.format(rep, dep_dir, repo_txt)
 
             print('{0}Wait...{1}'.format(self.meta.clrs['grey'],
                                          self.meta.clrs['reset']))

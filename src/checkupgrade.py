@@ -61,7 +61,8 @@ class CheckUpgrade:
                     self.check_pkg(parts, 0)
                 elif self.reposdata[1] and 'SBo' in parts[3]:
                     self.check_pkg(parts, 1)
-                elif self.reposdata[2] and 'compat32' in parts[3]:
+                elif self.reposdata[2] and ('compat32' in parts[3] or
+                                            parts[0] == 'compat32-tools'):
                     self.check_pkg(parts, 2)
                 elif self.reposdata[3]:
                     self.check_pkg(parts, 3)

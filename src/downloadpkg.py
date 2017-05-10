@@ -43,7 +43,8 @@ class DownloadPkg:
     """
     def __init__(self, mode: str, repo: str, pkglist: list):
         self.meta = MainData()
-        self.os_ver = self.meta.get_os_version()
+        self.spman_conf = self.meta.get_spman_conf()
+        self.os_ver = self.spman_conf['OS_VERSION']
         # download src or pkg
         self.mode = mode
         # repo name
@@ -52,7 +53,7 @@ class DownloadPkg:
         self.pkglist = pkglist
         self.repo_url = self.meta.get_repo_dict()[self.repo]
         self.repodata = GetRepoData(self.repo).start()
-        self.wgetprefix = self.meta.get_spman_conf()['BUILD_PATH']
+        self.wgetprefix = self.spman_conf['BUILD_PATH']
         self.wgetdir = ('--no-check-certificate -r -nH -ct 0 -w 2 -l 10 '
                         '--cut-dirs={0} --no-parent -R *.meta4,*.mirrorlist,'
                         'index.html*')
@@ -81,7 +82,7 @@ class DownloadPkg:
         """
         download from alienbob repository
         """
-        arch = 'x86_64' if self.meta.arch == 'x86_64' else 'x86'
+        arch = self.meta.arch if self.meta.arch == 'x86_64' else 'x86'
 
         if self.mode == '--pkg':
             # download binary package
@@ -114,24 +115,23 @@ class DownloadPkg:
         download binary package(s) from multilib repository
         """
         fname = self.get_fname(pkgdata)
-        location = '{0}/'.format(pkgdata[1]) if pkgdata[1] else ''
         url = '{0}{1}/{2}{3}'.format(self.repo_url,
                                      self.os_ver,
-                                     location,
+                                     self.get_pkg_location(pkgdata[1]),
                                      fname)
         download(url, self.wgetprefix)
 
     def download_slack(self, pkg: str, pkgdata: list) -> None:
         """
-        download from slackware repository (directory 'patches')
+        download from slackware repository
         """
         arch = '64' if self.meta.arch == 'x86_64' else ''
-        repo_url = '{0}slackware{1}-{2}/patches/'.format(self.repo_url,
-                                                         arch,
-                                                         self.os_ver)
+        repo_url = '{0}slackware{1}-{2}'.format(self.repo_url,
+                                                arch,
+                                                self.os_ver)
 
-        # kernel packages and kernel source are located in the
-        # directory /patches/packages/linux-x.x.x/
+        # kernel packages and kernel source (for stable Slackware versions)
+        # are located in the directory patches/packages/linux-x.x.x/
         kernel_packages = [
             'kernel-firmware',
             'kernel-generic',
@@ -141,34 +141,40 @@ class DownloadPkg:
             'kernel-source'
         ]
 
-        # download kernel package or kernel source
-        if pkg in kernel_packages:
-            kernel_ver = self.get_pkg_data('kernel-source')[0][1]
+        location = self.get_pkg_location(pkgdata[1])
+        if self.mode == '--pkg' or pkg in kernel_packages:
+            # download binary package
             fname = self.get_fname(pkgdata)
-            url = '{0}packages/linux-{1}/{2}'.format(repo_url,
-                                                     kernel_ver,
-                                                     fname)
+            url = '{0}/{1}{2}'.format(repo_url, location, fname)
             download(url, self.wgetprefix)
         else:
-            if self.mode == '--pkg':
-                # download binary package
-                fname = self.get_fname(pkgdata)
-                url = '{0}packages/{1}'.format(repo_url, fname)
-                download(url, self.wgetprefix)
-            else:
-                # download directory with source code and SlackBuild script
-                url = '{0}source/{1}/'.format(repo_url, pkg)
-                download(url, self.wgetprefix,
-                         self.wgetdir.format(self.get_cut_dirs(url)))
+            # download directory with source code and SlackBuild script
+            replace_str = ('slackware{0}'.format(arch)
+                           if self.os_ver == 'current' else 'packages')
+            location = location.replace(replace_str, 'source')
+            url = '{0}/{1}{2}/'.format(repo_url, location, pkg)
 
-                downdir = '{0}{1}'.format(self.wgetprefix, pkg)
-                if path.isdir(downdir):
-                    self.set_chmod(downdir)
+            download(url, self.wgetprefix,
+                     self.wgetdir.format(self.get_cut_dirs(url)))
+
+            downdir = '{0}{1}'.format(self.wgetprefix, pkg)
+            if path.isdir(downdir):
+                self.set_chmod(downdir)
+
+    @staticmethod
+    def get_pkg_location(location: str) -> str:
+        """
+        return location package in repository
+        """
+        return '{0}/'.format(location) if location else ''
 
     def download_sbo(self, pkg: str, pkgdata: list) -> None:
         """
         download SlackBuild script and sources from 'sbo' repository
         """
+        if self.os_ver == 'current':
+            self.os_ver = self.spman_conf['OS_LAST_RELEASE']
+
         fname = '{0}.tar.gz'.format(pkg)
         url = '{0}{1}/{2}/{3}'.format(self.repo_url,
                                       self.os_ver,

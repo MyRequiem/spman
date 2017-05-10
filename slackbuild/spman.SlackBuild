@@ -3,67 +3,86 @@
 # Buiding package spman for Slackware linux
 # Author: MyRequiem
 
-set -e
-
-PRGNAME=spman
 if [ "$(id -u)" != "0" ]; then
-    echo "${PRGNAME}.SlackBuild script can only be run as root."
+    echo "${PKGNAME}.SlackBuild script can only be run as root."
     exit
 fi
 
-CWD=$(pwd)
-PY3VER=$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 1,2)
-VERSION=$(grep "self.prog_version = " ../src/maindata.py | cut -d \' -f 2)
+PKGNAME="spman"
+VERSION="$(grep "self.prog_version = " ../src/maindata.py | cut -d \' -f 2)"
+CWD="$(pwd)"
+TMP="/tmp"
+PKG="${TMP}/${PKGNAME}-build"
+BUILD="1"
+TAG="myreq"
+PKGTYPE="txz"
+OUTPUT="${TMP}"
 
-BUILD=${BUILD:-1}
-TAG=${TAG:-myreq}
-PKGTYPE=${PKGTYPE:-txz}
-ARCH="noarch"
-
-TMP=${TMP:-/tmp}
-PKG=$TMP/$PRGNAME-build
-OUTPUT=${OUTPUT:-/tmp}
-
-LIBDIRSUFFIX=""
-if [ "$(uname -m)" == "x86_64" ]; then
-    LIBDIRSUFFIX="64"
+MARCH="$(uname -m)"
+if [[ "x${ARCH}" == "x" ]]; then
+    case "${MARCH}" in
+        i?86) ARCH="i586"       ;;
+        arm*) ARCH="arm"        ;;
+        *)    ARCH="${MARCH}"   ;;
+    esac
 fi
 
+LIBDIRSUFFIX=""
+[[ "${ARCH}" == "x86_64" ]] && LIBDIRSUFFIX="64"
+
 rm -rf "${PKG}"
-mkdir -p "${TMP}" "${PKG}" "${OUTPUT}"
-cd "${PKG}" || exit 1
+mkdir -p "${PKG}"
+cd .. || exit 1
 
-# install/
-mkdir install
-cp "${CWD}"/{doinst.sh,slack-desc} install/
+SBIN="${PKG}/usr/sbin"
+mkdir -p "${SBIN}"
+cat "src/${PKGNAME}" > "${SBIN}/${PKGNAME}"
+chmod 744 "${SBIN}/${PKGNAME}"
 
-# /usr/sbin/spman
-mkdir -p usr/sbin
-cp "${CWD}"/../src/${PRGNAME} usr/sbin/
-chmod 744 usr/sbin/${PRGNAME}
-
-# /etc/spman/
-cp -R "${CWD}"/../etc .
+cp -R "./etc" "${PKG}"
 (
-    cd etc/${PRGNAME}
+    cd "${PKG}/etc/${PKGNAME}" || exit 1
     CONFIGS=$(ls)
     for CONFIG in ${CONFIGS}; do
         chmod 644 "${CONFIG}" && mv "${CONFIG}" "${CONFIG}".new
     done
 )
-chmod 755 etc/bash_completion.d/spman-bash-complition.sh
+chmod 755 "${PKG}/etc/bash_completion.d/${PKGNAME}-bash-complition.sh"
 
-LIBS=usr/lib${LIBDIRSUFFIX}/python${PY3VER}/site-packages/${PRGNAME}
+PY3VER="$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 1,2)"
+LIBS="${PKG}/usr/lib${LIBDIRSUFFIX}/python${PY3VER}/site-packages/${PKGNAME}"
 mkdir -p "${LIBS}"
-find "${CWD}"/../src/ -type f -name "*.py" -exec cp {} "${LIBS}" \;
+find "./src" -type f -name "*.py" -exec cp {} "${LIBS}" \;
 
-DOCS=usr/doc/${PRGNAME}-${VERSION}
+DOCS="${PKG}/usr/doc/${PKGNAME}-${VERSION}"
 mkdir -p "${DOCS}"
-cp "${CWD}"/${PRGNAME}.SlackBuild "${DOCS}"
-cp "${CWD}"/../{AUTHORS,ChangeLog.txt,INSTALL,LICENSE,requirements.txt} \
-    "${DOCS}"
+cat "${CWD}"/${PKGNAME}.SlackBuild > "${DOCS}/${PKGNAME}.SlackBuild"
+cp ./{AUTHORS,ChangeLog.txt,INSTALL,LICENSE,requirements.txt} "${DOCS}"
 
-chown -R root:root ./*
+INSTALL="${PKG}/install"
+mkdir -p "${INSTALL}"
+cat "${CWD}/slack-desc" > "${INSTALL}/slack-desc"
+cat "${CWD}/doinst.sh" > "${INSTALL}/doinst.sh"
 
-/sbin/makepkg -l y -c n "${OUTPUT}"/"${PRGNAME}"-"${VERSION}"-"${ARCH}"-\
-"${BUILD}""${TAG}"."${PKGTYPE}"
+cd "${PKG}" || exit 1
+chown -R root:root .
+find . \( \
+        -perm 777 -o \
+        -perm 775 -o \
+        -perm 711 -o \
+        -perm 555 -o \
+        -perm 511 \
+    \) -exec chmod 755 {} \; \
+    -o \( \
+        -perm 666 -o \
+        -perm 664 -o \
+        -perm 600 -o \
+        -perm 444 -o \
+        -perm 440 -o \
+        -perm 400 \
+    \) -exec chmod 644 {} \;
+
+mkdir -p "${OUTPUT}"
+BINPKG="${OUTPUT}/${PKGNAME}-${VERSION}-${ARCH}-${BUILD}_${TAG}.${PKGTYPE}"
+rm -f "${BINPKG}"
+makepkg -l y -c n "${BINPKG}"

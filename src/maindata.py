@@ -33,7 +33,7 @@ class MainData:
     """
     def __init__(self):
         self.prog_name = 'spman'
-        self.prog_version = '1.3.0'
+        self.prog_version = '1.4.0'
         self.home_page = ('https://github.com/MyRequiem'
                           '/{0}').format(self.prog_name)
         self.mail = '<mrvladislavovich@gmail.com>'
@@ -83,16 +83,6 @@ class MainData:
 
         return repo_dict
 
-    @staticmethod
-    def get_os_version() -> str:
-        """
-        return slackware version
-        """
-        ver_file = open('/etc/slackware-version')
-        slack_ver = ver_file.read().split()[1].strip()
-        ver_file.close()
-        return slack_ver
-
     def get_spman_conf(self) -> dict:
         """
         return dict all options from /etc/spman/spman.conf
@@ -110,6 +100,8 @@ class MainData:
 
         # if option is not set, write default
         default_opt = {
+            'OS_VERSION': '14.2',
+            'OS_LAST_RELEASE': '14.2',
             'REPOS_PATH': '/var/lib/{0}/'.format(self.prog_name),
             'LOGS_PATH': '/var/log/{0}/'.format(self.prog_name),
             'QUEUE_PATH': '/root/{0}/queue/'.format(self.prog_name),

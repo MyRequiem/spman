@@ -54,8 +54,14 @@ class ViewSlackBuild:
 
         pkgdata = sbodata['pkgs'][self.pkgname]
         filelist = pkgdata[6]
+
+        spman_conf = self.meta.get_spman_conf()
+        os_version = spman_conf['OS_VERSION']
+        if os_version == 'current':
+            os_version = spman_conf['OS_LAST_RELEASE']
+
         url = '{0}{1}/{2}/{3}/'.format(self.meta.get_repo_dict()['sbo'],
-                                       self.meta.get_os_version(),
+                                       os_version,
                                        pkgdata[1],
                                        self.pkgname).replace('http://',
                                                              'https://')

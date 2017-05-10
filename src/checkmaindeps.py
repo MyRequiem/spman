@@ -57,11 +57,12 @@ def check_main_deps() -> None:
             repo_dict = meta.get_repo_dict()
             if 'slack' in repo_dict:
                 arch = '64' if meta.arch == 'x86_64' else ''
+                os_version = meta.get_spman_conf()['OS_VERSION']
                 print(('{0}{1}slackware{2}-{3}/'
                        'slackware{2}/{4}{5}').format(meta.clrs['grey'],
                                                      repo_dict['slack'],
                                                      arch,
-                                                     meta.get_os_version(),
+                                                     os_version,
                                                      deps[dep],
                                                      meta.clrs['reset']))
             raise SystemExit

@@ -5,15 +5,15 @@
 # You must make exactly 11 lines for the formatting to be correct.  It's also
 # customary to leave one space after the ':' except on otherwise blank lines.
 
-     |-----handy-ruler------------------------------------------------------|
-spman: spman
+     |-----handy-ruler---------------------------------------------------------|
+spman: spman (Slackware package manager)
 spman:
 spman:
-spman: Slackware package manager
+spman: Slackware package manager.
 spman:
 spman:
 spman:
-spman: Home page: https://github.com/MyRequiem/spman
 spman:
-spman:
+spman: Homepage: https://github.com/MyRequiem/spman
+spman: Download: https://github.com/MyRequiem/spman/releases
 spman:

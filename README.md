@@ -1,15 +1,17 @@
 # spman
-####Slackware package manager
+#### Slackware package manager
 
-######Available repositories:
-[alienbob](http://taper.alienbase.nl/mirrors/people/alien/sbrepos/)<br>
-[multilib](http://www.slackware.com/~alien/multilib/)<br>
-[sbo](http://slackbuilds.org/slackbuilds/)<br>
-[slack](http://ftp.osuosl.org/.2/slackware/)
-<br><br>
+Available repositories:
+[[alienbob]](http://taper.alienbase.nl/mirrors/people/alien/sbrepos/)
+ [[multilib]](http://www.slackware.com/~alien/multilib/)
+ [[sbo]](http://slackbuilds.org/slackbuilds/)
+ [[slack]](http://ftp.osuosl.org/.2/slackware/)
+
+
 ![help](https://github.com/MyRequiem/spman/raw/master/imgs/help.png)
 
-######Requirements:
+
+##### Requirements:
 * Slackware Linux
 * Python 3.0+
 * GNU coreutils
@@ -17,14 +19,11 @@
 * GNU wget
 * pkgtools
 * Optional: sbbdep (Slackware binary dependency checker)
-<br><br>
 
-######Build and install spman:
-1) Download source code:<br>
-   wget https://github.com/MyRequiem/spman/archive/1.3.0.tar.gz<br>
-2) tar -xvzf 1.3.0.tar.gz<br>
-3) cd spman-1.3.0/slackbuild<br>
-4) ./spman.SlackBuild<br>
-    The package will be created in the /tmp directory<br>
-5) upgradepkg --install-new --reinstall /tmp/spman-1.3.0-noarch-1myreq.txz
-<br>
+##### Build and install spman:
+1) Download source code: https://github.com/MyRequiem/spman/archive/1.4.0.tar.gz
+2) tar -xvzf 1.4.0.tar.gz
+3) cd spman-1.4.0/slackbuild
+4) ./spman.SlackBuild
+5) upgradepkg --install-new --reinstall /tmp/spman-1.4.0-*-1_myreq.txz
+

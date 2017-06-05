@@ -54,16 +54,22 @@ class CheckUpgrade:
                 # gcc-5.3.0_multilib-x86_64-3alien --> multilib
                 # compat32-tools-3.7-noarch-1alien --> multilib
                 # mozilla-firefox-l10n-ru-45.2.0-x86_64-1alien
+
+                # alienbob
                 if (self.reposdata[0] and
                         'alien' in parts[3] and
                         'multilib' not in parts[1] and
                         parts[0] != 'compat32-tools'):
                     self.check_pkg(parts, 0)
+                # sbo
                 elif self.reposdata[1] and 'SBo' in parts[3]:
                     self.check_pkg(parts, 1)
+                # multilib
                 elif self.reposdata[2] and ('compat32' in parts[3] or
-                                            parts[0] == 'compat32-tools'):
+                                            parts[0] == 'compat32-tools' or
+                                            'multilib' in parts[1]):
                     self.check_pkg(parts, 2)
+                # slack
                 elif self.reposdata[3]:
                     self.check_pkg(parts, 3)
 

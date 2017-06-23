@@ -54,10 +54,10 @@ class CheckDeps:
             if not self.pkgs.find_pkgs_on_system('sbbdep'):
                 print(('You need to install {0}\'sbbdep\'{1} package '
                        'from \'sbo\' repository:\n'
-                       'spman --update\n'
-                       'spman --queue --clear\n'
-                       'spman --queue --add sbbdep\n'
-                       'spman --queue --install').format(
+                       '  # spman --update\n'
+                       '  # spman --queue --clear\n'
+                       '  # spman --queue --add sbbdep\n'
+                       '  # spman --queue --install').format(
                            self.meta.clrs['lcyan'], self.meta.clrs['reset']))
                 raise SystemExit
 

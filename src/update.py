@@ -30,9 +30,9 @@ from os import (
     remove,
     rename
 )
-from ssl import _create_unverified_context
 from subprocess import call
 from urllib.request import urlopen
+from ssl import _create_unverified_context
 
 from .maindata import MainData
 from .utils import (

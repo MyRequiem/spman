@@ -81,7 +81,8 @@ class FindPkg:
                                      self.meta.clrs['reset']))
         print()
 
-    def print_data(self, dataname: str, data: str, color: str='reset') -> None:
+    def print_data(self, dataname: str, data: str,
+                   color: str = 'reset') -> None:
         """
         print data string
         """

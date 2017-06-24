@@ -56,8 +56,8 @@ def pkg_not_found_mess(pkgname: str, reponame: str) -> None:
                                     meta.clrs['reset']))
 
 
-def download(url: str, prefix: str, wgetparam: str='',
-             show_process: bool=True) -> None:
+def download(url: str, prefix: str, wgetparam: str = '',
+             show_process: bool = True) -> None:
     """
     download file/dir
     """

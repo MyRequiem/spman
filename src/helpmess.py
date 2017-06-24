@@ -27,7 +27,7 @@ Help messages and usage
 from .maindata import MainData
 
 
-def show_help_mess(repo: str='') -> None:
+def show_help_mess(repo: str = '') -> None:
     """{0}Version: {1}{6}
 Usage: spman command [param[, param ...]]
 

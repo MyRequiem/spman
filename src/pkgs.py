@@ -36,7 +36,7 @@ class Pkgs:
     def __init__(self):
         self.meta = MainData()
 
-    def find_pkgs_on_system(self, pkg_name: str='') -> list:
+    def find_pkgs_on_system(self, pkg_name: str = '') -> list:
         """
         return list full name installed package(s) on system
         """
@@ -49,8 +49,8 @@ class Pkgs:
                     return [pkg]
 
             return []
-        else:
-            return sorted(installed_pkgs)
+
+        return sorted(installed_pkgs)
 
     @staticmethod
     def get_parts_pkg_name(pkg_name: str) -> list:

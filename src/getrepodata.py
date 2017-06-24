@@ -188,7 +188,7 @@ class GetRepoData:
         """
         return sep.join(line.split(sep)[1:]).strip()
 
-    def get_req_pkg(self, line: str, sep: str=None) -> None:
+    def get_req_pkg(self, line: str, sep: str = None) -> None:
         """
         get list dependencies for package
         """
@@ -232,5 +232,5 @@ class GetRepoData:
         hval = val / 1024
         if hval < 1024:
             return '{0:.2f} Mb'.format(hval)
-        else:
-            return '{0:.2f} Gb'.format(hval / 1024)
+
+        return '{0:.2f} Gb'.format(hval / 1024)

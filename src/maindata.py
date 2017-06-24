@@ -130,7 +130,7 @@ class MainData:
         return blacklist
 
     @staticmethod
-    def process_config_line(line: str, sep: str=None) -> list:
+    def process_config_line(line: str, sep: str = None) -> list:
         """
         return list [name, value] from line of config file
         """

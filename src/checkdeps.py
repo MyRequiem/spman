@@ -228,7 +228,7 @@ class CheckDeps:
                                     line,
                                     self.meta.clrs['reset']))
 
-    def print_rezult(self, string: str, color: str, pkgname: str='') -> None:
+    def print_rezult(self, string: str, color: str, pkgname: str = '') -> None:
         """
         print rezult string
         """

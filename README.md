@@ -21,9 +21,9 @@ Available repositories:
 * Optional: sbbdep (Slackware binary dependency checker)
 
 ##### Build and install spman:
-1) Download source code: https://github.com/MyRequiem/spman/archive/1.4.0.tar.gz
-2) tar -xvzf 1.4.0.tar.gz
-3) cd spman-1.4.0/slackbuild
+1) Download source code: https://github.com/MyRequiem/spman/archive/1.4.1.tar.gz
+2) tar -xvzf 1.4.1.tar.gz
+3) cd spman-1.4.1/slackbuild
 4) ./spman.SlackBuild
-5) upgradepkg --install-new --reinstall /tmp/spman-1.4.0-*-1_myreq.txz
+5) upgradepkg --install-new --reinstall /tmp/spman-1.4.1-*-1_myreq.txz
 

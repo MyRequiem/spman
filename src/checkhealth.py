@@ -52,7 +52,6 @@ class CheckHealth:
         """
         start check health installed packages
         """
-        print()
         for pkgname in self.list_pkg_installed:
             if (self.pkgs.get_parts_pkg_name(pkgname)[0] not in
                     self.blacklist):
@@ -83,7 +82,11 @@ class CheckHealth:
             if not path.isfile(check_file):
                 self.not_exist_files += 1
                 if self.pkgname != pkgname:
-                    print('Package: {0}'.format(pkgname))
+                    print(('\n{0}Package: '
+                           '{1}{2}{3}').format(self.meta.clrs['yellow'],
+                                               self.meta.clrs['cyan'],
+                                               pkgname,
+                                               self.meta.clrs['reset']))
                     self.pkgname = pkgname
                     self.count_broken_packages += 1
                 print('\t{0}{1}{2}'.format(self.meta.clrs['red'],
@@ -108,7 +111,7 @@ class CheckHealth:
         str4 = 'Missing files:'
         str5 = 'Total health:'
 
-        print('\n|' + get_line('-', 79))
+        print('|' + get_line('-', 79))
         print(('| {0} {1}{2}\n'
                '| {3} {4}{5}\n'
                '| {6} {7}{8}\n'
@@ -132,4 +135,4 @@ class CheckHealth:
                               '{0:.4f}'.format(percent)[:-2],
                               self.meta.clrs['reset']))
 
-        print('|' + get_line('-', 79), end='\n\n')
+        print('|' + get_line('-', 79))

@@ -201,10 +201,6 @@ class Main:
         if len(self.args) > 1:
             show_help_mess('error')
 
-        print(('Blacklisted packages in '
-               '{0}{1}blacklist{2}:').format(self.meta.clrs['grey'],
-                                             self.meta.configs_path,
-                                             self.meta.clrs['reset']))
         for pkg in self.meta.get_blacklist():
             print('{0}{1}{2}'.format(self.meta.clrs['lred'],
                                      pkg,

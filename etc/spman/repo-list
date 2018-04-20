@@ -1,7 +1,6 @@
-### Permitted repository: alienbob, multilib, sbo, slack
-# To disable the repository comment it
+### Allowed Repositories: alienbob, multilib, sbo, slack
+## To disable the repository comment it.
 
-# alienbob    http://taper.alienbase.nl/mirrors/people/alien/sbrepos/
 alienbob    http://bear.alienbase.nl/mirrors/people/alien/sbrepos/
 multilib    http://www.slackware.com/~alien/multilib/
 sbo         http://slackbuilds.org/slackbuilds/

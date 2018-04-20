@@ -1,9 +1,9 @@
 - Slackware Linux
-- Python 3.0+
+- Python 3.0+ (available on SBo)
 - GNU coreutils
 - GNU diffutils
 - GNU wget
 - pkgtools
 
 [OPTIONAL]
-- sbbdep (Slackware binary dependency checker)
+- sbbdep (Slackware binary dependency checker). Available on SBo.

@@ -30,10 +30,9 @@ Usage: spman command [param[, param ...]]
 {2} -b|--blacklist{3}       Show blacklist
 {2} -u|--update{3}          Update local data for all repositories
 {2} -t|--health{3}          Check health installed packages
-{2} -w|--new-config{3}      Find all '*.new' files from /etc/ and /usr/share/
-                        folders and subfolders
+{2} -w|--new-config{3}      Search for *.new config files on the system
 {2} -g|--check-upgrade{3}   Check packages for upgrade
-{2} -d|--download{3}        Download binary package or source code + SlackBuild
+{2} -d|--download{3}        Download binary package(s) or source code
 {2}     --pkg|--src{3}          for reposytory 'multilib' only --pkg
                           for reposytory 'sbo' only --src
 {2}     reponame{3}             name of repository
@@ -49,7 +48,7 @@ Usage: spman command [param[, param ...]]
 {2} -s|--view-slackbuild{3} View the contents of files included in SlackBuild
                         archive using pager
 {2}         pkg{3}              package name
-{2} -f|--find-pkg pkg{3}    Find package from each enabled repository and
+{2} -f|--find-pkg pkg{3}    Search package from each enabled repository and
                         view info
 {2} -i|--pkglist{3}         Show complete list of the packages in the repository
 {2}     reponame{3}             name of repository

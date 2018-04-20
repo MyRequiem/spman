@@ -5,15 +5,15 @@
 # You must make exactly 11 lines for the formatting to be correct.  It's also
 # customary to leave one space after the ':' except on otherwise blank lines.
 
-     |-----handy-ruler---------------------------------------------------------|
+     |-----handy-ruler-----------------------------------------------------|
 spman: spman (Slackware package manager)
 spman:
-spman:
-spman: Slackware package manager.
-spman:
-spman:
-spman:
+spman: Spman is a powerful Slackware package manager implemented on Python3
+spman: and licensed under the MIT license. Main futeares: check packages for
+spman: upgrade, download binary package or source code, build and install
+spman: package(s) in the queue, search packages on repositories, search
+spman: dependency problems, check health installed packages, search for
+spman: *.new config files on the system and more.
 spman:
 spman: Homepage: https://github.com/MyRequiem/spman
-spman: Download: https://github.com/MyRequiem/spman/releases
 spman:

@@ -25,7 +25,7 @@ class MainData:
     """
     def __init__(self):
         self.prog_name = 'spman'
-        self.prog_version = '1.4.1'
+        self.prog_version = '1.4.2'
         self.home_page = ('https://github.com/MyRequiem'
                           '/{0}').format(self.prog_name)
         self.mail = '<mrvladislavovich@gmail.com>'
@@ -100,7 +100,7 @@ class MainData:
             'BUILD_PATH': '/root/{0}/build/'.format(self.prog_name),
             'OUTPUT_PATH': '/root/{0}/build/'.format(self.prog_name),
             'PKGTYPE': 'txz',
-            'WGET_OPT': '--no-check-certificate --passive-ftp -ct 0 -w 2 -N -q'
+            'WGET_OPT': '--no-check-certificate --passive-ftp -ct 0 -w 2 -N'
         }
 
         for opt in default_opt:

@@ -1,9 +1,14 @@
-- Slackware Linux
-- Python 3.0+ (available on SBo)
-- GNU coreutils
-- GNU diffutils
-- GNU wget
-- pkgtools
+Requirements:
+    - Slackware Linux
+    - GNU coreutils
+    - GNU diffutils
+    - GNU wget
+    - pkgtools
+    - Python 3.0+ (available on SlackBuilds.org)
 
-[OPTIONAL]
-- sbbdep (Slackware binary dependency checker). Available on SBo.
+Optional dependencies:
+    - bash-completion   - for autocomplete the input parameters
+                            (from standard Slackware repository, group extra)
+    - sbbdep            - Slackware binary dependency checker for search
+                            dependency problems functionality
+                            (available on SlackBuilds.org)

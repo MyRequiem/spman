@@ -91,7 +91,8 @@ cp -R ../etc $PKG
 chmod 755 $PKG/etc/bash_completion.d/$PRGNAM-bash-complition.sh
 
 # python libs
-PY3VER="$(python3 -V | cut -d ' ' -f 2 | cut -d . -f 1,2)"
+PY3VER="$(python3 -c 'import sys; ver = sys.version_info; \
+    print("{0}.{1}".format(ver.major, ver.minor))')"
 LIBS=$PKG/usr/lib$LIBDIRSUFFIX/python$PY3VER/site-packages/$PRGNAM
 mkdir -p "${LIBS}"
 install --mode=644 ../src/*.py $LIBS

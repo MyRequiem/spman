@@ -1,3 +1,9 @@
+1.4.2 [21.04.2018]
+Changed the license from 'GNU GENERAL PUBLIC LICENSE Version 3' to MIT
+Added spman.SlackBuild_SBo
+Added man page
+Added screenshots in README.md
+
 1.4.1 [11.07.2017]
 Fix check upgrade for multilib packages
 
@@ -6,9 +12,7 @@ Added support for Slackware-current branch.
 
 1.3.0 [02.02.2017]
 New parameter:
--i|--pkglist: Show complete list of the packages in the repository
-     reponame			name of repository
-     --only-installed	output only installed packages
+-i, --pkglist - show complete list of the packages in the repository
 
 1.2.2 [17.01.2017]
 Fix check version for nvidia-*-kernel packages from sbo repository.

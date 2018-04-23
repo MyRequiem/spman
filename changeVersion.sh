@@ -8,7 +8,7 @@ INFILE="
 "
 
 for FILE in ${INFILE}; do
-    sed "s/[0-9]\.[0-9]\.[0-9]/${VERSION}/g" "${FILE}" > ${TMP}
+    sed "s/[0-9]\\.[0-9]\\.[0-9]/${VERSION}/g" "${FILE}" > ${TMP}
     rm -f "${FILE}"
     mv ${TMP} "${FILE}"
 done

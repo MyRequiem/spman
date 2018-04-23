@@ -1,6 +1,6 @@
 Build and install spman:
 
-1. ~# wget https://github.com/MyRequiem/spman/archive/spman-1.5.0.tar.gz
+1. ~# wget https://github.com/MyRequiem/spman/archive/1.5.0/spman-1.5.0.tar.gz
 2. ~# tar -xvzf spman-1.5.0.tar.gz
 3. ~# cd spman-1.5.0/slackbuild
 4. ~# ./spman.SlackBuild

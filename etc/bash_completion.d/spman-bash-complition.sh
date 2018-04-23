@@ -11,9 +11,7 @@ _spman() {
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
     subcommands_repo_src="alienbob sbo slack"
-    subcommands_pkgname="pkg(s)"
     subcommands_queue="--add --remove --clear --show --install"
-    subcommands_find_deps="pkg"
     subcommands_check_deps="--sbbdep --ldd"
     subcommands_pkglist="alienbob multilib sbo slack"
 
@@ -29,7 +27,7 @@ _spman() {
             return 0
             ;;
 
-        --download)
+        -d|--download)
             if [[ ${COMP_CWORD} == 2 ]] ; then
                 COMPREPLY=($(compgen -W "${subcommands_download}" -- "${cur}"))
                 return 0
@@ -49,12 +47,12 @@ _spman() {
             fi
 
             if [[ ${COMP_CWORD} == 4 ]] ; then
-                COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- "${cur}"))
+                COMPREPLY=($(compgen -W "pkgList" -- "${cur}"))
                 return 0
             fi
             ;;
 
-        --queue)
+        -q|--queue)
             if [[ ${COMP_CWORD} == 2 ]] ; then
                 COMPREPLY=($(compgen -W "${subcommands_queue}" -- "${cur}"))
                 return 0
@@ -63,7 +61,7 @@ _spman() {
             case "${COMP_WORDS[2]}" in
                 --add|--remove)
                     if [[ ${COMP_CWORD} == 3 ]] ; then
-                        COMPREPLY=($(compgen -W "${subcommands_pkgname}" -- "${cur}"))
+                        COMPREPLY=($(compgen -W "pkgList" -- "${cur}"))
                         return 0
                     fi
                     ;;
@@ -75,28 +73,33 @@ _spman() {
             esac
             ;;
 
-        --find-deps|--view-slackbuild|--find-pkg)
+        -p|--find-deps)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=($(compgen -W "${subcommands_find_deps}" -- "${cur}"))
+                COMPREPLY=($(compgen -W "pkgName" -- "${cur}"))
                 return 0
             fi
             ;;
 
-        --check-deps)
+        -s|--view-slackbuild)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=($(compgen -W "${subcommands_check_deps}" -- "${cur}"))
+                COMPREPLY=($(compgen -W "pkgName" -- "${cur}"))
                 return 0
             fi
             ;;
 
-        --bad-links)
+        -f|--find-pkg)
             if [[ ${COMP_CWORD} == 2 ]] ; then
-                COMPREPLY=($(compgen -d -- "${cur}"))
+                COMPREPLY=($(compgen -W "--strict" -- "${cur}"))
+                return 0
+            fi
+
+            if [[ ${COMP_CWORD} == 3 ]] ; then
+                COMPREPLY=($(compgen -W "pkgName" -- "${cur}"))
                 return 0
             fi
             ;;
 
-        --pkglist)
+        -i|--pkglist)
             if [[ ${COMP_CWORD} == 2 ]] ; then
                 COMPREPLY=($(compgen -W "${subcommands_pkglist}" -- "${cur}"))
                 return 0
@@ -104,6 +107,20 @@ _spman() {
 
             if [[ ${COMP_CWORD} == 3 ]] ; then
                 COMPREPLY=($(compgen -W "--only-installed" -- "${cur}"))
+                return 0
+            fi
+            ;;
+
+        -k|--check-deps)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=($(compgen -W "${subcommands_check_deps}" -- "${cur}"))
+                return 0
+            fi
+            ;;
+
+        -a|--bad-links)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=($(compgen -d -- "${cur}"))
                 return 0
             fi
             ;;

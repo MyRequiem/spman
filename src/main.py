@@ -295,11 +295,21 @@ class Main:
         """
         Find package from each enabled repository and view info.
         """
-        if len(self.args) != 2:
+        num_args = len(self.args)
+        if num_args < 2 or num_args > 3:
             show_help_mess('error')
 
+        strict = False
+        pkgname = self.args[1]
+        if len(self.args) == 3:
+            if self.args[1] != '--strict':
+                show_help_mess('error')
+            else:
+                pkgname = self.args[2]
+                strict = True
+
         from .findpkg import FindPkg
-        FindPkg(self.args[1]).start()
+        FindPkg(strict, pkgname).start()
 
     def checkdeps(self) -> None:
         """

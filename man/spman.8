@@ -65,16 +65,10 @@ The following commands and options are available:
 \fbSearch for *.new config files on the system.
 .SS -g, --check-upgrade
 \fbCheck all installed packages for upgrade.
-.SS -d, --download
-\fbDownload binary package(s) or source code with SlackBuild script.
- Requires at least three additional parameters:
-    --pkg|--src     - download binary package or source code with
-                      SlackBuild script. NOTE: for reposytory 'multilib'
-                      only --pkg, for reposytory 'sbo' only --src
-     reponame       - name of repository
-                        NOTE: The 'slack' repository is used only for
-                        the patches directory on remote server.
-     pkg1[ pkg2...] - list of packages name to download
+.SS -d, --download --pkg|--src reponame pkg1[ pkg2...]
+\fbDownload binary package(s) or source code from specified repository
+  Note: for reposytory 'multilib' only --pkg
+        for reposytory 'sbo' only --src
 
 \fbExamples:
     Download flashplayer-plugin package from alienbob repository:
@@ -82,34 +76,35 @@ The following commands and options are available:
     Download emacs and kdelibs source code with SlackBuild script
     from standard Slackware repository:
       ~# spman --download --src slack emacs kdelibs
-.SS -q, --queue
-\fbDownload, build and install package(s) in the queue
- from 'sbo' repository. Requires at least one additional parameter:
-    --add pkg1 [pkg2...]    - add package(s) to the queue
-    --remove pkg1 [pkg2...] - remove package(s) from the queue
+.SS -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install
+\fbDownload, build and install package(s) in the queue from SlackBuilds.org
+  Note: pkglist - list of names of packages
+    --add pkglist           - add package(s) to the queue
+    --remove pkglist        - remove package(s) from the queue
     --clear                 - clear queue
     --show                  - print queue
     --install               - download, build and install package(s)
-.SS -p pkgname, --find-deps pkgname
+.SS -p, --find-deps pkgname
 \fbShow list all dependencies for package from 'sbo' repository.
  Installed packages are highlighted in green.
-.SS -s pkgname, --view-slackbuild pkgname
-\fbView the contents of files included in SlackBuild archive
- using pager (README, doinst.sh, patches, slack-desc,
- pkgname.SlackBuild, pkgname.info).
-.SS -f pkgname, --find-pkg pkgname
-\fbSearch package from each enabled repository and view info.
-.SS -i reponame, --pkglist reponame
-\fbShow complete list of the packages in the repository. Installed
- packages are highlighted in green. Additional parameter:
+.SS -s, --view-slackbuild pkgname
+\fbView the contents of files included in SlackBuild archive using pager
+ (README, doinst.sh, patches, slack-desc, pkgname.SlackBuild,
+  pkgname.info, etc.)
+.SS -f, --find-pkg [--strict] pkgname
+\fbSearch package from each enabled repository and view info
+ (case-insensitive)
+    --strict    - strict match by package name
+.SS -i, --pkglist reponame [--only-installed]
+\fbShow complete list of the packages on repository. Installed packages are
+ highlighted in green.
     --only-installed    - output only installed packages
-.SS -k, --check-deps
-\fbSearch dependency problems in the system packages. Requires at
- least one additional parameter:
-     --sbbdep       - using 'sbbdep' tool
-     --ldd          - using 'ldd' tool
-.SS -a /path/to/dir, --bad-links /path/to/dir
-\fbsearch for links to nonexistent files/dir in the specified directory.
+.SS -k, --check-deps --sbbdep|--ldd
+\fbSearch dependency problems in the system packages.
+    --sbbdep       - using 'sbbdep' tool
+    --ldd          - using 'ldd' tool
+.SS -a, --bad-links /path/to/dir
+\fbSearch for links to nonexistent files/dir in the specified directory.
 
 .SH DEFAULT REPOSITORIES
  Slackware.com = "slack"

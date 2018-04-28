@@ -154,7 +154,7 @@ Search package from each enabled repository and view info (case-insensitive)
 ##### -i, --pkglist reponame [--only-installed]
 Show complete list of the packages on repository. Installed packages are
 highlighted in green.
-* `--only-installed` - output only installed package
+* `--only-installed` - output only installed packages
 
 ![pkglist][22]
 
@@ -167,7 +167,7 @@ Search dependency problems in the system packages
 ![check-deps-ldd][24]
 
 ##### -a, --bad-links /path/to/dir
-Search for links to nonexistent files/dir in the specified directory.
+Search for links to nonexistent files/dirs in the specified directory.
 
 ![bad-links][25]
 

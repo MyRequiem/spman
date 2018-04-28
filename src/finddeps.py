@@ -42,7 +42,7 @@ class FindDeps:
 
         self.get_all_deps(pkgname)
         if not self.alldeps:
-            print(('Package {0}\'{1}\'{2} has no '
+            print(('Package {0}{1}{2} has no '
                    'dependencies.').format(self.meta.clrs['cyan'],
                                            pkgname,
                                            self.meta.clrs['reset']))

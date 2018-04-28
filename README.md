@@ -36,7 +36,7 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 2. `~# tar -xvzf spman-1.5.0.tar.gz`
 3. `~# cd spman-1.5.0/slackbuild`
 4. `~# ./spman.SlackBuild`
-5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.0-*.txz`
+5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.0-*.t?z`
 
 ##### Usage:
 ##### -h, --help

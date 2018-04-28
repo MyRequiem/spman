@@ -32,12 +32,10 @@ VERSION=${VERSION:-1.5.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
-# Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
     i?86) ARCH=i586 ;;
     arm*) ARCH=arm ;;
-        # Unless $ARCH is already set, use uname -m for all other archs:
        *) ARCH=$( uname -m ) ;;
   esac
 fi
@@ -45,7 +43,6 @@ fi
 CWD=$(pwd)
 TMP=${TMP:-/tmp/SBo}
 PKG=$TMP/package-$PRGNAM
-PKGTYPE=${PKGTYPE:-txz}
 OUTPUT=${OUTPUT:-/tmp}
 
 if [ "$ARCH" = "i586" ]; then
@@ -62,7 +59,6 @@ set -e
 
 if ! which python3 &>/dev/null; then
     echo "Error: python3 not found"
-    echo "You must install python3 package from SBo repository"
     exit 1
 fi
 
@@ -80,7 +76,7 @@ find -L . \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 mkdir -p $PKG/usr/sbin
-install --mode=744 src/$PRGNAM $PKG/usr/sbin
+install --mode=755 src/$PRGNAM $PKG/usr/sbin
 
 # etc/{spman,bash_completion.d}
 cp -R etc $PKG
@@ -121,4 +117,4 @@ cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 # make the package
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-tgz}

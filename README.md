@@ -3,7 +3,7 @@
 >###### Spman is a powerful Slackware package manager implemented on Python3 and licensed under the MIT license.
 >###### This program is available on [SlackBuilds.org][26]
 ---
-##### Main futeares:
+##### Main features:
 * check packages for upgrade
 * download package or source code from allowed repositories
 * download, build and install package(s) in the queue from SBo repository

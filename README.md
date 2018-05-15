@@ -32,11 +32,11 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 * sbbdep - Slackware binary dependency checker for search dependency problems functionality (available on SlackBuilds.org)
 
 ##### Build and install:
-1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.1/spman-1.5.1.tar.gz
-2. `~# tar -xvzf spman-1.5.1.tar.gz`
-3. `~# cd spman-1.5.1/slackbuild`
+1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.2/spman-1.5.2.tar.gz
+2. `~# tar -xvzf spman-1.5.2.tar.gz`
+3. `~# cd spman-1.5.2/slackbuild`
 4. `~# ./spman.SlackBuild`
-5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.1-*.t?z`
+5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.2-*.t?z`
 
 ##### Usage:
 ##### -h, --help

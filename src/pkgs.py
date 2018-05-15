@@ -32,17 +32,21 @@ class Pkgs:
         """
         return list full name installed package(s) on system
         """
+        pkgs = []
         # list containing the names of the files
         # in the directory /var/log/packages/
         installed_pkgs = os.listdir(self.meta.pkgs_installed_path)
-        if pkg_name:
-            for pkg in installed_pkgs:
-                if self.get_parts_pkg_name(pkg)[0] == pkg_name:
+        for pkg in sorted(installed_pkgs):
+            if pkg_name and self.get_parts_pkg_name(pkg)[0] == pkg_name:
                     return [pkg]
+            else:
+                if len(self.get_parts_pkg_name(pkg)) > 3:
+                    pkgs.append(pkg)
 
+        if pkg_name:
             return []
 
-        return sorted(installed_pkgs)
+        return pkgs
 
     @staticmethod
     def get_parts_pkg_name(pkg_name: str) -> list:
@@ -58,6 +62,10 @@ class Pkgs:
         # example pkg name:
         # xorg-server-1.14.3-x86_64-3_slack14.1
         parts = pkg_name.split('-')
+        # broken package name
+        if len(parts) < 4:
+            return ['']
+
         build = parts[-1]
         arch = parts[-2]
         ver = parts[-3]

@@ -1,3 +1,7 @@
+1.5.2 [15.05.2018]
+Fix get_parts_pkg_name method (error finding the name of the package if there
+are incorrect files into /var/log/packages/)
+
 1.5.1 [07.05.2018]
 Fixed man page
 

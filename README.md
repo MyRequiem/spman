@@ -30,6 +30,7 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 ##### Optional dependencies:
 * bash-completion - for autocomplete the input parameters (from standard Slackware repository, group extra)
 * sbbdep - Slackware binary dependency checker for search dependency problems functionality (available on SlackBuilds.org)
+* tqdm - show progress bar for some parameters (available on SlackBuilds.org)
 
 ##### Build and install:
 1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.3/spman-1.5.3.tar.gz

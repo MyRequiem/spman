@@ -12,3 +12,5 @@ Optional dependencies:
     - sbbdep            - Slackware binary dependency checker for search
                             dependency problems functionality
                             (available on SlackBuilds.org)
+    - tqdm              - show progress bar for some parameters
+                            (available on SlackBuilds.org)

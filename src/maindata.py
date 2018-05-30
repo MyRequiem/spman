@@ -25,7 +25,7 @@ class MainData:
     """
     def __init__(self):
         self.prog_name = 'spman'
-        self.prog_version = '1.5.2'
+        self.prog_version = '1.5.3'
         self.home_page = ('https://github.com/MyRequiem'
                           '/{0}').format(self.prog_name)
         self.mail = '<mrvladislavovich@gmail.com>'

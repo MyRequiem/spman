@@ -41,7 +41,13 @@ class CheckHealth:
         """
         start check health installed packages
         """
-        for pkgname in self.list_pkg_installed:
+        try:
+            from tqdm import tqdm
+        except ImportError:
+            def tqdm(*args):
+                return args[0]
+
+        for pkgname in tqdm(self.list_pkg_installed):
             if (self.pkgs.get_parts_pkg_name(pkgname)[0] not in
                     self.blacklist):
                 with open('{0}{1}'.format(self.meta.pkgs_installed_path,

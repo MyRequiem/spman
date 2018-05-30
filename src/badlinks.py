@@ -47,10 +47,15 @@ class BadLinks:
                                         self.meta.clrs['reset']))
             raise SystemExit
 
-
         err_count = 0
-        allfiles = get_all_files(self.pathdir)
-        for lnk in allfiles:
+
+        try:
+            from tqdm import tqdm
+        except ImportError:
+            def tqdm(*args):
+                return args[0]
+
+        for lnk in tqdm(get_all_files(self.pathdir)):
             # if file is link
             if path.islink(lnk):
                 # path to directory where the link

@@ -136,8 +136,16 @@ def get_all_files(pathdir: str) -> list:
         ('trash/dir4/dir5', [], ['file5', 'file6'])
     ]
     '''
+
     allfiles = []
-    for root, dirs, files in walk(pathdir):
+
+    try:
+        from tqdm import tqdm
+    except ImportError:
+        def tqdm(*args):
+            return args[0]
+
+    for root, dirs, files in tqdm(walk(pathdir)):
         del dirs
         for fls in files:
             allfiles.append(path.join(root, fls))

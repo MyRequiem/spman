@@ -16,11 +16,7 @@
 Download packages or sources (SlackBuilds)
 """
 
-from os import (
-    path,
-    rename,
-    remove
-)
+from os import path, remove, rename
 from shutil import rmtree
 from subprocess import call
 

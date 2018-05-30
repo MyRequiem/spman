@@ -17,20 +17,13 @@ Update PACKAGES.TXT, SLACKBUILDS.TXT and
 ChangeLog.txt for each repository
 """
 
-from os import (
-    path,
-    remove,
-    rename
-)
+from os import path, remove, rename
+from ssl import _create_unverified_context
 from subprocess import call
 from urllib.request import urlopen
-from ssl import _create_unverified_context
 
 from .maindata import MainData
-from .utils import (
-    get_line,
-    download
-)
+from .utils import download, get_line
 
 
 class Update:

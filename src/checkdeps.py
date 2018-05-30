@@ -21,10 +21,7 @@ import subprocess
 
 from .maindata import MainData
 from .pkgs import Pkgs
-from .utils import (
-    get_line,
-    get_indent
-)
+from .utils import get_indent, get_line
 
 
 class CheckDeps:

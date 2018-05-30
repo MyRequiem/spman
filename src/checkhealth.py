@@ -20,10 +20,7 @@ from os import path
 
 from .maindata import MainData
 from .pkgs import Pkgs
-from .utils import (
-    get_indent,
-    get_line
-)
+from .utils import get_indent, get_line
 
 
 class CheckHealth:

@@ -18,10 +18,7 @@ Manage queue for 'sbo' repository
 
 from .getrepodata import GetRepoData
 from .maindata import MainData
-from .utils import (
-    get_indent,
-    get_line
-)
+from .utils import get_indent, get_line
 
 
 class Queue:

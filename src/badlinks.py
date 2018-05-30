@@ -16,14 +16,10 @@
 Find links to non-existent files/directories
 """
 
-from os import (
-    path,
-    chdir,
-    getcwd,
-    readlink
-)
+from os import chdir, getcwd, path, readlink
 
 from .maindata import MainData
+from .utils import get_all_files
 
 
 class BadLinks:
@@ -51,7 +47,6 @@ class BadLinks:
                                         self.meta.clrs['reset']))
             raise SystemExit
 
-        from .utils import get_all_files
 
         err_count = 0
         allfiles = get_all_files(self.pathdir)

@@ -16,10 +16,7 @@
 check exists dirs and files from /etc/spman/spman.conf
 """
 
-from os import (
-    path,
-    makedirs
-)
+from os import makedirs, path
 
 from .maindata import MainData
 

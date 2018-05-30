@@ -18,8 +18,8 @@ View README, slack-desc, doinst.sh and .SlackBuild files from sbo repository.
 
 import pydoc
 import sys
-from urllib.request import urlopen
 from ssl import _create_unverified_context
+from urllib.request import urlopen
 
 from .getrepodata import GetRepoData
 from .maindata import MainData

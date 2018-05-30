@@ -16,12 +16,9 @@
 Check program version
 """
 
-from sys import (
-    stdout,
-    stderr
-)
-from urllib.request import urlopen
 from ssl import _create_unverified_context
+from sys import stderr, stdout
+from urllib.request import urlopen
 
 from .maindata import MainData
 

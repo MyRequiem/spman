@@ -2,6 +2,7 @@
 ## To disable the repository comment it.
 
 alienbob    http://bear.alienbase.nl/mirrors/people/alien/sbrepos/
-multilib    http://www.slackware.com/~alien/multilib/
+# multilib    http://www.slackware.com/~alien/multilib/
+multilib    http://bear.alienbase.nl/mirrors/people/alien/multilib/
 sbo         http://slackbuilds.org/slackbuilds/
 slack       http://ftp.osuosl.org/.2/slackware/

@@ -19,6 +19,7 @@ delete packages in the current directory
 import os
 
 from .maindata import MainData
+from .utils import get_packages_in_current_dir
 
 
 class Removepkgs:
@@ -27,13 +28,12 @@ class Removepkgs:
     """
     def __init__(self):
         self.meta = MainData()
-        self.pkgs_in_dir = []
+        self.pkgs_in_dir = get_packages_in_current_dir()
 
     def start(self) -> None:
         """
         start remove
         """
-        self.get_packages_in_current_dir()
         if not self.pkgs_in_dir:
             print(('{0}Directory {1}{2}{0} does not contain a Slackware '
                    'packages for remove.{3}').format(self.meta.clrs['lred'],
@@ -43,18 +43,15 @@ class Removepkgs:
         else:
             self.removepkgs()
 
-    def get_packages_in_current_dir(self) -> None:
-        ext = ('.tgz', '.txz')
-        for file_in_dir in os.listdir():
-            if file_in_dir.endswith(ext):
-                self.pkgs_in_dir.append(file_in_dir)
-
     def removepkgs(self) -> None:
+        """
+        remove packages
+        """
         from subprocess import call
 
         removed = 0
         not_removed = []
-        for pkg in sorted(self.pkgs_in_dir):
+        for pkg in self.pkgs_in_dir:
             # name of package without extention
             pkg_full_name = '.'.join(pkg.split('.')[:-1])
             pkg_path = '{0}{1}'.format(self.meta.pkgs_installed_path,

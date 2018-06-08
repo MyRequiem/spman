@@ -53,6 +53,8 @@ class Main:
             '--check-upgrade': self.check_upgrade,
             '-d': self.download_pkg,
             '--download': self.download_pkg,
+            '-m': self.upgrade_pkgs,
+            '--upgrade-pkgs': self.upgrade_pkgs,
             '-e': self.remove_pkgs,
             '--remove-pkgs': self.remove_pkgs,
             '-q': self.processing_queue,
@@ -200,6 +202,23 @@ class Main:
                                      pkg,
                                      self.meta.clrs['reset']))
 
+    def upgrade_pkgs(self) -> None:
+        """
+        upgrade packages in the current directory
+        """
+        num_args = len(self.args)
+        if num_args > 2:
+            show_help_mess('error')
+
+        from .upgradepkgs import Upgradepkgs
+        if num_args == 2:
+            if self.args[1] != '--only-new':
+                show_help_mess('error')
+            else:
+                Upgradepkgs(True).start()
+        else:
+            Upgradepkgs(False).start()
+
     def download_pkg(self) -> None:
         """
         Download package or source + SlackBuild script
@@ -234,6 +253,9 @@ class Main:
         DownloadPkg(mode, repo, pkglist).start()
 
     def remove_pkgs(self) -> None:
+        """
+        remove packages in the current directory
+        """
         if len(self.args) > 1:
             show_help_mess('error')
 

@@ -48,6 +48,8 @@ Usage: spman command [param[, param ...]]
     Download binary package(s) or source code from specified repository
 {6}    Note:{5} for reposytory 'multilib' only --pkg
           for reposytory 'sbo' only --src
+{2} -e, --remove-pkgs{5}
+    Remove packages in the current directory
 {2} -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install{5}
     Download, build and install package(s) in the queue from SlackBuilds.org
 {6}    Note:{5} pkglist - list of names of packages

@@ -53,6 +53,8 @@ class Main:
             '--check-upgrade': self.check_upgrade,
             '-d': self.download_pkg,
             '--download': self.download_pkg,
+            '-e': self.remove_pkgs,
+            '--remove-pkgs': self.remove_pkgs,
             '-q': self.processing_queue,
             '--queue': self.processing_queue,
             '-p': self.find_deps,
@@ -230,6 +232,13 @@ class Main:
 
         from .downloadpkg import DownloadPkg
         DownloadPkg(mode, repo, pkglist).start()
+
+    def remove_pkgs(self) -> None:
+        if len(self.args) > 1:
+            show_help_mess('error')
+
+        from .removepkgs import Removepkgs
+        Removepkgs().start()
 
     def processing_queue(self) -> None:
         """

@@ -16,7 +16,7 @@
 Processing packages
 """
 
-import os
+from os import listdir
 
 from .maindata import MainData
 
@@ -35,7 +35,7 @@ class Pkgs:
         pkgs = []
         # list containing the names of the files
         # in the directory /var/log/packages/
-        installed_pkgs = os.listdir(self.meta.pkgs_installed_path)
+        installed_pkgs = listdir(self.meta.pkgs_installed_path)
         for pkg in sorted(installed_pkgs):
             if pkg_name and self.get_parts_pkg_name(pkg)[0] == pkg_name:
                     return [pkg]

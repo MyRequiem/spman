@@ -1,3 +1,7 @@
+1.5.4 []
+The reference for multilib repository has been changed (etc/spman/repo-list)
+Added new parameter: -e, --remove-pkgs
+
 1.5.3 [30.05.2018]
 Added tqdm package as an optional dependency
 (show progress bar for some parameters)

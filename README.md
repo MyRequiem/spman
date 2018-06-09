@@ -7,6 +7,7 @@
 * check packages for upgrade
 * download package or source code from allowed repositories
 * download, build and install package(s) in the queue from SBo repository
+* upgrade packages in the current directory
 * remove packages in the current directory
 * show list all dependencies for package from SBo repository
 * view the contents of files included in SlackBuild archive
@@ -118,8 +119,14 @@ for reposytory 'multilib' only `--pkg`, for reposytory 'sbo' only `--src`
 
 ![download][14]
 
+##### -m, --upgrade-pkgs [--only-new]
+Upgrade packages in the current directory
+* `--only-new` - install only new packages
+
+![upgrade-pkgs][28]
+
 ##### -e, --remove-pkgs
-Delete packages in the current directory
+Remove packages in the current directory
 
 ![remove-pkgs][27]
 
@@ -205,3 +212,4 @@ Search for links to nonexistent files/dirs in the specified directory.
 [25]: https://github.com/MyRequiem/spman/raw/master/imgs/bad-links.png
 [26]: https://slackbuilds.org/repository/14.2/system/spman/
 [27]: https://github.com/MyRequiem/spman/raw/master/imgs/remove-pkgs.png
+[28]: https://github.com/MyRequiem/spman/raw/master/imgs/upgrade-pkgs.png

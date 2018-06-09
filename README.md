@@ -35,11 +35,11 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 * tqdm - show progress bar for some parameters (available on SlackBuilds.org)
 
 ##### Build and install:
-1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.3/spman-1.5.3.tar.gz
-2. `~# tar -xvzf spman-1.5.3.tar.gz`
-3. `~# cd spman-1.5.3/slackbuild`
+1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.4/spman-1.5.4.tar.gz
+2. `~# tar -xvzf spman-1.5.4.tar.gz`
+3. `~# cd spman-1.5.4/slackbuild`
 4. `~# ./spman.SlackBuild`
-5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.3-*.t?z`
+5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.4-*.t?z`
 
 ##### Usage:
 ##### -h, --help

@@ -5,9 +5,9 @@ _spman() {
     cur="${COMP_WORDS[COMP_CWORD]}"
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
-        --update --health --new-config --check-upgrade --download --queue \
-        --find-deps --view-slackbuild --find-pkg --check-deps --bad-links \
-        --pkglist"
+        --update --health --new-config --check-upgrade --download \
+        --upgrade-pkgs --remove-pkgs --queue --find-deps --view-slackbuild \
+        --find-pkg --check-deps --bad-links --pkglist"
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
     subcommands_repo_src="alienbob sbo slack"
@@ -22,7 +22,7 @@ _spman() {
 
     case "${COMP_WORDS[1]}" in
         --help|--check-version|--repolist|--repoinfo|--blacklist|--update|\
-            --health|--new-config|--check-upgrade)
+            --health|--new-config|--check-upgrade|--remove-pkgs)
             COMPREPLY=()
             return 0
             ;;
@@ -48,6 +48,13 @@ _spman() {
 
             if [[ ${COMP_CWORD} == 4 ]] ; then
                 COMPREPLY=($(compgen -W "pkgList" -- "${cur}"))
+                return 0
+            fi
+            ;;
+
+        -m|--upgrade-pkgs)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=($(compgen -W "--only-new" -- "${cur}"))
                 return 0
             fi
             ;;

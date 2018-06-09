@@ -151,3 +151,18 @@ def get_all_files(pathdir: str) -> list:
             allfiles.append(path.join(root, fls))
 
     return allfiles
+
+
+def get_packages_in_current_dir() -> list:
+    """
+    return list of packages in the current directory
+    """
+    from os import listdir
+
+    pkgs = []
+    ext = ('.tgz', '.txz')
+    for file_in_current_dir in sorted(listdir()):
+        if file_in_current_dir.endswith(ext):
+            pkgs.append(file_in_current_dir)
+
+    return pkgs

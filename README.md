@@ -7,6 +7,8 @@
 * check packages for upgrade
 * download package or source code from allowed repositories
 * download, build and install package(s) in the queue from SBo repository
+* upgrade packages in the current directory
+* remove packages in the current directory
 * show list all dependencies for package from SBo repository
 * view the contents of files included in SlackBuild archive
 * search package from each enabled repository and view info
@@ -33,11 +35,11 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 * tqdm - show progress bar for some parameters (available on SlackBuilds.org)
 
 ##### Build and install:
-1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.3/spman-1.5.3.tar.gz
-2. `~# tar -xvzf spman-1.5.3.tar.gz`
-3. `~# cd spman-1.5.3/slackbuild`
+1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.4/spman-1.5.4.tar.gz
+2. `~# tar -xvzf spman-1.5.4.tar.gz`
+3. `~# cd spman-1.5.4/slackbuild`
 4. `~# ./spman.SlackBuild`
-5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.3-*.t?z`
+5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.4-*.t?z`
 
 ##### Usage:
 ##### -h, --help
@@ -116,6 +118,17 @@ for reposytory 'multilib' only `--pkg`, for reposytory 'sbo' only `--src`
     `~# spman --download --src slack emacs kdelibs`
 
 ![download][14]
+
+##### -m, --upgrade-pkgs [--only-new]
+Upgrade packages in the current directory
+* `--only-new` - install only new packages
+
+![upgrade-pkgs][28]
+
+##### -e, --remove-pkgs
+Remove packages in the current directory
+
+![remove-pkgs][27]
 
 ##### -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install
 Download, build and install package(s) in the queue from SlackBuilds.org
@@ -198,3 +211,5 @@ Search for links to nonexistent files/dirs in the specified directory.
 [24]: https://github.com/MyRequiem/spman/raw/master/imgs/check-deps-ldd.png
 [25]: https://github.com/MyRequiem/spman/raw/master/imgs/bad-links.png
 [26]: https://slackbuilds.org/repository/14.2/system/spman/
+[27]: https://github.com/MyRequiem/spman/raw/master/imgs/remove-pkgs.png
+[28]: https://github.com/MyRequiem/spman/raw/master/imgs/upgrade-pkgs.png

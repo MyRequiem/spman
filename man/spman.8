@@ -12,6 +12,7 @@ Main futeares:
     - download binary package or source code from allowed repositories
     - download, build and install package(s) in the queue from SBo
         repository
+    - remove packages in the current directory
     - show list all dependencies for package from SBo repository
     - view the contents of files included in SlackBuild archive
     - search package from each enabled repository and view info
@@ -67,6 +68,11 @@ The following commands and options are available:
     Download emacs and kdelibs source code with SlackBuild script
     from standard Slackware repository:
       ~# spman --download --src slack emacs kdelibs
+.SS -m, --upgrade-pkgs [--only-new]
+\fbUpgrade packages in the current directory.
+    --only-new              - install only new packages
+.SS -e, --remove-pkgs
+\fbRemove packages in the current directory.
 .SS -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install
 \fbDownload, build and install package(s) in the queue from SlackBuilds.org
   Note: pkglist - list of names of packages

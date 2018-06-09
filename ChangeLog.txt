@@ -1,5 +1,6 @@
-1.5.4 []
+1.5.4 [09.06.18]
 The reference for multilib repository has been changed (etc/spman/repo-list)
+Added new parameter: -m, --upgrade-pkgs [--only-new]
 Added new parameter: -e, --remove-pkgs
 
 1.5.3 [30.05.2018]

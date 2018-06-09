@@ -48,6 +48,9 @@ Usage: spman command [param[, param ...]]
     Download binary package(s) or source code from specified repository
 {6}    Note:{5} for reposytory 'multilib' only --pkg
           for reposytory 'sbo' only --src
+{2} -m, --upgrade-pkgs [--only-new]{5}
+    Upgrade packages in the current directory
+      --only-new    - install only new packages
 {2} -e, --remove-pkgs{5}
     Remove packages in the current directory
 {2} -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install{5}

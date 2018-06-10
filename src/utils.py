@@ -184,8 +184,8 @@ def update_pkg_db(db_path: str = '') -> None:
     pkgdb.write('Last database update: {0} UTC\n'.format(date_now))
     pkgdb.close()
 
-    from os import listdir
+    from .pkgs import Pkgs
     pkgdb = open(db_path, 'a')
-    for pkg in sorted(listdir(meta.pkgs_installed_path)):
-        pkgdb.write('{0}\n'.format(pkg))
+    for pkg in Pkgs().find_pkgs_on_system():
+        pkgdb.write('{0}\n'.format(pkg.strip()))
     pkgdb.close()

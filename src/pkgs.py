@@ -40,7 +40,7 @@ class Pkgs:
             if pkg_name and self.get_parts_pkg_name(pkg)[0] == pkg_name:
                     return [pkg]
             else:
-                if len(self.get_parts_pkg_name(pkg)) > 3:
+                if len(self.get_parts_pkg_name(pkg)) == 4:
                     pkgs.append(pkg)
 
         if pkg_name:

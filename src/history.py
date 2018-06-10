@@ -16,8 +16,6 @@
 show/update package history
 """
 
-from os import listdir
-
 from .maindata import MainData
 from .pkgs import Pkgs
 from .utils import get_indent
@@ -32,7 +30,7 @@ class History:
         self.pkglist_now = []
         self.pkglist_db = []
         self.meta = MainData()
-        self.get_parts_pkg_name = Pkgs().get_parts_pkg_name
+        self.pkgs = Pkgs()
 
     def start(self) -> None:
         """
@@ -50,7 +48,7 @@ class History:
         show package history
         """
         # list of installed packages divided into parts
-        for pkg in sorted(listdir(self.meta.pkgs_installed_path)):
+        for pkg in self.pkgs.find_pkgs_on_system():
             self.append_parts_pkd(pkg, self.pkglist_now)
 
         # list of packages in the database divided into parts
@@ -103,7 +101,7 @@ class History:
                                           self.pkglist_now[ind + 3]]
                                          )
                                 )
-        print(('{0}\n{1}Update database of local packages: # '
+        print(('{0}\n{1}Update the installed packages database: # '
                'spman --history --update{2}').format(last_update,
                                                      self.meta.clrs['grey'],
                                                      self.meta.clrs['reset']),
@@ -139,6 +137,7 @@ class History:
         """
         append parts of package name into list
         """
-        parts = self.get_parts_pkg_name(pkg)
-        for ind in range(4):
-            pkglist.append(parts[ind])
+        parts = self.pkgs.get_parts_pkg_name(pkg)
+        if len(parts) == 4:
+            for ind in range(4):
+                pkglist.append(parts[ind])

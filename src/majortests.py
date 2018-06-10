@@ -36,6 +36,7 @@ class MajorTests:
         """
         self.check_exists_dirs()
         self.check_exists_libs()
+        self.check_exists_db()
 
     def check_exists_dirs(self) -> None:
         """
@@ -87,3 +88,10 @@ class MajorTests:
                                                self.meta.clrs['grey'],
                                                self.meta.clrs['reset']))
                 raise SystemExit
+
+    def check_exists_db(self) -> None:
+        db_path = '{0}{1}'.format(self.spman_conf['REPOS_PATH'],
+                                  self.meta.pkg_db_name)
+        if not path.isfile(db_path):
+            from .utils import update_pkg_db
+            update_pkg_db(db_path)

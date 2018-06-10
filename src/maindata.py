@@ -25,10 +25,11 @@ class MainData:
     """
     def __init__(self):
         self.prog_name = 'spman'
-        self.prog_version = '1.5.4'
+        self.prog_version = '1.5.5'
         self.home_page = ('https://github.com/MyRequiem'
                           '/{0}').format(self.prog_name)
         self.mail = '<mrvladislavovich@gmail.com>'
+        self.pkg_db_name = 'pkg-db'
         self.pkgs_installed_path = '/var/log/packages/'
         self.configs_path = '/etc/{0}/'.format(self.prog_name)
         self.arch = machine()

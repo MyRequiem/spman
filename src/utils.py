@@ -166,3 +166,26 @@ def get_packages_in_current_dir() -> list:
             pkgs.append(file_in_current_dir)
 
     return pkgs
+
+
+def update_pkg_db(db_path: str = '') -> None:
+    """
+    update package database
+    """
+    meta = MainData()
+    spman_conf = meta.get_spman_conf()
+    if not db_path:
+        db_path = '{0}{1}'.format(spman_conf['REPOS_PATH'], meta.pkg_db_name)
+
+    # write current time in db file
+    from datetime import datetime
+    date_now = datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S")
+    pkgdb = open(db_path, 'w')
+    pkgdb.write('Last database update: {0} UTC\n'.format(date_now))
+    pkgdb.close()
+
+    from os import listdir
+    pkgdb = open(db_path, 'a')
+    for pkg in sorted(listdir(meta.pkgs_installed_path)):
+        pkgdb.write('{0}\n'.format(pkg))
+    pkgdb.close()

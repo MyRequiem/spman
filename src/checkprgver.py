@@ -47,12 +47,14 @@ def check_prg_ver() -> None:
     version = '.'.join(html.split(spl)[1].split('.')[:3])
 
     if version != local_ver:
+        # https://github.com/MyRequiem/spman/archive/1.5.4/spman-1.5.4.tar.gz
         print(('{0}New version are available:{1} {3}\n' +
                'Visit: {2}/releases\nor download new version source code:\n' +
-               '{2}/archive/{3}.tar.gz').format(meta.clrs['lred'],
-                                                meta.clrs['reset'],
-                                                meta.home_page,
-                                                version))
+               '{2}/archive/{3}/{4}-{3}.tar.gz').format(meta.clrs['lred'],
+                                                        meta.clrs['reset'],
+                                                        meta.home_page,
+                                                        version,
+                                                        meta.prog_name))
     else:
         print(('{0}You are using the latest program '
                'version{1}').format(meta.clrs['green'],

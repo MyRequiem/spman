@@ -174,8 +174,16 @@ def update_pkg_db(db_path: str = '') -> None:
     """
     meta = MainData()
     spman_conf = meta.get_spman_conf()
-    if not db_path:
+    db_path_exists = db_path
+    if not db_path_exists:
         db_path = '{0}{1}'.format(spman_conf['REPOS_PATH'], meta.pkg_db_name)
+
+    # create a backup of the database
+    if not db_path_exists:
+        from shutil import copy2
+        db_path_backup = '{0}~'.format(db_path)
+        copy2(db_path, db_path_backup)
+        print('A backup was created: {0}'.format(db_path_backup))
 
     # write current time in db file
     from datetime import datetime

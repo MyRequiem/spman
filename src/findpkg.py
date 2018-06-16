@@ -67,8 +67,14 @@ class FindPkg:
         self.print_data('Package name: ', pkgname, 'yellow')
         self.print_data('Repository: ', self.repo, 'lcyan')
         version = pkgdata[0] if sbo else pkgdata[0][1]
+        # add build tag fot slack repository
+        if self.repo == 'slack':
+            version = '{0} {1}(tag: {2}){3}'.format(version,
+                                                    self.meta.clrs['grey'],
+                                                    pkgdata[0][3],
+                                                    self.meta.clrs['reset'])
         self.print_data('Version: ', version)
-        if sbo or self.repo == 'multilib' and pkgdata[1]:
+        if pkgdata[1] and self.repo != 'alienbob':
             self.print_data('Location: ', pkgdata[1])
         if not sbo:
             self.print_data('Compressed size: ', pkgdata[2])

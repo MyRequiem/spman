@@ -151,7 +151,8 @@ def get_all_files(pathdir: str) -> list:
                 return args[0]
             return kwargs.get('iterable', None)
 
-    for root, dirs, files in tqdm(walk(pathdir), leave=False, ncols=80):
+    for root, dirs, files in tqdm(walk(pathdir), leave=False,
+                                  ncols=80, unit=''):
         del dirs
         for fls in files:
             allfiles.append(path.join(root, fls))

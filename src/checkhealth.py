@@ -49,7 +49,8 @@ class CheckHealth:
                     return args[0]
                 return kwargs.get('iterable', None)
 
-        for pkgname in tqdm(self.list_pkg_installed, leave=False, ncols=80):
+        for pkgname in tqdm(self.list_pkg_installed, leave=False,
+                            ncols=80, unit=''):
             if (self.pkgs.get_parts_pkg_name(pkgname)[0] not in
                     self.blacklist):
                 with open('{0}{1}'.format(self.meta.pkgs_installed_path,

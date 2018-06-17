@@ -56,7 +56,8 @@ class BadLinks:
                 return kwargs.get('iterable', None)
 
         bad_links = []
-        for lnk in tqdm(get_all_files(self.pathdir), leave=False, ncols=80):
+        for lnk in tqdm(get_all_files(self.pathdir), leave=False,
+                        ncols=80, unit=''):
             # if file is link
             if path.islink(lnk):
                 # path to directory where the link

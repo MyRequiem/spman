@@ -37,7 +37,9 @@ def check_prg_ver() -> None:
     # search latest release on https://github.com/MyRequiem/spman/releases
     url = '{0}/releases'.format(meta.home_page)
     _context = _create_unverified_context()
-    bytes_content = urlopen(url, context=_context).read()
+    open_url = urlopen(url, context=_context)
+    bytes_content = open_url.read()
+    open_url.close()
     # bytes --> str
     html = str(bytes_content, encoding=(stdout.encoding or stderr.encoding))
 

@@ -45,7 +45,9 @@ class CheckHealth:
             from tqdm import tqdm
         except ImportError:
             def tqdm(*args, **kwargs):
-                return args[0]
+                if args:
+                    return args[0]
+                return kwargs.get('iterable', None)
 
         for pkgname in tqdm(self.list_pkg_installed, leave=False, ncols=80):
             if (self.pkgs.get_parts_pkg_name(pkgname)[0] not in

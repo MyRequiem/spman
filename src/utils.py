@@ -147,7 +147,9 @@ def get_all_files(pathdir: str) -> list:
         from tqdm import tqdm
     except ImportError:
         def tqdm(*args, **kwargs):
-            return args[0]
+            if args:
+                return args[0]
+            return kwargs.get('iterable', None)
 
     for root, dirs, files in tqdm(walk(pathdir), leave=False, ncols=80):
         del dirs

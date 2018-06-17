@@ -51,7 +51,9 @@ class BadLinks:
             from tqdm import tqdm
         except ImportError:
             def tqdm(*args, **kwargs):
-                return args[0]
+                if args:
+                    return args[0]
+                return kwargs.get('iterable', None)
 
         bad_links = []
         for lnk in tqdm(get_all_files(self.pathdir), leave=False, ncols=80):

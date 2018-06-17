@@ -34,6 +34,7 @@ class Update:
     def __init__(self):
         self.meta = MainData()
         self.spman_conf = self.meta.get_spman_conf()
+        self.context = _create_unverified_context()
 
     def start(self) -> None:
         """
@@ -60,6 +61,7 @@ class Update:
             repo_file = '{0}{1}/{2}'.format(self.spman_conf['REPOS_PATH'],
                                             repo,
                                             repo_txt)
+
             # log file name
             log_txt = 'ChangeLog.txt'
             # full path to local log file
@@ -131,6 +133,25 @@ class Update:
                         self.upd_and_show_diff(log_file, log_url, prefix_log)
                         download(repo_url, prefix_repo)
 
+            # ALL-PACKAGES.TXT for repository 'slack'
+            if repo == 'slack':
+                parts = repo_file.split('/')
+                repo_file = ('{0}/ALL-{1}').format('/'.join(parts[:-1]),
+                                                   parts[-1])
+                repo_url = '{0}/{1}'.format(rep, repo_txt)
+
+                repo_file_exists = path.isfile(repo_file)
+                if (not repo_file_exists or
+                        not self.check_file_size(repo_file, repo_url)):
+                    if repo_file_exists:
+                        from os import remove
+                        remove(repo_file)
+
+                    download(repo_url,
+                             prefix_repo,
+                             del_if_exists=False,
+                             deps_param=' -O {0}'.format(repo_file))
+
             print('{0}Done{1}'.format(self.meta.clrs['grey'],
                                       self.meta.clrs['reset']))
         print()
@@ -163,15 +184,11 @@ class Update:
         """
         return self.get_remote_file_size(remote) == path.getsize(local)
 
-    @staticmethod
-    def get_remote_file_size(remote: str) -> int:
+    def get_remote_file_size(self, remote: str) -> int:
         """
         get remote file size
         """
-        filelen = 0
-        _context = _create_unverified_context()
-        c_length = urlopen(remote, context=_context).getheader('Content-Length')
-        if c_length:
-            filelen = int(c_length)
-
-        return filelen
+        req = urlopen(remote, context=self.context)
+        content_length = req.getheader('Content-Length')
+        req.close()
+        return int(content_length) if content_length else 0

@@ -98,6 +98,17 @@ class GetRepoData:
         if not datafile.closed:
             datafile.close()
 
+        # read ALL-PACKAGES.TXT
+        if self.reponame == 'slack':
+            parts = dfile.split('/')
+            dfile = '{0}/ALL-{1}'.format('/'.join(parts[:-1]), parts[-1])
+            with open(dfile) as datafile:
+                for line in datafile:
+                    self.get_non_sbo_data(line)
+
+        if not datafile.closed:
+            datafile.close()
+
         self.rdata['numpkgs'] = len(self.rdata['pkgs'])
         if self.comp[0]:
             self.rdata['comp'] = self.get_human_readable_size(self.comp[0])
@@ -109,29 +120,34 @@ class GetRepoData:
         """
         get non sbo data
         """
+        rdata = self.rdata['pkgs']
         if line.startswith('PACKAGE NAME: '):
             pkg = self.get_line_value(line, ': ')
             parts = self.pkgs.get_parts_pkg_name(pkg)
-            self.pkgname = parts[0]
-            self.rdata['pkgs'][self.pkgname] = self.get_list_new_pkg()
-            # package version
-            self.rdata['pkgs'][self.pkgname][0] = parts
-            # package extention
-            self.rdata['pkgs'][self.pkgname][8] = pkg.split('.')[-1]
-        elif line.startswith('PACKAGE LOCATION: '):
-            val = self.get_line_value(line, ': ')
-            self.rdata['pkgs'][self.pkgname][1] = '/'.join(val.split('/')[1:])
-        elif line.startswith('PACKAGE SIZE (compressed): '):
-            self.process_size_pkg(line, 0)
-        elif line.startswith('PACKAGE SIZE (uncompressed): '):
-            self.process_size_pkg(line, 1)
-        elif line.startswith('PACKAGE REQUIRED: '):
-            self.get_req_pkg(line, ',')
-        elif line.startswith('{0}:'.format(self.pkgname)):
-            val = self.get_line_desc(line, '{0}:'.format(self.pkgname))
-            # only not empty strings
-            if val:
-                self.rdata['pkgs'][self.pkgname][5].append(val)
+            if parts[0] not in self.rdata['pkgs']:
+                self.pkgname = parts[0]
+                rdata[self.pkgname] = self.get_list_new_pkg()
+                # list parts of package name
+                rdata[self.pkgname][0] = parts
+                # package extention
+                rdata[self.pkgname][8] = pkg.split('.')[-1]
+            else:
+                self.pkgname = ''
+        elif self.pkgname:
+            if line.startswith('PACKAGE LOCATION: '):
+                val = self.get_line_value(line, ': ')
+                rdata[self.pkgname][1] = '/'.join(val.split('/')[1:])
+            elif line.startswith('PACKAGE SIZE (compressed): '):
+                self.process_size_pkg(line, 0)
+            elif line.startswith('PACKAGE SIZE (uncompressed): '):
+                self.process_size_pkg(line, 1)
+            elif line.startswith('PACKAGE REQUIRED: '):
+                self.get_req_pkg(line, ',')
+            elif line.startswith('{0}:'.format(self.pkgname)):
+                val = self.get_line_desc(line, '{0}:'.format(self.pkgname))
+                # only not empty strings
+                if val:
+                    rdata[self.pkgname][5].append(val)
 
     def get_sbo_data(self, line: str) -> None:
         """

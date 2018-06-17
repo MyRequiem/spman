@@ -118,8 +118,8 @@ class DownloadPkg:
                                                 arch,
                                                 self.os_ver)
 
-        # kernel packages and kernel source (for stable Slackware versions)
-        # are located in the directory patches/packages/linux-x.x.x/
+        # patched kernel packages and kernel source (for stable Slackware
+        # versions) are located in the directory patches/packages/linux-x.x.x/
         kernel_packages = [
             'kernel-firmware',
             'kernel-generic',
@@ -137,8 +137,10 @@ class DownloadPkg:
             download(url, self.wgetprefix)
         else:
             # download directory with source code and SlackBuild script
-            replace_str = ('slackware{0}'.format(arch)
-                           if self.os_ver == 'current' else 'packages')
+            replace_str = 'packages'
+            if self.os_ver == 'current' or not location.startswith('patches/'):
+                replace_str = 'slackware{0}'.format(arch)
+
             location = location.replace(replace_str, 'source')
             url = '{0}/{1}{2}/'.format(repo_url, location, pkg)
 

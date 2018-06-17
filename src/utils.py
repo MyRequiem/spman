@@ -49,7 +49,9 @@ def pkg_not_found_mess(pkgname: str, reponame: str) -> None:
 
 
 def download(url: str, prefix: str, wgetparam: str = '',
-             show_process: bool = True) -> None:
+             show_process: bool = True,
+             del_if_exists: bool = True,
+             deps_param: str = '') -> None:
     """
     download file/dir
     """
@@ -69,10 +71,11 @@ def download(url: str, prefix: str, wgetparam: str = '',
     fpath = '{0}{1}'.format(prefix, fname)
 
     # remove file/dir if already exists
-    if not downdir and path.isfile(fpath):
-        remove(fpath)
-    elif downdir and path.isdir(fpath):
-        rmtree(fpath)
+    if del_if_exists:
+        if not downdir and path.isfile(fpath):
+            remove(fpath)
+        elif downdir and path.isdir(fpath):
+            rmtree(fpath)
 
     meta = MainData()
     if show_process:
@@ -87,9 +90,10 @@ def download(url: str, prefix: str, wgetparam: str = '',
 
     from subprocess import call
     wgetprm = meta.get_spman_conf()['WGET_OPT'] if not downdir else wgetparam
-    call('wget {0} --directory-prefix={1} {2}'.format(wgetprm,
-                                                      prefix,
-                                                      url),
+    call('wget {0} --directory-prefix={1} {2}{3}'.format(wgetprm,
+                                                         prefix,
+                                                         url,
+                                                         deps_param),
          shell=True)
 
     if ((not downdir and not path.isfile(fpath)) or

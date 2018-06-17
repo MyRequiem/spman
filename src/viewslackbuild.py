@@ -16,9 +16,9 @@
 View README, slack-desc, doinst.sh and .SlackBuild files from sbo repository.
 """
 
-import pydoc
-import sys
+from pydoc import pager
 from ssl import _create_unverified_context
+from sys import stderr, stdout
 from urllib.request import urlopen
 
 from .getrepodata import GetRepoData
@@ -33,6 +33,7 @@ class ViewSlackBuild:
     def __init__(self, pkgname: str):
         self.meta = MainData()
         self.pkgname = pkgname
+        self.context = _create_unverified_context()
 
     def start(self) -> None:
         """
@@ -89,12 +90,11 @@ class ViewSlackBuild:
                 if 0 < choice <= len(filelist):
                     self.show_file('{0}{1}'.format(url, filelist[choice - 1]))
 
-    @staticmethod
-    def show_file(url: str) -> None:
+    def show_file(self, url: str) -> None:
         """
         show file
         """
-        _context = _create_unverified_context()
-        content = urlopen(url, context=_context)
-        pydoc.pager(str(content.read(),
-                        encoding=(sys.stdout.encoding or sys.stderr.encoding)))
+        open_url = urlopen(url, context=self.context)
+        pager(str(open_url.read(),
+                  encoding=(stdout.encoding or stderr.encoding)))
+        open_url.close()

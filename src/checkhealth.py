@@ -44,10 +44,10 @@ class CheckHealth:
         try:
             from tqdm import tqdm
         except ImportError:
-            def tqdm(*args):
+            def tqdm(*args, **kwargs):
                 return args[0]
 
-        for pkgname in tqdm(self.list_pkg_installed):
+        for pkgname in tqdm(self.list_pkg_installed, leave=False, ncols=80):
             if (self.pkgs.get_parts_pkg_name(pkgname)[0] not in
                     self.blacklist):
                 with open('{0}{1}'.format(self.meta.pkgs_installed_path,

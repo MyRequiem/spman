@@ -47,15 +47,14 @@ class BadLinks:
                                         self.meta.clrs['reset']))
             raise SystemExit
 
-        err_count = 0
-
         try:
             from tqdm import tqdm
         except ImportError:
-            def tqdm(*args):
+            def tqdm(*args, **kwargs):
                 return args[0]
 
-        for lnk in tqdm(get_all_files(self.pathdir)):
+        bad_links = []
+        for lnk in tqdm(get_all_files(self.pathdir), leave=False, ncols=80):
             # if file is link
             if path.islink(lnk):
                 # path to directory where the link
@@ -66,21 +65,23 @@ class BadLinks:
 
                 dest = readlink(lnk)
                 if not path.isfile(dest) and not path.isdir(dest):
-                    err_count += 1
-                    print('{0}{1}{2}'.format(self.meta.clrs['red'],
-                                             lnk,
-                                             self.meta.clrs['reset']))
+                    bad_links.append(lnk)
 
-        self.print_rezult(err_count)
+        self.print_rezult(bad_links)
 
-    def print_rezult(self, err_count: int) -> None:
+    def print_rezult(self, bad_links: list) -> None:
         """
         print rezult
         """
+        err_count = len(bad_links)
         if err_count:
             print('\nIncorrect references in {0}: {1}'.format(self.pathdir,
-                                                              err_count),
-                  end='\n\n')
+                                                              err_count))
+
+            for bad_link in bad_links:
+                print('{0}{1}{2}'.format(self.meta.clrs['red'],
+                                         bad_link,
+                                         self.meta.clrs['reset']))
         else:
             print(('{0}Congratulations !!!\nNot found invalid '
                    'links in {1}{2}').format(self.meta.clrs['green'],

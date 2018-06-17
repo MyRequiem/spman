@@ -146,10 +146,10 @@ def get_all_files(pathdir: str) -> list:
     try:
         from tqdm import tqdm
     except ImportError:
-        def tqdm(*args):
+        def tqdm(*args, **kwargs):
             return args[0]
 
-    for root, dirs, files in tqdm(walk(pathdir)):
+    for root, dirs, files in tqdm(walk(pathdir), leave=False, ncols=80):
         del dirs
         for fls in files:
             allfiles.append(path.join(root, fls))

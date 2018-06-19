@@ -131,7 +131,7 @@ class MainData:
         parts[0] = parts[0].strip()
         parts[1] = parts[1].strip()
         # add slash at the end of URL or path to dir (if not exist)
-        if parts[1].startswith('/') or parts[1].startswith('http://'):
+        if parts[1].startswith('/') or '://' in parts[1]:
             if not parts[1].endswith('/'):
                 parts[1] += '/'
         return [parts[0], parts[1]]

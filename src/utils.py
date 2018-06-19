@@ -106,10 +106,7 @@ def get_all_files(pathdir: str) -> list:
     """
     return list of all files in directory and subdirectories
     """
-    from os import (
-        path,
-        walk
-    )
+    from os import path, walk
 
     '''
     os.walk(root_path) - directory tree generator.
@@ -204,3 +201,49 @@ def update_pkg_db(db_path: str = '') -> None:
     for pkg in Pkgs().find_pkgs_on_system():
         pkgdb.write('{0}\n'.format(pkg.strip()))
     pkgdb.close()
+
+
+def error_open_mess(url):
+    """
+    Displaying the error message
+    """
+    meta = MainData()
+    print(('{0}Can not open URL: {1} {2}{3}').format(meta.clrs['red'],
+                                                     meta.clrs['lblue'],
+                                                     url,
+                                                     meta.clrs['reset']))
+
+
+def url_is_alive(url: str) -> object:
+    """
+    Checks that a given URL is reachable
+    """
+    from ssl import _create_unverified_context
+    from urllib.error import HTTPError, URLError
+    from urllib.request import urlopen
+
+    try:
+        return urlopen(url, context=_create_unverified_context())
+    except HTTPError:
+        return False
+    except URLError:
+        return False
+
+
+def get_remote_file_size(url: str = '', httpresponse: object = False) -> int:
+    """
+    Get the size of the remote file
+    """
+    need_to_close = False
+    if not httpresponse:
+        httpresponse = url_is_alive(url)
+        if not httpresponse:
+            error_open_mess(url)
+            return 0
+        need_to_close = True
+
+    content_length = httpresponse.getheader('Content-Length')
+    if need_to_close:
+        httpresponse.close()
+
+    return int(content_length) if content_length else 0

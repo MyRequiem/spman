@@ -74,12 +74,18 @@ class Download:
     """
     Downloading file or directory
     """
-    def __init__(self, url: str, dest: str, remove_dest: bool = False):
+    def __init__(self,
+                 url: str,
+                 dest: str,
+                 remove_dest: bool = False,
+                 new_file_name: str = ''):
+
         self.meta = MainData()
         self.url = url
         self.dest = dest
         self.downdir = False
         self.remove_dest = remove_dest
+        self.new_file_name = new_file_name
         self.links = []
         self.dirs = []
         self.context = _create_unverified_context()
@@ -161,7 +167,8 @@ class Download:
             error_open_mess(url)
             return
 
-        file_name = url.split('/')[-1]
+        file_name = (self.new_file_name
+                     if self.new_file_name else url.split('/')[-1])
         file_size = get_remote_file_size(httpresponse=response)
 
         if self.downdir:
@@ -185,13 +192,16 @@ class Download:
         if path.exists(local_file):
             first_byte = path.getsize(local_file)
 
-        print(('{0}Downloading:{1} {2}{5}\nto: '
-               '{3}{4}{5}').format(self.meta.clrs['lyellow'],
-                                   self.meta.clrs['lblue'],
-                                   url,
-                                   self.meta.clrs['grey'],
-                                   local_dir,
-                                   self.meta.clrs['reset']))
+        new_name = (' (renamed to: {0})'.format(self.new_file_name)
+                    if self.new_file_name else '')
+        print(('{0}Downloading:{1} {2}{6}\nto: '
+               '{3}{4}{5}{6}').format(self.meta.clrs['lyellow'],
+                                      self.meta.clrs['lblue'],
+                                      url,
+                                      self.meta.clrs['grey'],
+                                      local_dir,
+                                      new_name,
+                                      self.meta.clrs['reset']))
 
         if first_byte >= file_size:
             print(('{0}{1} {2}is already fully '

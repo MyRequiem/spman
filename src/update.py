@@ -17,13 +17,12 @@ Update PACKAGES.TXT, SLACKBUILDS.TXT and
 ChangeLog.txt for each repository
 """
 
+from difflib import unified_diff
 from os import path, remove, rename
-from ssl import _create_unverified_context
-from subprocess import call
-from urllib.request import urlopen
 
+from .download import Download
 from .maindata import MainData
-from .utils import download, get_line
+from .utils import get_line, get_remote_file_size
 
 
 class Update:
@@ -34,7 +33,6 @@ class Update:
     def __init__(self):
         self.meta = MainData()
         self.spman_conf = self.meta.get_spman_conf()
-        self.context = _create_unverified_context()
 
     def start(self) -> None:
         """
@@ -102,93 +100,107 @@ class Update:
 
                 repo_url = '{0}/{1}/{2}'.format(rep, dep_dir, repo_txt)
 
-            print('{0}Wait...{1}'.format(self.meta.clrs['grey'],
-                                         self.meta.clrs['reset']))
-
-            template = '{0}{1}/'
-
             # download PACKAGES.TXT/SLACKBUILDS.TXT if not exist,
             repo_downloaded = False
-            prefix_repo = template.format(self.spman_conf['REPOS_PATH'], repo)
+            dest_repo = '{0}{1}/'.format(self.spman_conf['REPOS_PATH'], repo)
             if not path.isfile(repo_file):
-                download(repo_url, prefix_repo)
+                Download(repo_url, dest_repo).start()
                 repo_downloaded = True
 
             # download ChangeLog.txt if not exist
             log_downloaded = False
-            prefix_log = template.format(self.spman_conf['LOGS_PATH'], repo)
+            dest_log = '{0}{1}/'.format(self.spman_conf['LOGS_PATH'], repo)
             if not path.isfile(log_file):
-                download(log_url, prefix_log)
+                Download(log_url, dest_log).start()
                 log_downloaded = True
 
             if not repo_downloaded or not log_downloaded:
+                print(('{0}Comparison of remote and '
+                       'local log...{1}').format(self.meta.clrs['grey'],
+                                                 self.meta.clrs['reset']),
+                      end='')
+
                 if (not self.check_file_size(repo_file, repo_url) or
                         not self.check_file_size(log_file, log_url)):
-                    # if repository multilib show diff PACKAGES.TXT
+                    print()
+                    # if repository == 'multilib' show diff PACKAGES.TXT
                     # otherwise show diff ChangeLog.txt
                     if repo == 'multilib':
-                        download(log_url, prefix_log)
-                        self.upd_and_show_diff(repo_file, repo_url, prefix_repo)
+                        Download(log_url, dest_log, True).start()
+                        self.download_and_show_diff(repo_file,
+                                                    repo_url,
+                                                    dest_repo)
                     else:
-                        self.upd_and_show_diff(log_file, log_url, prefix_log)
-                        download(repo_url, prefix_repo)
+                        Download(repo_url, dest_repo, True).start()
+                        self.download_and_show_diff(log_file,
+                                                    log_url,
+                                                    dest_log)
+                else:
+                    print(' {0}Ok{1}'.format(self.meta.clrs['green'],
+                                             self.meta.clrs['reset'],))
 
             # ALL-PACKAGES.TXT for repository 'slack'
             if repo == 'slack':
-                parts = repo_file.split('/')
-                repo_file = ('{0}/ALL-{1}').format('/'.join(parts[:-1]),
-                                                   parts[-1])
+                all_repo_txt = 'ALL-' + repo_txt
+                repo_file = repo_file.replace(repo_txt, all_repo_txt)
                 repo_url = '{0}/{1}'.format(rep, repo_txt)
-
-                repo_file_exists = path.isfile(repo_file)
-                if (not repo_file_exists or
+                if (not path.isfile(repo_file) or
                         not self.check_file_size(repo_file, repo_url)):
-                    if repo_file_exists:
-                        from os import remove
-                        remove(repo_file)
+                    Download(repo_url, dest_repo, True, all_repo_txt).start()
 
-                    download(repo_url,
-                             prefix_repo,
-                             del_if_exists=False,
-                             deps_param=' -O {0}'.format(repo_file))
-
-            print('{0}Done{1}'.format(self.meta.clrs['grey'],
-                                      self.meta.clrs['reset']))
         print()
 
-    def upd_and_show_diff(self, local_file: str,
-                          file_url: str, prefix: str) -> None:
+    def download_and_show_diff(self,
+                               file_path: str,
+                               remote_url: str,
+                               dest: str) -> None:
         """
         update file and show diff with old file
         """
-        # rename local_file --> local_file_old
-        old_file = '{0}_old'.format(local_file)
-        rename(local_file, old_file)
+        # rename old file
+        old_file = '{0}_old'.format(file_path)
+        rename(file_path, old_file)
         # download new file
-        download(file_url, prefix)
+        Download(remote_url, dest).start()
         # show diff
-        print('\n{0}Diff:{1}{2}'.format(self.meta.clrs['lmagenta'],
-                                        self.meta.clrs['reset'],
-                                        self.meta.clrs['green']))
-        call(('diff -U 0 {0}_old {0} | grep -v @@ | '
-              'grep -vE "\\-\\-\\-" | '
-              'grep -vE "\\+\\+\\+"').format(local_file),
-             shell=True)
-        # delete odl file
-        remove(old_file)
-        print()
+        print('\n{0}Diff:{1}'.format(self.meta.clrs['lmagenta'],
+                                     self.meta.clrs['reset']))
 
-    def check_file_size(self, local: str, remote: str) -> bool:
+        with open(old_file, 'r', errors='replace') as file_old:
+            with open(file_path, 'r', errors='replace') as file_new:
+                diff = unified_diff(file_old.readlines(),
+                                    file_new.readlines(),
+                                    fromfile='file_old',
+                                    tofile='file_new',
+                                    n=0)
+                for line in diff:
+                    if line.startswith('+++') or line.startswith('---'):
+                        continue
+
+                    color = 'green'
+                    if '/multilib/' in file_path:
+                        if 'PACKAGE NAME:' in line:
+                            if line.startswith('-'):
+                                color = 'red'
+                            print('{0}{1}{2}'.format(self.meta.clrs[color],
+                                                     line,
+                                                     self.meta.clrs['reset']),
+                                  end='')
+                    elif line.startswith('+'):
+                        print('{0}{1}{2}'.format(self.meta.clrs[color],
+                                                 line,
+                                                 self.meta.clrs['reset']),
+                              end='')
+
+        if not file_old.closed:
+            file_old.close()
+        if not file_new.closed:
+            file_new.close()
+
+        remove(old_file)
+
+    def check_file_size(self, file_path: str, remote_url: str) -> bool:
         """
         check size local and remote ChangeLog.txt
         """
-        return self.get_remote_file_size(remote) == path.getsize(local)
-
-    def get_remote_file_size(self, remote: str) -> int:
-        """
-        get remote file size
-        """
-        req = urlopen(remote, context=self.context)
-        content_length = req.getheader('Content-Length')
-        req.close()
-        return int(content_length) if content_length else 0
+        return get_remote_file_size(remote_url) == path.getsize(file_path)

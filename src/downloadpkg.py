@@ -16,13 +16,14 @@
 Download packages or sources (SlackBuilds)
 """
 
-from os import path, remove, rename
+from os import chmod, path, remove
 from shutil import rmtree
-from subprocess import call
+from tarfile import open as taropen
 
+from .download import Download
 from .getrepodata import GetRepoData
 from .maindata import MainData
-from .utils import download
+from .utils import get_all_files, pkg_not_found_mess
 
 
 class DownloadPkg:
@@ -41,7 +42,7 @@ class DownloadPkg:
         self.pkglist = pkglist
         self.repo_url = self.meta.get_repo_dict()[self.repo]
         self.repodata = GetRepoData(self.repo).start()
-        self.wgetprefix = self.spman_conf['BUILD_PATH']
+        self.dest = self.spman_conf['BUILD_PATH']
         self.wgetdir = ('--no-check-certificate -r -nH -ct 0 -w 2 -l 10 '
                         '--cut-dirs={0} --no-parent -R *.meta4,*.mirrorlist,'
                         'index.html*')
@@ -80,23 +81,16 @@ class DownloadPkg:
                                               arch,
                                               pkg,
                                               fname)
-            download(url, self.wgetprefix)
+            Download(url, self.dest).start()
         else:
             # download directory with source code and SlackBuild script
             url = '{0}{1}/build/'.format(
                 self.repo_url.replace('sbrepos', 'slackbuilds'), pkg)
-            download(url, self.wgetprefix,
-                     self.wgetdir.format(self.get_cut_dirs(url)))
+            dest_dir = '{0}{1}/'.format(self.dest, pkg)
+            Download(url, dest_dir).start()
 
-            # if dir downloaded, rename to pkgname
-            downdir = '{0}build'.format(self.wgetprefix)
-            if path.isdir(downdir):
-                new_dir_name = '{0}{1}'.format(self.wgetprefix, pkg)
-                # if this directory already exists remove it
-                if path.isdir(new_dir_name):
-                    rmtree(new_dir_name)
-                rename(downdir, new_dir_name)
-                self.set_chmod(new_dir_name)
+            if path.isdir(dest_dir):
+                self.set_chmod(dest_dir)
 
     def download_multilib(self, pkgdata: list) -> None:
         """
@@ -107,7 +101,7 @@ class DownloadPkg:
                                      self.os_ver,
                                      self.get_pkg_location(pkgdata[1]),
                                      fname)
-        download(url, self.wgetprefix)
+        Download(url, self.dest).start()
 
     def download_slack(self, pkg: str, pkgdata: list) -> None:
         """
@@ -134,7 +128,7 @@ class DownloadPkg:
             # download binary package
             fname = self.get_fname(pkgdata)
             url = '{0}/{1}{2}'.format(repo_url, location, fname)
-            download(url, self.wgetprefix)
+            Download(url, self.dest).start()
         else:
             # download directory with source code and SlackBuild script
             replace_str = 'packages'
@@ -144,19 +138,11 @@ class DownloadPkg:
             location = location.replace(replace_str, 'source')
             url = '{0}/{1}{2}/'.format(repo_url, location, pkg)
 
-            download(url, self.wgetprefix,
-                     self.wgetdir.format(self.get_cut_dirs(url)))
+            dest_dir = '{0}{1}'.format(self.dest, pkg)
+            Download(url, dest_dir).start()
 
-            downdir = '{0}{1}'.format(self.wgetprefix, pkg)
-            if path.isdir(downdir):
-                self.set_chmod(downdir)
-
-    @staticmethod
-    def get_pkg_location(location: str) -> str:
-        """
-        return location package in repository
-        """
-        return '{0}/'.format(location) if location else ''
+            if path.isdir(dest_dir):
+                self.set_chmod(dest_dir)
 
     def download_sbo(self, pkg: str, pkgdata: list) -> None:
         """
@@ -171,39 +157,36 @@ class DownloadPkg:
                                       pkgdata[1],
                                       fname)
         # downloading SlackBuild script
-        download(url, self.wgetprefix)
+        Download(url, self.dest).start()
 
         # before unpack archive:
         # if dir with name pkg already exists remove it
-        slackbuil_dir = '{0}{1}/'.format(self.wgetprefix, pkg)
+        slackbuil_dir = '{0}{1}/'.format(self.dest, pkg)
         if path.isdir(slackbuil_dir):
             rmtree(slackbuil_dir)
 
         # unpack SlackBuild archive
-        import tarfile
-        archive = '{0}{1}'.format(self.wgetprefix, fname)
-        tar = tarfile.open(archive)
-        tar.extractall(self.wgetprefix)
+        archive = '{0}{1}'.format(self.dest, fname)
+        tar = taropen(archive)
+        tar.extractall(self.dest)
         # remove archive
         remove(archive)
-        self.set_chmod(slackbuil_dir)
 
         # download sources
         for url in pkgdata[7]:
-            download(url, slackbuil_dir)
+            Download(url, slackbuil_dir).start()
 
     @staticmethod
-    def set_chmod(path_to_dir: str) -> None:
+    def set_chmod(dir_path: str, mode: int = 0o755) -> None:
         """
-        chmod 744 for *.SlackBuild and *.sh into dir
+        chmod (default: 0755) for *.SlackBuild, *.sh, *.csh, rc.d/rc.* into dir
         """
-        call(('find {0} -type f -a \\( '
-              '-name "*.SlackBuild" -o '
-              '-name "*.sh" -o '
-              '-name "*.build" \\) -a '
-              '! -name "doinst.sh" '
-              '-exec chmod 744 {{}} \\;').format(path_to_dir),
-             shell=True)
+        for script in get_all_files(dir_path):
+            if (script.endswith('.sh') or
+                    script.endswith('.csh') or
+                    script.endswith('.SlackBuild') or
+                    '/rc.d/rc.' in script):
+                chmod(script, 0o755)
 
     def get_pkg_data(self, pkg: str) -> list:
         """
@@ -224,18 +207,14 @@ class DownloadPkg:
         check exist package on repository
         """
         if pkg not in self.repodata['pkgs']:
-            from .utils import pkg_not_found_mess
             pkg_not_found_mess(pkg, self.repo)
             return False
 
         return True
 
     @staticmethod
-    def get_cut_dirs(url: str) -> int:
+    def get_pkg_location(location: str) -> str:
         """
-        return count cut dirs from url for wget, when download directory
+        return location package in repository
         """
-        if not url.endswith('/'):
-            url += '/'
-
-        return len(url.split('/')[3:-2])
+        return '{0}/'.format(location) if location else ''

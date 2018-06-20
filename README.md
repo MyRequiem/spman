@@ -24,10 +24,9 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 ##### Requirements:
 * Slackware Linux
 * GNU coreutils
-* GNU diffutils
-* GNU wget
 * pkgtools
 * Python 3.0+ (available on SlackBuilds.org)
+* python-requests (available on SlackBuilds.org)
 
 ##### Optional dependencies:
 * bash-completion - for autocomplete the input parameters (from standard Slackware repository, group extra)

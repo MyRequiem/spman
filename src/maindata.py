@@ -101,7 +101,6 @@ class MainData:
             'BUILD_PATH': '/root/{0}/build/'.format(self.prog_name),
             'OUTPUT_PATH': '/root/{0}/build/'.format(self.prog_name),
             'PKGTYPE': 'txz',
-            'WGET_OPT': '--no-check-certificate --passive-ftp -ct 0 -w 2 -N'
         }
 
         for opt in default_opt:

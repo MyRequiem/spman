@@ -43,9 +43,6 @@ class DownloadPkg:
         self.repo_url = self.meta.get_repo_dict()[self.repo]
         self.repodata = GetRepoData(self.repo).start()
         self.dest = self.spman_conf['BUILD_PATH']
-        self.wgetdir = ('--no-check-certificate -r -nH -ct 0 -w 2 -l 10 '
-                        '--cut-dirs={0} --no-parent -R *.meta4,*.mirrorlist,'
-                        'index.html*')
 
     def start(self) -> None:
         """

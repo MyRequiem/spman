@@ -16,8 +16,6 @@
 Utils
 """
 
-from shutil import rmtree
-
 from .maindata import MainData
 
 
@@ -46,60 +44,6 @@ def pkg_not_found_mess(pkgname: str, reponame: str) -> None:
                                     pkgname,
                                     reponame,
                                     meta.clrs['reset']))
-
-
-def download(url: str, prefix: str, wgetparam: str = '',
-             show_process: bool = True,
-             del_if_exists: bool = True,
-             deps_param: str = '') -> None:
-    """
-    download file/dir
-    """
-    from os import (
-        path,
-        remove
-    )
-
-    # download dir, not file
-    downdir = True if wgetparam else False
-    if downdir and not url.endswith('/'):
-        url += '/'
-
-    # name of download file or dir
-    fname = url.split('/')[-2] if downdir else url.split('/')[-1]
-    # full path to file or dir
-    fpath = '{0}{1}'.format(prefix, fname)
-
-    # remove file/dir if already exists
-    if del_if_exists:
-        if not downdir and path.isfile(fpath):
-            remove(fpath)
-        elif downdir and path.isdir(fpath):
-            rmtree(fpath)
-
-    meta = MainData()
-    if show_process:
-        string = 'directory' if downdir else 'file'
-        print('{0}Downloading {1}:{2} {3}'.format(meta.clrs['lyellow'],
-                                                  string,
-                                                  meta.clrs['reset'],
-                                                  url))
-        print('{0}in {1}{2}'.format(meta.clrs['grey'],
-                                    prefix,
-                                    meta.clrs['reset']))
-
-    from subprocess import call
-    wgetprm = meta.get_spman_conf()['WGET_OPT'] if not downdir else wgetparam
-    call('wget {0} --directory-prefix={1} {2}{3}'.format(wgetprm,
-                                                         prefix,
-                                                         url,
-                                                         deps_param),
-         shell=True)
-
-    if ((not downdir and not path.isfile(fpath)) or
-            (downdir and not path.isdir(fpath))):
-        print('{0}Failed download !!!{1}'.format(meta.clrs['red'],
-                                                 meta.clrs['reset']))
 
 
 def get_all_files(pathdir: str) -> list:

@@ -100,8 +100,8 @@ class GetRepoData:
 
         # read ALL-PACKAGES.TXT
         if self.reponame == 'slack':
-            parts = dfile.split('/')
-            dfile = '{0}/ALL-{1}'.format('/'.join(parts[:-1]), parts[-1])
+            from os import path
+            dfile = '{0}/ALL-{1}'.format(path.dirname(dfile), fname)
             with open(dfile) as datafile:
                 for line in datafile:
                     self.get_non_sbo_data(line)

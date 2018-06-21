@@ -1,3 +1,7 @@
+2.0.0 []
+
+Added the ability to continue downloading partially downloaded files.
+
 1.5.4 [09.06.18]
 The reference for multilib repository has been changed (etc/spman/repo-list)
 Added new parameter: -m, --upgrade-pkgs [--only-new]

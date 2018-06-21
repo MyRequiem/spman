@@ -17,13 +17,12 @@ Download packages or sources (SlackBuilds)
 """
 
 from os import chmod, path, remove
-from shutil import rmtree
 from tarfile import open as taropen
 
 from .download import Download
 from .getrepodata import GetRepoData
 from .maindata import MainData
-from .utils import get_all_files, pkg_not_found_mess
+from .utils import get_all_files, pkg_not_found_mess, url_is_alive
 
 
 class DownloadPkg:
@@ -134,10 +133,259 @@ class DownloadPkg:
 
             location = location.replace(replace_str, 'source')
             url = '{0}/{1}{2}/'.format(repo_url, location, pkg)
-
             dest_dir = '{0}{1}'.format(self.dest, pkg)
-            Download(url, dest_dir).start()
 
+            # packages from source/x/x11 (no patches)
+            if location.endswith('/x/'):
+                httpresponse = url_is_alive(url)
+                if httpresponse:
+                    httpresponse.close()
+                else:
+                    location = location + 'x11/'
+                    url = '{0}/{1}'.format(repo_url, location)
+
+                    for xdir in ['build', 'configure', 'doinst.sh', 'makepkg']:
+                        print(('{0}Search for file: {1}{2}/{3}'
+                               '{4}').format(self.meta.clrs['grey'],
+                                             location,
+                                             xdir,
+                                             pkg,
+                                             self.meta.clrs['reset']))
+                        xurl = '{0}{1}/{2}'.format(url, xdir, pkg)
+                        httpresponse = url_is_alive(xurl)
+                        if httpresponse:
+                            httpresponse.close()
+                            Download(xurl, '{0}/{1}'.format(dest_dir,
+                                                            xdir)).start()
+                        else:
+                            if xdir == 'configure':
+                                print(('{0}Downloading: configure'
+                                       '{1}').format(self.meta.clrs['grey'],
+                                                     self.meta.clrs['reset']))
+                                Download(xurl.replace(pkg, xdir),
+                                         '{0}/{1}'.format(dest_dir,
+                                                          xdir)).start()
+
+                    for xdir in ['patch', 'post-install']:
+                        print(('{0}Search for directory: {1}{2}/{3}/'
+                               '{4}').format(self.meta.clrs['grey'],
+                                             location,
+                                             xdir,
+                                             pkg,
+                                             self.meta.clrs['reset']))
+                        xurl = '{0}{1}/{2}'.format(url, xdir, pkg)
+                        httpresponse = url_is_alive(xurl)
+                        if httpresponse:
+                            httpresponse.close()
+                            Download(xurl, '{0}/{1}/{2}'.format(dest_dir,
+                                                                xdir,
+                                                                pkg)).start()
+
+                        print(('{0}Search for file: {1}{2}/{3}.{2}'
+                               '{4}').format(self.meta.clrs['grey'],
+                                             location,
+                                             xdir,
+                                             pkg,
+                                             self.meta.clrs['reset']))
+                        xurl = '{0}{1}/{2}.{1}'.format(url, xdir, pkg)
+                        httpresponse = url_is_alive(xurl)
+                        if httpresponse:
+                            httpresponse.close()
+                            Download(xurl, '{0}/{1}'.format(dest_dir,
+                                                            xdir)).start()
+
+                    xdir = 'slack-desc'
+                    print(('{0}Downloading: {1}'
+                           '{2}').format(self.meta.clrs['grey'],
+                                         xdir,
+                                         self.meta.clrs['reset']))
+                    xurl = '{0}{1}/{2}'.format(url, xdir, pkg)
+                    Download(xurl, '{0}/{1}'.format(dest_dir, xdir)).start()
+
+                    # source code
+                    source = '{0}-{1}.tar.xz'.format(pkg, pkgdata[0][1])
+                    print(('{0}Search for source code: '
+                           '{1}{2}').format(self.meta.clrs['grey'],
+                                            source,
+                                            self.meta.clrs['reset']))
+                    for xdir in ['src/app', 'src/data', 'src/doc',
+                                 'src/driver', 'src/font', 'src/lib',
+                                 'src/proto', 'src/util', 'src/xcb',
+                                 'src/xserver']:
+                        print(('{0}Scan directory: {1}{2}/'
+                               '{3}').format(self.meta.clrs['grey'],
+                                             location,
+                                             xdir,
+                                             self.meta.clrs['reset']))
+                        xurl = '{0}{1}/{2}'.format(url, xdir, source)
+                        httpresponse = url_is_alive(xurl)
+                        if httpresponse:
+                            httpresponse.close()
+                            Download(xurl, '{0}/{1}'.format(dest_dir,
+                                                            xdir)).start()
+                            break
+
+                    for script in ['arch.use.flags', 'modularize', 'noarch',
+                                   'package-blacklist', 'x11.SlackBuild']:
+                        print(('{0}Downloading: {1}{2}'
+                               '{3}').format(self.meta.clrs['grey'],
+                                             location,
+                                             script,
+                                             self.meta.clrs['reset']))
+                        Download(url + script, dest_dir).start()
+
+                    if path.isdir(dest_dir):
+                        self.set_chmod(dest_dir)
+                    return
+            elif location.endswith('/kde/'):
+                url = '{0}/{1}'.format(repo_url, location)
+                for kdir in ['build', 'cmake', 'docs', 'doinst.sh', 'makepkg']:
+                    print(('{0}Search for file: {1}{2}/{3}'
+                           '{4}').format(self.meta.clrs['grey'],
+                                         location,
+                                         kdir,
+                                         pkg,
+                                         self.meta.clrs['reset']))
+                    xurl = '{0}{1}/{2}'.format(url, kdir, pkg)
+                    httpresponse = url_is_alive(xurl)
+                    if httpresponse:
+                        httpresponse.close()
+                        Download(xurl, '{0}/{1}'.format(dest_dir,
+                                                        kdir)).start()
+                    else:
+                        if kdir == 'cmake':
+                            for file_ in [kdir, 'kdeaccessibility', 'kdeadmin',
+                                          'kdebase', 'kdebindings']:
+                                print(('{0}Downloading: {1}{2}/{3}'
+                                       '{4}').format(self.meta.clrs['grey'],
+                                                     location,
+                                                     kdir,
+                                                     file_,
+                                                     self.meta.clrs['reset']))
+                                xurl = '{0}{1}/{2}'.format(url, kdir, file_)
+                                Download(xurl, '{0}/{1}'.format(dest_dir,
+                                                                kdir)).start()
+
+                kdir = 'modules'
+                xurl = '{0}{1}'.format(url, kdir)
+                print(('{0}Downloading directory: {1}{2}/'
+                       '{3}').format(self.meta.clrs['grey'],
+                                     location,
+                                     kdir,
+                                     self.meta.clrs['reset']))
+                Download(xurl, '{0}/{1}'.format(dest_dir, kdir)).start()
+
+                for kdir in ['patch', 'post-install', 'pre-install']:
+                    print(('{0}Search for directory: {1}{2}/{3}/'
+                           '{4}').format(self.meta.clrs['grey'],
+                                         location,
+                                         kdir,
+                                         pkg,
+                                         self.meta.clrs['reset']))
+                    xurl = '{0}{1}/{2}'.format(url, kdir, pkg)
+                    httpresponse = url_is_alive(xurl)
+                    if httpresponse:
+                        httpresponse.close()
+                        Download(xurl, '{0}/{1}/{2}'.format(dest_dir,
+                                                            kdir,
+                                                            pkg)).start()
+
+                    print(('{0}Search for file: {1}{2}/{3}.{2}'
+                           '{4}').format(self.meta.clrs['grey'],
+                                         location,
+                                         kdir,
+                                         pkg,
+                                         self.meta.clrs['reset']))
+                    xurl = '{0}{1}/{2}.{1}'.format(url, kdir, pkg)
+                    httpresponse = url_is_alive(xurl)
+                    if httpresponse:
+                        httpresponse.close()
+                        Download(xurl, '{0}/{1}'.format(dest_dir,
+                                                        kdir)).start()
+
+                kdir = 'slack-desc'
+                print(('{0}Downloading: {1}'
+                       '{2}').format(self.meta.clrs['grey'],
+                                     kdir,
+                                     self.meta.clrs['reset']))
+                xurl = '{0}{1}/{2}'.format(url, kdir, pkg)
+                Download(xurl, '{0}/{1}'.format(dest_dir, kdir)).start()
+
+                # source code
+                source = '{0}-{1}.tar.xz'.format(pkg, pkgdata[0][1])
+                print(('{0}Search for source code: '
+                       '{1}{2}').format(self.meta.clrs['grey'],
+                                        source,
+                                        self.meta.clrs['reset']))
+                for kdir in ['src', 'src/extragear']:
+                    print(('{0}Scan directory: {1}{2}/'
+                           '{3}').format(self.meta.clrs['grey'],
+                                         location,
+                                         kdir,
+                                         self.meta.clrs['reset']))
+                    xurl = '{0}{1}/{2}'.format(url, kdir, source)
+                    httpresponse = url_is_alive(xurl)
+                    if httpresponse:
+                        httpresponse.close()
+                        Download(xurl, '{0}/{1}'.format(dest_dir,
+                                                        kdir)).start()
+                        break
+
+                for script in ['KDE.SlackBuild', 'KDE.options', 'modularize',
+                               'noarch', 'package-blacklist']:
+                    print(('{0}Downloading: {1}{2}'
+                           '{3}').format(self.meta.clrs['grey'],
+                                         location,
+                                         script,
+                                         self.meta.clrs['reset']))
+                    Download(url + script, dest_dir).start()
+
+                if path.isdir(dest_dir):
+                    self.set_chmod(dest_dir)
+                return
+            elif location.endswith('/kdei/'):
+                short_pkg_name = '-'.join(pkg.split('-')[:-1])
+                url = '{0}/{1}{2}'.format(repo_url, location, short_pkg_name)
+
+                kdir = 'slack-desc'
+                print(('{0}Downloading: {1}'
+                       '{2}').format(self.meta.clrs['grey'],
+                                     kdir,
+                                     self.meta.clrs['reset']))
+                Download('{0}/{1}/{1}.{2}'.format(url, kdir, pkg),
+                         '{0}/{1}'.format(dest_dir, kdir)).start()
+
+                for script in ['{0}.SlackBuild'.format(short_pkg_name),
+                               'languages']:
+                    print(('{0}Downloading file: {1}'
+                           '{2}').format(self.meta.clrs['grey'],
+                                         script,
+                                         self.meta.clrs['reset']))
+                    Download('{0}/{1}'.format(url, script), dest_dir).start()
+
+                source = '{0}-{1}.tar.xz'.format(pkg, pkgdata[0][1])
+                print(('{0}Download source code: {1}'
+                       '{2}').format(self.meta.clrs['grey'],
+                                     source,
+                                     self.meta.clrs['reset']))
+                Download('{0}/{1}'.format(url, source), dest_dir).start()
+
+                if short_pkg_name == 'kde-l10n':
+                    for kdir in ['kdepim-l10n', 'local.options']:
+                        print(('{0}Download directory: {1}{2}/{3}/'
+                               '{4}').format(self.meta.clrs['grey'],
+                                             location,
+                                             short_pkg_name,
+                                             kdir,
+                                             self.meta.clrs['reset']))
+                        Download('{0}/{1}'.format(url, kdir),
+                                 '{0}/{1}'.format(dest_dir, kdir)).start()
+
+                if path.isdir(dest_dir):
+                    self.set_chmod(dest_dir)
+                return
+
+            Download(url, dest_dir).start()
             if path.isdir(dest_dir):
                 self.set_chmod(dest_dir)
 
@@ -155,23 +403,15 @@ class DownloadPkg:
                                       fname)
         # downloading SlackBuild script
         Download(url, self.dest).start()
-
-        # before unpack archive:
-        # if dir with name pkg already exists remove it
-        slackbuil_dir = '{0}{1}/'.format(self.dest, pkg)
-        if path.isdir(slackbuil_dir):
-            rmtree(slackbuil_dir)
-
         # unpack SlackBuild archive
         archive = '{0}{1}'.format(self.dest, fname)
         tar = taropen(archive)
         tar.extractall(self.dest)
         # remove archive
         remove(archive)
-
         # download sources
         for url in pkgdata[7]:
-            Download(url, slackbuil_dir).start()
+            Download(url, '{0}{1}/'.format(self.dest, pkg)).start()
 
     @staticmethod
     def set_chmod(dir_path: str, mode: int = 0o755) -> None:

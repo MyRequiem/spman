@@ -104,6 +104,9 @@ class Update:
             repo_downloaded = False
             dest_repo = '{0}{1}/'.format(self.spman_conf['REPOS_PATH'], repo)
             if not path.isfile(repo_file):
+                print('{0}Downloading {1}{2}'.format(self.meta.clrs['grey'],
+                                                     repo_txt,
+                                                     self.meta.clrs['reset']))
                 Download(repo_url, dest_repo).start()
                 repo_downloaded = True
 
@@ -111,18 +114,19 @@ class Update:
             log_downloaded = False
             dest_log = '{0}{1}/'.format(self.spman_conf['LOGS_PATH'], repo)
             if not path.isfile(log_file):
+                print('{0}Downloading {1}{2}'.format(self.meta.clrs['grey'],
+                                                     log_txt,
+                                                     self.meta.clrs['reset']))
                 Download(log_url, dest_log).start()
                 log_downloaded = True
 
             if not repo_downloaded or not log_downloaded:
                 print(('{0}Comparison of remote and '
-                       'local log...{1}').format(self.meta.clrs['grey'],
-                                                 self.meta.clrs['reset']),
-                      end='')
+                       'local log{1}').format(self.meta.clrs['grey'],
+                                              self.meta.clrs['reset']))
 
                 if (not self.check_file_size(repo_file, repo_url) or
                         not self.check_file_size(log_file, log_url)):
-                    print()
                     # if repository == 'multilib' show diff PACKAGES.TXT
                     # otherwise show diff ChangeLog.txt
                     if repo == 'multilib':
@@ -136,8 +140,8 @@ class Update:
                                                     log_url,
                                                     dest_log)
                 else:
-                    print(' {0}Ok{1}'.format(self.meta.clrs['green'],
-                                             self.meta.clrs['reset'],))
+                    print('{0}No updates{1}'.format(self.meta.clrs['grey'],
+                                                    self.meta.clrs['reset']))
 
             # ALL-PACKAGES.TXT for repository 'slack'
             if repo == 'slack':
@@ -159,9 +163,17 @@ class Update:
         """
         # rename old file
         old_file = '{0}_old'.format(file_path)
-        rename(file_path, old_file)
+        try:
+            rename(file_path, old_file)
+        except FileNotFoundError:
+            return
+
         # download new file
         Download(remote_url, dest).start()
+        if not path.isfile(file_path):
+            remove(old_file)
+            return
+
         # show diff
         print('\n{0}Diff:{1}'.format(self.meta.clrs['lmagenta'],
                                      self.meta.clrs['reset']))

@@ -104,9 +104,7 @@ class Update:
             repo_downloaded = False
             dest_repo = '{0}{1}/'.format(self.spman_conf['REPOS_PATH'], repo)
             if not path.isfile(repo_file):
-                print('{0}Downloading {1}{2}'.format(self.meta.clrs['grey'],
-                                                     repo_txt,
-                                                     self.meta.clrs['reset']))
+                self.show_download_mess(repo_txt)
                 Download(repo_url, dest_repo).start()
                 repo_downloaded = True
 
@@ -114,9 +112,7 @@ class Update:
             log_downloaded = False
             dest_log = '{0}{1}/'.format(self.spman_conf['LOGS_PATH'], repo)
             if not path.isfile(log_file):
-                print('{0}Downloading {1}{2}'.format(self.meta.clrs['grey'],
-                                                     log_txt,
-                                                     self.meta.clrs['reset']))
+                self.show_download_mess(log_txt)
                 Download(log_url, dest_log).start()
                 log_downloaded = True
 
@@ -130,11 +126,13 @@ class Update:
                     # if repository == 'multilib' show diff PACKAGES.TXT
                     # otherwise show diff ChangeLog.txt
                     if repo == 'multilib':
+                        self.show_download_mess(log_txt)
                         Download(log_url, dest_log, True).start()
                         self.download_and_show_diff(repo_file,
                                                     repo_url,
                                                     dest_repo)
                     else:
+                        self.show_download_mess(repo_txt)
                         Download(repo_url, dest_repo, True).start()
                         self.download_and_show_diff(log_file,
                                                     log_url,
@@ -150,6 +148,10 @@ class Update:
                 repo_url = '{0}/{1}'.format(rep, repo_txt)
                 if (not path.isfile(repo_file) or
                         not self.check_file_size(repo_file, repo_url)):
+                    print(('{0}Downloading {1} for all '
+                           'repository{2}').format(self.meta.clrs['grey'],
+                                                   repo_txt,
+                                                   self.meta.clrs['reset']))
                     Download(repo_url, dest_repo, True, all_repo_txt).start()
 
         print()
@@ -169,7 +171,8 @@ class Update:
             return
 
         # download new file
-        Download(remote_url, dest).start()
+        self.show_download_mess(path.basename(file_path))
+        Download(remote_url, dest, True).start()
         if not path.isfile(file_path):
             remove(old_file)
             return
@@ -210,6 +213,11 @@ class Update:
             file_new.close()
 
         remove(old_file)
+
+    def show_download_mess(self, mess: str) -> None:
+        print(('{0}Downloading {1}{2}').format(self.meta.clrs['grey'],
+                                               mess,
+                                               self.meta.clrs['reset']))
 
     def check_file_size(self, file_path: str, remote_url: str) -> bool:
         """

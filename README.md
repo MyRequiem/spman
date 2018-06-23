@@ -6,11 +6,11 @@
 ##### Main features:
 * check packages for upgrade
 * download package or source code from allowed repositories
-* download, build and install package(s) in the queue from SBo repository
-* upgrade packages in the current directory
-* remove packages in the current directory
+* download, build and install packages in the queue from SBo repository
+* remove/upgrade packages in the current directory
+* view the history of installing/updating/removing packages
 * show list all dependencies for package from SBo repository
-* view the contents of files included in SlackBuild archive
+* view the contents of files included in SlackBuild archive from Sbo repository
 * search package from each enabled repository and view info
 * show complete list of the packages in the repository
 * search dependency problems in the system packages using Slackware binary dependency checker (sbbdep) tool or ldd
@@ -142,6 +142,12 @@ Download, build and install package(s) in the queue from SlackBuilds.org
 
 ![queue][15]
 
+##### -y, --history [--update]
+View the history of installing/updating/removing packages
+* `--update` - update the package database (reset history)
+
+![history][29]
+
 #####  -p, --find-deps pkgname
 Show list all dependencies for package from 'sbo' repository. Installed packages are highlighted in green:
 
@@ -212,3 +218,4 @@ Search for links to nonexistent files/dirs in the specified directory.
 [26]: https://slackbuilds.org/repository/14.2/system/spman/
 [27]: https://github.com/MyRequiem/spman/raw/master/imgs/remove-pkgs.png
 [28]: https://github.com/MyRequiem/spman/raw/master/imgs/upgrade-pkgs.png
+[29]: https://github.com/MyRequiem/spman/raw/master/imgs/history.png

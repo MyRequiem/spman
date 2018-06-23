@@ -1,6 +1,10 @@
-2.0.0 []
-
+2.0.0 [24.06.18]
+Added new parameter: -y, --history [--update]
+Deleted dependencies: GNU wget and GNU diff
+Added dependency: python-requests
 Added the ability to continue downloading partially downloaded files.
+Added full support for the repository 'slack' (previously only updated packages
+from the directory /patches were supported)
 
 1.5.4 [09.06.18]
 The reference for multilib repository has been changed (etc/spman/repo-list)

@@ -203,7 +203,10 @@ class Download:
                                       new_name,
                                       self.meta.clrs['reset']))
 
-        if first_byte >= file_size:
+        if not file_size and path.isfile(local_file):
+            remove(local_file)
+
+        if file_size and first_byte >= file_size:
             print(('{0}{1} {2}is already fully '
                    'downloaded{3}').format(self.meta.clrs['cyan'],
                                            local_file,

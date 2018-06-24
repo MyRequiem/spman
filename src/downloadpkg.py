@@ -159,9 +159,6 @@ class DownloadPkg:
                                                             xdir)).start()
                         else:
                             if xdir == 'configure':
-                                print(('{0}Downloading: configure'
-                                       '{1}').format(self.meta.clrs['grey'],
-                                                     self.meta.clrs['reset']))
                                 Download(xurl.replace(pkg, xdir),
                                          '{0}/{1}'.format(dest_dir,
                                                           xdir)).start()
@@ -195,10 +192,11 @@ class DownloadPkg:
                                                             xdir)).start()
 
                     xdir = 'slack-desc'
-                    print(('{0}Downloading: {1}'
-                           '{2}').format(self.meta.clrs['grey'],
+                    print(('{0}Search for file: {1}{2}/{3}'
+                           '{4}').format(self.meta.clrs['grey'],
+                                         location,
                                          xdir,
-                                         self.meta.clrs['reset']))
+                                         pkg, self.meta.clrs['reset']))
                     xurl = '{0}{1}/{2}'.format(url, xdir, pkg)
                     Download(xurl, '{0}/{1}'.format(dest_dir, xdir)).start()
 
@@ -227,11 +225,6 @@ class DownloadPkg:
 
                     for script in ['arch.use.flags', 'modularize', 'noarch',
                                    'package-blacklist', 'x11.SlackBuild']:
-                        print(('{0}Downloading: {1}{2}'
-                               '{3}').format(self.meta.clrs['grey'],
-                                             location,
-                                             script,
-                                             self.meta.clrs['reset']))
                         Download(url + script, dest_dir).start()
 
                     if path.isdir(dest_dir):
@@ -256,23 +249,12 @@ class DownloadPkg:
                         if kdir == 'cmake':
                             for file_ in [kdir, 'kdeaccessibility', 'kdeadmin',
                                           'kdebase', 'kdebindings']:
-                                print(('{0}Downloading: {1}{2}/{3}'
-                                       '{4}').format(self.meta.clrs['grey'],
-                                                     location,
-                                                     kdir,
-                                                     file_,
-                                                     self.meta.clrs['reset']))
                                 xurl = '{0}{1}/{2}'.format(url, kdir, file_)
                                 Download(xurl, '{0}/{1}'.format(dest_dir,
                                                                 kdir)).start()
 
                 kdir = 'modules'
                 xurl = '{0}{1}'.format(url, kdir)
-                print(('{0}Downloading directory: {1}{2}/'
-                       '{3}').format(self.meta.clrs['grey'],
-                                     location,
-                                     kdir,
-                                     self.meta.clrs['reset']))
                 Download(xurl, '{0}/{1}'.format(dest_dir, kdir)).start()
 
                 for kdir in ['patch', 'post-install', 'pre-install']:
@@ -304,9 +286,11 @@ class DownloadPkg:
                                                         kdir)).start()
 
                 kdir = 'slack-desc'
-                print(('{0}Downloading: {1}'
-                       '{2}').format(self.meta.clrs['grey'],
+                print(('{0}Search for file: {1}{2}/{3}'
+                       '{4}').format(self.meta.clrs['grey'],
+                                     location,
                                      kdir,
+                                     pkg,
                                      self.meta.clrs['reset']))
                 xurl = '{0}{1}/{2}'.format(url, kdir, pkg)
                 Download(xurl, '{0}/{1}'.format(dest_dir, kdir)).start()
@@ -333,11 +317,6 @@ class DownloadPkg:
 
                 for script in ['KDE.SlackBuild', 'KDE.options', 'modularize',
                                'noarch', 'package-blacklist']:
-                    print(('{0}Downloading: {1}{2}'
-                           '{3}').format(self.meta.clrs['grey'],
-                                         location,
-                                         script,
-                                         self.meta.clrs['reset']))
                     Download(url + script, dest_dir).start()
 
                 if path.isdir(dest_dir):
@@ -348,23 +327,29 @@ class DownloadPkg:
                 url = '{0}/{1}{2}'.format(repo_url, location, short_pkg_name)
 
                 kdir = 'slack-desc'
-                print(('{0}Downloading: {1}'
-                       '{2}').format(self.meta.clrs['grey'],
+                print(('{0}Search for file: {1}{2}/{2}.{3}'
+                       '{4}').format(self.meta.clrs['grey'],
+                                     location,
                                      kdir,
+                                     pkg,
                                      self.meta.clrs['reset']))
                 Download('{0}/{1}/{1}.{2}'.format(url, kdir, pkg),
                          '{0}/{1}'.format(dest_dir, kdir)).start()
 
-                for script in ['{0}.SlackBuild'.format(short_pkg_name),
-                               'languages']:
-                    print(('{0}Downloading file: {1}'
-                           '{2}').format(self.meta.clrs['grey'],
-                                         script,
-                                         self.meta.clrs['reset']))
-                    Download('{0}/{1}'.format(url, script), dest_dir).start()
+                Download('{0}/{1}'.format(url,
+                                          short_pkg_name + '.SlackBuild'),
+                         dest_dir).start()
+
+                lang_path = dest_dir + '/languages'
+                print('{0}Creating {1}{2}'.format(self.meta.clrs['grey'],
+                                                  lang_path,
+                                                  self.meta.clrs['reset']))
+                lang = open(lang_path, 'w')
+                lang.write(pkg.split('-')[-1] + '\n')
+                lang.close()
 
                 source = '{0}-{1}.tar.xz'.format(pkg, pkgdata[0][1])
-                print(('{0}Download source code: {1}'
+                print(('{0}Source code: {1}'
                        '{2}').format(self.meta.clrs['grey'],
                                      source,
                                      self.meta.clrs['reset']))
@@ -372,12 +357,6 @@ class DownloadPkg:
 
                 if short_pkg_name == 'kde-l10n':
                     for kdir in ['kdepim-l10n', 'local.options']:
-                        print(('{0}Download directory: {1}{2}/{3}/'
-                               '{4}').format(self.meta.clrs['grey'],
-                                             location,
-                                             short_pkg_name,
-                                             kdir,
-                                             self.meta.clrs['reset']))
                         Download('{0}/{1}'.format(url, kdir),
                                  '{0}/{1}'.format(dest_dir, kdir)).start()
 

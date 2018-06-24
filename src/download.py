@@ -194,9 +194,10 @@ class Download:
 
         new_name = (' (renamed to: {0})'.format(self.new_file_name)
                     if self.new_file_name else '')
-        print(('{0}Downloading:{1} {2}{6}\nto: '
-               '{3}{4}{5}{6}').format(self.meta.clrs['lyellow'],
+        print(('{0}Downloading: {1}{2}{7}\nURL: {4}{3}{7}\nto: '
+               '{4}{5}{6}{7}').format(self.meta.clrs['lyellow'],
                                       self.meta.clrs['lblue'],
+                                      path.basename(url),
                                       url,
                                       self.meta.clrs['grey'],
                                       local_dir,

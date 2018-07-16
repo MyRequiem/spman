@@ -24,14 +24,10 @@ def check_main_deps() -> None:
     """
     Checking dependencies for program:
         - GNU coreutils
-        - GNU diffutils
-        - GNU wget
         - pkgtools
     """
     deps = {
         'coreutils': 'a/',
-        'diffutils': 'ap/',
-        'wget': 'n/',
         'pkgtools': 'a/'
     }
 

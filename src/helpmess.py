@@ -61,6 +61,9 @@ Usage: spman command [param[, param ...]]
       --clear{5}            clear queue
       --show{5}             print queue
       --install{5}          download, build and install package(s)
+{2} -y, --history [--update]{5}
+    View the history of installing/updating/removing packages
+      --update      - update the package database (reset history)
 {2} -p, --find-deps pkgname{5}
     Show list all dependencies for package from 'sbo' repository. Installed
     packages are highlighted in green.

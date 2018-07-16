@@ -25,10 +25,11 @@ class MainData:
     """
     def __init__(self):
         self.prog_name = 'spman'
-        self.prog_version = '1.5.4'
+        self.prog_version = '2.0.0'
         self.home_page = ('https://github.com/MyRequiem'
                           '/{0}').format(self.prog_name)
         self.mail = '<mrvladislavovich@gmail.com>'
+        self.pkg_db_name = 'pkg-db'
         self.pkgs_installed_path = '/var/log/packages/'
         self.configs_path = '/etc/{0}/'.format(self.prog_name)
         self.arch = machine()
@@ -100,7 +101,6 @@ class MainData:
             'BUILD_PATH': '/root/{0}/build/'.format(self.prog_name),
             'OUTPUT_PATH': '/root/{0}/build/'.format(self.prog_name),
             'PKGTYPE': 'txz',
-            'WGET_OPT': '--no-check-certificate --passive-ftp -ct 0 -w 2 -N'
         }
 
         for opt in default_opt:
@@ -130,7 +130,7 @@ class MainData:
         parts[0] = parts[0].strip()
         parts[1] = parts[1].strip()
         # add slash at the end of URL or path to dir (if not exist)
-        if parts[1].startswith('/') or parts[1].startswith('http://'):
+        if parts[1].startswith('/') or '://' in parts[1]:
             if not parts[1].endswith('/'):
                 parts[1] += '/'
         return [parts[0], parts[1]]

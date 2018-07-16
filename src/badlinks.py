@@ -16,7 +16,7 @@
 Find links to non-existent files/directories
 """
 
-from os import chdir, getcwd, path, readlink
+from os import getcwd, path, readlink, stat
 
 from .maindata import MainData
 from .utils import get_all_files
@@ -47,40 +47,45 @@ class BadLinks:
                                         self.meta.clrs['reset']))
             raise SystemExit
 
-        err_count = 0
-
         try:
             from tqdm import tqdm
         except ImportError:
-            def tqdm(*args):
-                return args[0]
+            def tqdm(*args, **kwargs):
+                if args:
+                    return args[0]
+                return kwargs.get('iterable', None)
 
-        for lnk in tqdm(get_all_files(self.pathdir)):
-            # if file is link
+        bad_links = []
+        for lnk in tqdm(get_all_files(self.pathdir), leave=False,
+                        ncols=80, unit=''):
             if path.islink(lnk):
-                # path to directory where the link
-                dirlink = path.dirname(lnk)
-                # go to directory with a link
-                if dirlink != getcwd():
-                    chdir(dirlink)
+                try:
+                    stat(lnk)
+                except FileNotFoundError:
+                    bad_links.append((lnk, readlink(lnk)))
 
-                dest = readlink(lnk)
-                if not path.isfile(dest) and not path.isdir(dest):
-                    err_count += 1
-                    print('{0}{1}{2}'.format(self.meta.clrs['red'],
-                                             lnk,
-                                             self.meta.clrs['reset']))
+        self.print_rezult(bad_links)
 
-        self.print_rezult(err_count)
-
-    def print_rezult(self, err_count: int) -> None:
+    def print_rezult(self, bad_links: list) -> None:
         """
         print rezult
         """
+        err_count = len(bad_links)
         if err_count:
-            print('\nIncorrect references in {0}: {1}'.format(self.pathdir,
-                                                              err_count),
-                  end='\n\n')
+            print(('{0}Incorrect references in {1}: '
+                   '{2}{3}{4}').format(self.meta.clrs['yellow'],
+                                       self.pathdir,
+                                       self.meta.clrs['lred'],
+                                       err_count,
+                                       self.meta.clrs['reset']))
+
+            for bad_link in bad_links:
+                print(('{0}{1}{4} -> '
+                       '{3}{2}{4}').format(self.meta.clrs['lcyan'],
+                                           bad_link[0],
+                                           bad_link[1],
+                                           self.meta.clrs['red'],
+                                           self.meta.clrs['reset']))
         else:
             print(('{0}Congratulations !!!\nNot found invalid '
                    'links in {1}{2}').format(self.meta.clrs['green'],

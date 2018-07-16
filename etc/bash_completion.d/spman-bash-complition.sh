@@ -6,8 +6,8 @@ _spman() {
 
     subcommands_main="--help --check-version --repolist --repoinfo --blacklist \
         --update --health --new-config --check-upgrade --download \
-        --upgrade-pkgs --remove-pkgs --queue --find-deps --view-slackbuild \
-        --find-pkg --check-deps --bad-links --pkglist"
+        --upgrade-pkgs --remove-pkgs --queue --history --find-deps \
+        --view-slackbuild --find-pkg --check-deps --bad-links --pkglist"
     subcommands_download="--pkg --src"
     subcommands_repo_pkg="alienbob multilib slack"
     subcommands_repo_src="alienbob sbo slack"
@@ -78,6 +78,13 @@ _spman() {
                     return 0
                     ;;
             esac
+            ;;
+
+        -y|--history)
+            if [[ ${COMP_CWORD} == 2 ]] ; then
+                COMPREPLY=($(compgen -W "--update" -- "${cur}"))
+                return 0
+            fi
             ;;
 
         -p|--find-deps)

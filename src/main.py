@@ -59,6 +59,8 @@ class Main:
             '--remove-pkgs': self.remove_pkgs,
             '-q': self.processing_queue,
             '--queue': self.processing_queue,
+            '-y': self.history,
+            '--history': self.history,
             '-p': self.find_deps,
             '--find-deps': self.find_deps,
             '-s': self.view_slackbuild,
@@ -97,11 +99,16 @@ class Main:
                     '--health',
                     '-w',
                     '--new-config',
+                    '-m',
+                    '--upgrade-pkgs',
+                    '-e',
+                    '--remove-pkgs',
                     '-k',
                     '--checkdeps',
                     '-a',
                     '--bad-links']
-            if len(self.args) > 1 or self.args[0] not in args:
+
+            if self.args[0] not in args:
                 from .majortests import MajorTests
                 MajorTests().start()
 
@@ -292,6 +299,23 @@ class Main:
                 Queue().remove(pkgs)
             else:
                 show_help_mess('error')
+
+    def history(self) -> None:
+        """
+        show/update package history
+        """
+        num_args = len(self.args)
+        if num_args > 2:
+            show_help_mess('error')
+
+        from .history import History
+        if num_args == 2:
+            if self.args[1] != '--update':
+                show_help_mess('error')
+            else:
+                History(True).start()
+        else:
+            History(False).start()
 
     def find_deps(self) -> None:
         """

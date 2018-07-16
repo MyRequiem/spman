@@ -6,11 +6,11 @@
 ##### Main features:
 * check packages for upgrade
 * download package or source code from allowed repositories
-* download, build and install package(s) in the queue from SBo repository
-* upgrade packages in the current directory
-* remove packages in the current directory
+* download, build and install packages in the queue from SBo repository
+* remove/upgrade packages in the current directory
+* view the history of installing/updating/removing packages
 * show list all dependencies for package from SBo repository
-* view the contents of files included in SlackBuild archive
+* view the contents of files included in SlackBuild archive from Sbo repository
 * search package from each enabled repository and view info
 * show complete list of the packages in the repository
 * search dependency problems in the system packages using Slackware binary dependency checker (sbbdep) tool or ldd
@@ -24,10 +24,9 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 ##### Requirements:
 * Slackware Linux
 * GNU coreutils
-* GNU diffutils
-* GNU wget
 * pkgtools
 * Python 3.0+ (available on SlackBuilds.org)
+* python-requests (available on SlackBuilds.org)
 
 ##### Optional dependencies:
 * bash-completion - for autocomplete the input parameters (from standard Slackware repository, group extra)
@@ -35,11 +34,11 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 * tqdm - show progress bar for some parameters (available on SlackBuilds.org)
 
 ##### Build and install:
-1. `~# wget https://github.com/MyRequiem/spman/archive/1.5.4/spman-1.5.4.tar.gz
-2. `~# tar -xvzf spman-1.5.4.tar.gz`
-3. `~# cd spman-1.5.4/slackbuild`
+1. `~# wget https://github.com/MyRequiem/spman/archive/2.0.0/spman-2.0.0.tar.gz
+2. `~# tar -xvzf spman-2.0.0.tar.gz`
+3. `~# cd spman-2.0.0/slackbuild`
 4. `~# ./spman.SlackBuild`
-5. `~# upgradepkg --install-new --reinstall /tmp/spman-1.5.4-*.t?z`
+5. `~# upgradepkg --install-new --reinstall /tmp/spman-2.0.0-*.t?z`
 
 ##### Usage:
 ##### -h, --help
@@ -143,6 +142,12 @@ Download, build and install package(s) in the queue from SlackBuilds.org
 
 ![queue][15]
 
+##### -y, --history [--update]
+View the history of installing/updating/removing packages
+* `--update` - update the package database (reset history)
+
+![history][29]
+
 #####  -p, --find-deps pkgname
 Show list all dependencies for package from 'sbo' repository. Installed packages are highlighted in green:
 
@@ -213,3 +218,4 @@ Search for links to nonexistent files/dirs in the specified directory.
 [26]: https://slackbuilds.org/repository/14.2/system/spman/
 [27]: https://github.com/MyRequiem/spman/raw/master/imgs/remove-pkgs.png
 [28]: https://github.com/MyRequiem/spman/raw/master/imgs/upgrade-pkgs.png
+[29]: https://github.com/MyRequiem/spman/raw/master/imgs/history.png

@@ -36,6 +36,7 @@ class MajorTests:
         """
         self.check_exists_dirs()
         self.check_exists_libs()
+        self.check_exists_db()
 
     def check_exists_dirs(self) -> None:
         """
@@ -72,14 +73,22 @@ class MajorTests:
         logs_path = self.spman_conf['LOGS_PATH']
         for repo in self.repos:
             pkg_file = 'SLACKBUILDS.TXT' if repo == 'sbo' else 'PACKAGES.TXT'
-            log_file = 'ChangeLog.txt'
             pkg_exist = path.isfile('{0}{1}/{2}'.format(repo_path,
                                                         repo,
                                                         pkg_file))
-            log_exist = path.isfile('{0}{1}/{2}'.format(logs_path,
-                                                        repo,
-                                                        log_file))
-            if not pkg_exist or not log_exist:
+            # check ALL-PACKAGES.TXT for slack repository
+            pkg_slack_all_exist = ''
+            if repo == 'slack':
+                pkg_file = 'ALL-{0}'.format(pkg_file)
+                pkg_slack_all_exist = path.isfile(('{0}{1}/'
+                                                   '{2}').format(repo_path,
+                                                                 repo,
+                                                                 pkg_file))
+
+            log_exist = path.isfile('{0}{1}/ChangeLog.txt'.format(logs_path,
+                                                                  repo))
+            if (not pkg_exist or not log_exist or
+                    (repo == 'slack' and not pkg_slack_all_exist)):
                 print(('{0}For some repositories missing files PACKAGES.TXT, '
                        'SLACKBUILDS.txt or ChangeLog.txt\n{1}\'spman -u\' or '
                        '\'spman --update\' for update '
@@ -87,3 +96,10 @@ class MajorTests:
                                                self.meta.clrs['grey'],
                                                self.meta.clrs['reset']))
                 raise SystemExit
+
+    def check_exists_db(self) -> None:
+        db_path = '{0}{1}'.format(self.spman_conf['REPOS_PATH'],
+                                  self.meta.pkg_db_name)
+        if not path.isfile(db_path):
+            from .utils import update_pkg_db
+            update_pkg_db(db_path)

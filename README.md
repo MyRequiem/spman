@@ -10,7 +10,7 @@
 * remove/upgrade packages in the current directory
 * view the history of installing/updating/removing packages
 * show list all dependencies for package from SBo repository
-* view the contents of files included in SlackBuild archive from Sbo repository
+* view the contents of files included in SlackBuild archive from SBo repository
 * search package from each enabled repository and view info
 * show complete list of the packages in the repository
 * search dependency problems in the system packages using Slackware binary dependency checker (sbbdep) tool or ldd

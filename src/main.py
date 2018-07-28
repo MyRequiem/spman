@@ -144,8 +144,28 @@ class Main:
         if len(self.args) > 1:
             show_help_mess('error')
 
-        from .update import Update
-        Update().start()
+        # checking internet connection
+        import socket
+        """
+        $ nmap 8.8.8.8
+        ...
+        Nmap scan report for google-public-dns-a.google.com (8.8.8.8)
+        53/tcp  open  domain
+        ...
+        """
+        host = '8.8.8.8'
+        port = 53
+        try:
+            socket.setdefaulttimeout(3)
+            socket.socket(socket.AF_INET,
+                          socket.SOCK_STREAM).connect((host, port))
+
+            from .update import Update
+            Update().start()
+        except Exception:
+            print(('{0}No internet '
+                   'connection !{1}').format(self.meta.clrs['red'],
+                                             self.meta.clrs['reset']))
 
     def show_info_repos(self) -> None:
         """

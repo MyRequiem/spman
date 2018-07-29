@@ -101,6 +101,8 @@ class MainData:
             'BUILD_PATH': '/root/{0}/build/'.format(self.prog_name),
             'OUTPUT_PATH': '/root/{0}/build/'.format(self.prog_name),
             'PKGTYPE': 'txz',
+            'TEST_CONNECTION_HOST': '8.8.8.8',
+            'TEST_CONNECTION_PORT': '53'
         }
 
         for opt in default_opt:

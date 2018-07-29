@@ -144,8 +144,10 @@ class Main:
         if len(self.args) > 1:
             show_help_mess('error')
 
-        from .update import Update
-        Update().start()
+        from .utils import check_internet_connection
+        if check_internet_connection():
+            from .update import Update
+            Update().start()
 
     def show_info_repos(self) -> None:
         """
@@ -164,8 +166,10 @@ class Main:
         if len(self.args) > 1:
             show_help_mess('error')
 
-        from .checkprgver import check_prg_ver
-        check_prg_ver()
+        from .utils import check_internet_connection
+        if check_internet_connection():
+            from .checkprgver import check_prg_ver
+            check_prg_ver()
 
     def check_health(self) -> None:
         """
@@ -239,8 +243,10 @@ class Main:
                   'from \'multilib\' repository')
             show_help_mess('error')
 
-        from .downloadpkg import DownloadPkg
-        DownloadPkg(mode, repo, pkglist).start()
+        from .utils import check_internet_connection
+        if check_internet_connection():
+            from .downloadpkg import DownloadPkg
+            DownloadPkg(mode, repo, pkglist).start()
 
     def upgrade_pkgs(self) -> None:
         """
@@ -287,7 +293,9 @@ class Main:
             elif self.args[1] == '--show':
                 Queue().show()
             elif self.args[1] == '--install':
-                Queue().install()
+                from .utils import check_internet_connection
+                if check_internet_connection():
+                    Queue().install()
             else:
                 show_help_mess('error')
 

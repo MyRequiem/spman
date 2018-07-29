@@ -1,3 +1,14 @@
+2.1.0 [29.07.18]
+For parameters:
+--check-version
+--update
+--download
+--queue --install
+--view-slackbuild
+added check Internet connection.
+Please check /etc/spman/spman.conf and change the parameters
+TEST_CONNECTION_HOST and TEST_CONNECTION_PORT if needed.
+
 2.0.0 [16.07.18]
 Added new parameter: -y, --history [--update]
 Deleted dependencies: GNU wget and GNU diff

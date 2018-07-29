@@ -25,7 +25,7 @@ class MainData:
     """
     def __init__(self):
         self.prog_name = 'spman'
-        self.prog_version = '2.0.0'
+        self.prog_version = '2.1.0'
         self.home_page = ('https://github.com/MyRequiem'
                           '/{0}').format(self.prog_name)
         self.mail = '<mrvladislavovich@gmail.com>'
@@ -101,6 +101,8 @@ class MainData:
             'BUILD_PATH': '/root/{0}/build/'.format(self.prog_name),
             'OUTPUT_PATH': '/root/{0}/build/'.format(self.prog_name),
             'PKGTYPE': 'txz',
+            'TEST_CONNECTION_HOST': '8.8.8.8',
+            'TEST_CONNECTION_PORT': '53'
         }
 
         for opt in default_opt:

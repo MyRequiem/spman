@@ -147,7 +147,7 @@ def update_pkg_db(db_path: str = '') -> None:
     pkgdb.close()
 
 
-def error_open_mess(url):
+def error_open_mess(url: str) -> None:
     """
     Displaying the error message
     """
@@ -191,3 +191,48 @@ def get_remote_file_size(url: str = '', httpresponse: object = False) -> int:
         httpresponse.close()
 
     return int(content_length) if content_length else 0
+
+
+def check_internet_connection() -> bool:
+    """
+    checking Internet connection
+    """
+    meta = MainData()
+    spman_conf = meta.get_spman_conf()
+    host = spman_conf['TEST_CONNECTION_HOST']
+    port = spman_conf['TEST_CONNECTION_PORT']
+
+    try:
+        port = int(port)
+    except ValueError:
+        print(('{0}{4}{5}.conf{3}: {1}port is not valid{2}\n'
+               'TEST_CONNECTION_PORT={6}{3}').format(meta.clrs['cyan'],
+                                                     meta.clrs['red'],
+                                                     meta.clrs['grey'],
+                                                     meta.clrs['reset'],
+                                                     meta.configs_path,
+                                                     meta.prog_name,
+                                                     port))
+        return False
+
+    try:
+        import socket
+
+        socket.setdefaulttimeout(3)
+        socket.socket(socket.AF_INET,
+                      socket.SOCK_STREAM).connect((host, port))
+        return True
+    except Exception:
+        print(('{0}No internet connection!{1}\nIP address and port '
+               'for verification: {3}{4}:{5}{1}\nCheck your internet '
+               'connection and see parameters\n{2}TEST_CONNECTION_HOST{1} '
+               'and {2}TEST_CONNECTION_PORT {1}in '
+               '{6}{7}.conf{3}').format(meta.clrs['red'],
+                                        meta.clrs['grey'],
+                                        meta.clrs['cyan'],
+                                        meta.clrs['reset'],
+                                        host,
+                                        port,
+                                        meta.configs_path,
+                                        meta.prog_name))
+        return False

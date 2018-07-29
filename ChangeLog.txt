@@ -5,7 +5,9 @@ For parameters:
 --download
 --queue --install
 --view-slackbuild
-added check Internet connection
+added check Internet connection.
+Please check /etc/spman/spman.conf and change the parameters
+TEST_CONNECTION_HOST and TEST_CONNECTION_PORT if needed.
 
 2.0.0 [16.07.18]
 Added new parameter: -y, --history [--update]

@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "SPMAN 1"
-.TH "SPMAN" "8" "2018-08-04" "System" "Linux User Manual"
+.TH "SPMAN" "8" "2018-08-05" "System" "Linux User Manual"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -149,67 +149,220 @@ Spman is a powerful Slackware package manager implemented on Python3
 and licensed under the \s-1MIT\s0 license.
 .PP
 Main futeares:
-.IP "\- check packages for upgrade" 2
-.IX Item "- check packages for upgrade"
-.PD 0
-.IP "\- download binary package or source code from allowed repositories" 2
-.IX Item "- download binary package or source code from allowed repositories"
-.IP "\- download, build and install packages in the queue from SBo repository" 2
-.IX Item "- download, build and install packages in the queue from SBo repository"
-.IP "\- remove/upgrade packages in the current directory" 2
-.IX Item "- remove/upgrade packages in the current directory"
-.IP "\- view the history of installing/updating/removing packages" 2
-.IX Item "- view the history of installing/updating/removing packages"
-.IP "\- show list all dependencies for package from SBo repository" 2
-.IX Item "- show list all dependencies for package from SBo repository"
-.IP "\- view the contents of files included in SlackBuild archive from SBo" 2
-.IX Item "- view the contents of files included in SlackBuild archive from SBo"
-.RS 2
-.IP " repository" 4
-.IX Item " repository"
-.RE
-.RS 2
-.RE
-.IP "\- search package from each enabled repository and view info" 2
-.IX Item "- search package from each enabled repository and view info"
-.IP "\- show complete list of the packages in the repository" 2
-.IX Item "- show complete list of the packages in the repository"
-.IP "\- search dependency problems in the system packages using Slackware" 2
-.IX Item "- search dependency problems in the system packages using Slackware"
-.RS 2
-.IP " binary dependency checker (sbbdep) tool or ldd" 4
-.IX Item " binary dependency checker (sbbdep) tool or ldd"
-.RE
-.RS 2
-.RE
-.IP "\- search for links to nonexistent files/dir in the specified directory" 2
-.IX Item "- search for links to nonexistent files/dir in the specified directory"
-.IP "\- check health installed packages" 2
-.IX Item "- check health installed packages"
-.IP "\- search for *.new config files on the system" 2
-.IX Item "- search for *.new config files on the system"
-.IP "\- commands autocompletion" 2
-.IX Item "- commands autocompletion"
-.PD
+  \- check packages for upgrade
+  \- download binary package or source code from allowed repositories
+  \- download, build and install packages in the queue from SBo
+    repository
+  \- remove/upgrade packages in the current directory
+  \- view the history of installing/updating/removing packages
+  \- show list all dependencies for package from SBo repository
+  \- view the contents of files included in SlackBuild archive from SBo
+    repository
+  \- search package from each enabled repository and view info
+  \- show complete list of the packages in the repository
+  \- search dependency problems in the system packages using Slackware
+    binary dependency checker (sbbdep) tool or ldd
+  \- search for links to nonexistent files/dir in the specified
+    directory
+  \- check health installed packages
+  \- search for *.new config files on the system
+  \- commands autocompletion
 .PP
 Supported repositories:
-.IP "Slackware" 4
-.IX Item "Slackware"
-http://ftp.osuosl.org/.2/slackware/
-.IP "SlackBuilds.org" 4
-.IX Item "SlackBuilds.org"
-http://slackbuilds.org/slackbuilds/
-.IP "Alien Bob" 4
-.IX Item "Alien Bob"
-http://bear.alienbase.nl/mirrors/people/alien/sbrepos/
-.IP "Multilib" 4
-.IX Item "Multilib"
-http://bear.alienbase.nl/mirrors/people/alien/multilib/
+.PP
+.Vb 2
+\&  Slackware (slack)
+\&      http://ftp.osuosl.org/.2/slackware/
+\&
+\&  SlackBuilds.org (sbo)
+\&      http://slackbuilds.org/slackbuilds/
+\&
+\&  Alien Bob (alienbob)
+\&      http://bear.alienbase.nl/mirrors/people/alien/sbrepos/
+\&
+\&  Multilib (multilib)
+\&      http://bear.alienbase.nl/mirrors/people/alien/multilib/
+.Ve
 .SH "OPTIONS"
 .IX Header "OPTIONS"
-.IP "\-h, \-\-help" 4
-.IX Item "-h, --help"
-Print help message and exit
-.IP "\-v, \-\-check\-version" 4
-.IX Item "-v, --check-version"
-Check program version for update
+\&\fB\-h\fR, \fB\-\-help\fR
+    Print help message and exit.
+.PP
+\&\fB\-v\fR, \fB\-\-check\-version\fR
+    Check program version for update.
+.PP
+\&\fB\-l\fR, \fB\-\-repolist\fR
+    Print a list of all the repositories allowed in
+    /etc/spman/repo\-list. Disconnected repositories are
+    highlighted in red.
+.PP
+\&\fB\-r\fR, \fB\-\-repoinfo\fR
+    Show information about all active repositories:
+      \- name
+      \- \s-1URL
+      \-\s0 date of last update
+      \- number of packages in the repository
+      \- compressed packages size
+      \- uncompressed packages size
+.PP
+\&\fB\-b\fR, \fB\-\-blacklist\fR
+    Show blacklisted packages from /etc/spman/blacklist
+.PP
+\&\fB\-u\fR, \fB\-\-update\fR
+    Update local data for all repositories. The paths to the log files
+    and lists of packages are specified in /etc/spman/spman.conf
+    By default:
+        /var/log/spman/repo_name/ChangeLog.txt
+        /var/lib/spman/repo_name/PACKAGES.TXT (or \s-1SLACKBUILDS.TXT\s0)
+.PP
+.Vb 1
+\&        where repo_name: slack, sbo, alienbob or multilib
+\&
+\&    NOTE:
+\&        You must run command \*(Aqspman \-\-update\*(Aq immediately after
+\&        installing spman and configuring /etc/spman/spman.conf
+.Ve
+.PP
+\&\fB\-t\fR, \fB\-\-health\fR
+    Check the health of all installed packages on the system and
+    display detailed information:
+      \- total packages
+      \- number of broken packages
+      \- number of checked files
+      \- number of missing files
+      \- total health (%)
+.PP
+\&\fB\-w\fR, \fB\-\-new\-config\fR
+    Search for *.new config files on the system.
+.PP
+\&\fB\-g\fR, \fB\-\-check\-upgrade\fR
+    Check all installed packages for upgrade.
+.PP
+\&\fB\-d\fR, \fB\-\-download\fR \-\-pkg|\-\-src <reponame> <pkg>[ <pkg> ...]
+    Download binary package(s) or source code from specified
+    repository. Binary packages will be downloaded to the directory
+    specified in the \s-1BUILD_PATH\s0 parameter from /etc/spman/spman.conf
+    (default: /root/spman/build/). Source code and build scripts will
+    be downloaded to BUILD_PATH/pkg_name/ directory.
+.PP
+.Vb 3
+\&    NOTE:
+\&        only \*(Aq\-\-pkg\*(Aq for reposytory \*(Aqmultilib\*(Aq
+\&        only \*(Aq\-\-src\*(Aq for reposytory \*(Aqsbo\*(Aq
+\&
+\&    Examples:
+\&        Download flashplayer\-plugin package from alienbob repository:
+\&            # spman \-\-download \-\-pkg alienbob flashplayer\-plugin
+\&            # ls \-1 /root/spman/build/
+\&              flashplayer\-plugin\-30.0.0.134\-x86_64\-1alien.txz
+\&
+\&        Download emacs and kdelibs source code with SlackBuild script
+\&        from standard Slackware repository:
+\&            # spman \-\-download \-\-src slack emacs kdelibs
+\&            # ls \-1 /root/spman/build/
+\&              emacs/
+\&              kdelibs/
+.Ve
+.PP
+\&\fB\-m\fR, \fB\-\-upgrade\-pkgs\fR [\-\-only\-new]
+    Install/Upgrade packages in the current directory.
+.PP
+.Vb 3
+\&    \-\-only\-new
+\&      Packages already installed on the system with the same name,
+\&      version, build number and tag will not be reinstalled.
+.Ve
+.PP
+\&\fB\-e\fR, \fB\-\-remove\-pkgs\fR
+    If there are *.t?z packages in the current directory and they
+    are installed, then these packages will be removed from the
+    system.
+.PP
+\&\fB\-q\fR, \fB\-\-queue\fR \-\-add|\-\-remove|\-\-clear|\-\-show|\-\-install
+    Download, build and install SBo packages from the queue
+    (only sbo repository)
+.PP
+.Vb 5
+\&    \-\-add <pkg>[ <pkg> ...]    \- add package(s) to the queue
+\&    \-\-remove <pkg>[ <pkg> ...] \- remove package(s) from the queue
+\&    \-\-clear                    \- clear queue
+\&    \-\-show                     \- print queue
+\&    \-\-install                  \- download, build and install packages
+.Ve
+.PP
+\&\fB\-y\fR, \fB\-\-history\fR [\-\-update]
+    View the history of installing/updating/removing packages.
+.PP
+.Vb 2
+\&    \-\-update
+\&      Update the installed packages database (reset history).
+.Ve
+.PP
+\&\fB\-p\fR, \fB\-\-find\-deps\fR <pkg>
+    Show list all dependencies for package from SlackBuilds.org (sbo)
+    repository. The packages already installed in the system are
+    highlighted in green.
+.PP
+\&\fB\-s\fR, \fB\-\-view\-slackbuild\fR <pkg>
+    View the contents of files included in SlackBuild archive using
+    pager: \s-1README,\s0 doinst.sh, patches, slack-desc, <pkg>.SlackBuild,
+    <pkg>.info, etc.
+.PP
+\&\fB\-f\fR, \fB\-\-find\-pkg\fR [\-\-strict] <name_or_part_of_the_package_name>
+    Search for package (case-insensitive) from each enabled
+    repository and view info.
+.PP
+.Vb 2
+\&    \-\-strict
+\&      Strict match by package name.
+.Ve
+.PP
+\&\fB\-i\fR, \fB\-\-pkglist\fR <reponame> [\-\-only\-installed]
+    Show complete list of the packages on repository. The packages
+    already installed in the system are highlighted in green.
+.PP
+.Vb 2
+\&    \-\-only\-installed
+\&      Show only installed packages.
+.Ve
+.PP
+\&\fB\-k\fR, \fB\-\-check\-deps\fR \-\-sbbdep|\-\-ldd
+    Search for problems with dependencies in the system packages.
+.PP
+.Vb 2
+\&    \-\-sbbdep    \- using \*(Aqsbbdep\*(Aq tool
+\&    \-\-ldd       \- using \*(Aqldd\*(Aq
+.Ve
+.PP
+\&\fB\-a\fR, \fB\-\-bad\-links\fR <path_to_dir>
+    Search for links to nonexistent files/dir in the specified
+    directory.
+.SH "FILES"
+.IX Header "FILES"
+General configuration file:
+    /etc/spman/spman.conf
+.PP
+List of repositories:
+    /etc/spman/repo\-list
+.PP
+List of blacklisted packages:
+    /etc/spman/blacklist
+.PP
+Log files for each repository:
+    /var/log/spman/<repo>/ChangeLog.txt
+.PP
+Lists of packages for each repository:
+    /var/lib/spman/<repo>/PACKAGES.TXT (or \s-1SLACKBUILDS.TXT\s0)
+.PP
+List of installed packages
+    /var/lib/spman/pkg\-db
+    (generated by command 'spman \-\-history \-\-update')
+.SH "AUTHOR"
+.IX Header "AUTHOR"
+Vladimir MyRequiem <mrvladislavovich@gmail.com>
+.SH "HOMEPAGE"
+.IX Header "HOMEPAGE"
+https://github.com/MyRequiem/spman
+.SH "COPYRIGHT"
+.IX Header "COPYRIGHT"
+Copyright 2018 Vladimir MyRequiem

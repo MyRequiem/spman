@@ -14,175 +14,211 @@ Spman is a powerful Slackware package manager implemented on Python3
 and licensed under the MIT license.
 
 Main futeares:
-
-=over 2
-
-=item -
-check packages for upgrade
-
-=item -
-download binary package or source code from allowed repositories
-
-=item -
-download, build and install packages in the queue from SBo repository
-
-=item -
-remove/upgrade packages in the current directory
-
-=item -
-view the history of installing/updating/removing packages
-
-=item -
-show list all dependencies for package from SBo repository
-
-=item -
-view the contents of files included in SlackBuild archive from SBo
-
-=over 4
-
-=item
-repository
-
-=back
-
-=item -
-search package from each enabled repository and view info
-
-=item -
-show complete list of the packages in the repository
-
-=item -
-search dependency problems in the system packages using Slackware
-
-=over 4
-
-=item
-binary dependency checker (sbbdep) tool or ldd
-
-=back
-
-=item -
-search for links to nonexistent files/dir in the specified directory
-
-=item -
-check health installed packages
-
-=item -
-search for *.new config files on the system
-
-=item -
-commands autocompletion
-
-=back
+  - check packages for upgrade
+  - download binary package or source code from allowed repositories
+  - download, build and install packages in the queue from SBo
+    repository
+  - remove/upgrade packages in the current directory
+  - view the history of installing/updating/removing packages
+  - show list all dependencies for package from SBo repository
+  - view the contents of files included in SlackBuild archive from SBo
+    repository
+  - search package from each enabled repository and view info
+  - show complete list of the packages in the repository
+  - search dependency problems in the system packages using Slackware
+    binary dependency checker (sbbdep) tool or ldd
+  - search for links to nonexistent files/dir in the specified
+    directory
+  - check health installed packages
+  - search for *.new config files on the system
+  - commands autocompletion
 
 Supported repositories:
 
-=over
+  Slackware (slack)
+      http://ftp.osuosl.org/.2/slackware/
 
-=item Slackware
+  SlackBuilds.org (sbo)
+      http://slackbuilds.org/slackbuilds/
 
-http://ftp.osuosl.org/.2/slackware/
+  Alien Bob (alienbob)
+      http://bear.alienbase.nl/mirrors/people/alien/sbrepos/
 
-=item SlackBuilds.org
+  Multilib (multilib)
+      http://bear.alienbase.nl/mirrors/people/alien/multilib/
 
-http://slackbuilds.org/slackbuilds/
-
-=item Alien Bob
-
-http://bear.alienbase.nl/mirrors/people/alien/sbrepos/
-
-=item Multilib
-
-http://bear.alienbase.nl/mirrors/people/alien/multilib/
-
-=back
 
 =head1 OPTIONS
 
-=over
 
-=item -h, --help
+B<-h>, B<--help>
+    Print help message and exit.
 
-Print help message and exit
-
-=item -v, --check-version
-
-Check program version for update
-
-=back
+B<-v>, B<--check-version>
+    Check program version for update.
 
 
-=begin
-.SS -l, --repolist
-\fbPrint a list of all the repositories allowed in /etc/spman/repo-list
- Disconnected repositories are highlighted in red.
-.SS -r, --repoinfo
-\fbShow information about all active repositories (name, URL, last update,
- total packages, compressed packages size, uncompressed packages size)
-.SS -b, --blacklist
-\fbShow blacklisted packages in /etc/spman/blacklist
-.SS -u, --update
-\fbUpdate local data for all repositories specified in /etc/spman/spman.conf
-  By default:
-    /var/lib/spman/repository_name  - PACKAGES.TXT or SLACKBUILDS.TXT
-    /var/log/spman/repository_name  - ChangeLog.txt
+B<-l>, B<--repolist>
+    Print a list of all the repositories allowed in
+    /etc/spman/repo-list. Disconnected repositories are
+    highlighted in red.
 
-\fbNOTE:
-\fbYou must run this command immediately after installing spman and
- configuring /etc/spman/spman.conf
-.SS -t, --health
-\fbCheck health installed packages. Displayed detailed information about
- installed packages: total packages, number of broken packages,
- number of checked files, number of missing files, total health (%)
-.SS -w, --new-config
-\fbSearch for *.new config files on the system.
-.SS -g, --check-upgrade
-\fbCheck all installed packages for upgrade.
-.SS -d, --download --pkg|--src reponame pkg1[ pkg2...]
-\fbDownload binary package(s) or source code from specified repository
-  Note: for reposytory 'multilib' only --pkg
-        for reposytory 'sbo' only --src
+B<-r>, B<--repoinfo>
+    Show information about all active repositories:
+      - name
+      - URL
+      - date of last update
+      - number of packages in the repository
+      - compressed packages size
+      - uncompressed packages size
 
-\fbExamples:
-    Download flashplayer-plugin package from alienbob repository:
-      ~# spman --download --pkg alienbob flashplayer-plugin
-    Download emacs and kdelibs source code with SlackBuild script
-    from standard Slackware repository:
-      ~# spman --download --src slack emacs kdelibs
-.SS -m, --upgrade-pkgs [--only-new]
-\fbUpgrade packages in the current directory.
-    --only-new              - install only new packages
-.SS -e, --remove-pkgs
-\fbRemove packages in the current directory.
-.SS -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install
-\fbDownload, build and install package(s) in the queue from SlackBuilds.org
-  Note: pkglist - list of names of packages
-    --add pkglist           - add package(s) to the queue
-    --remove pkglist        - remove package(s) from the queue
-    --clear                 - clear queue
-    --show                  - print queue
-    --install               - download, build and install package(s)
-.SS  -y, --history [--update]
-\fbView the history of installing/updating/removing packages
-  --update      - update the package database (reset history)
-.SS -p, --find-deps pkgname
-\fbShow list all dependencies for package from 'sbo' repository.
- Installed packages are highlighted in green.
-.SS -s, --view-slackbuild pkgname
-\fbView the contents of files included in SlackBuild archive using pager
- (README, doinst.sh, patches, slack-desc, pkgname.SlackBuild,
-  pkgname.info, etc.)
-.SS -f, --find-pkg [--strict] pkgname
-\fbSearch package from each enabled repository and view info
- (case-insensitive)
-    --strict    - strict match by package name
-.SS -i, --pkglist reponame [--only-installed]
-\fbShow complete list of the packages on repository. Installed packages are
- highlighted in green.
-    --only-installed    - output only installed packages
-.SS -k, --check-deps --sbbdep|--ldd
-\fbSearch dependency problems in the system packages.
-    --sbbdep       - using 'sbbdep' tool
-    --ldd          - using 'ldd' tool
-.SS -a, --bad-links /path/to/dir
-\fbSearch for links to nonexistent files/dir in the specified directory.
+B<-b>, B<--blacklist>
+    Show blacklisted packages from /etc/spman/blacklist
+
+B<-u>, B<--update>
+    Update local data for all repositories. The paths to the log files
+    and lists of packages are specified in /etc/spman/spman.conf
+    By default:
+        /var/log/spman/repo_name/ChangeLog.txt
+        /var/lib/spman/repo_name/PACKAGES.TXT (or SLACKBUILDS.TXT)
+
+        where repo_name: slack, sbo, alienbob or multilib
+
+    NOTE:
+        You must run command 'spman --update' immediately after
+        installing spman and configuring /etc/spman/spman.conf
+
+B<-t>, B<--health>
+    Check the health of all installed packages on the system and
+    display detailed information:
+      - total packages
+      - number of broken packages
+      - number of checked files
+      - number of missing files
+      - total health (%)
+
+B<-w>, B<--new-config>
+    Search for *.new config files on the system.
+
+B<-g>, B<--check-upgrade>
+    Check all installed packages for upgrade.
+
+B<-d>, B<--download> --pkg|--src <reponame> <pkg>[ <pkg> ...]
+    Download binary package(s) or source code from specified
+    repository. Binary packages will be downloaded to the directory
+    specified in the BUILD_PATH parameter from /etc/spman/spman.conf
+    (default: /root/spman/build/). Source code and build scripts will
+    be downloaded to BUILD_PATH/pkg_name/ directory.
+
+    NOTE:
+        only '--pkg' for reposytory 'multilib'
+        only '--src' for reposytory 'sbo'
+
+    Examples:
+        Download flashplayer-plugin package from alienbob repository:
+            # spman --download --pkg alienbob flashplayer-plugin
+            # ls -1 /root/spman/build/
+              flashplayer-plugin-30.0.0.134-x86_64-1alien.txz
+
+        Download emacs and kdelibs source code with SlackBuild script
+        from standard Slackware repository:
+            # spman --download --src slack emacs kdelibs
+            # ls -1 /root/spman/build/
+              emacs/
+              kdelibs/
+
+B<-m>, B<--upgrade-pkgs> [--only-new]
+    Install/Upgrade packages in the current directory.
+
+    --only-new
+      Packages already installed on the system with the same name,
+      version, build number and tag will not be reinstalled.
+
+B<-e>, B<--remove-pkgs>
+    If there are *.t?z packages in the current directory and they
+    are installed, then these packages will be removed from the
+    system.
+
+B<-q>, B<--queue> --add|--remove|--clear|--show|--install
+    Download, build and install SBo packages from the queue
+    (only sbo repository)
+
+    --add <pkg>[ <pkg> ...]    - add package(s) to the queue
+    --remove <pkg>[ <pkg> ...] - remove package(s) from the queue
+    --clear                    - clear queue
+    --show                     - print queue
+    --install                  - download, build and install packages
+
+B<-y>, B<--history> [--update]
+    View the history of installing/updating/removing packages.
+
+    --update
+      Update the installed packages database (reset history).
+
+B<-p>, B<--find-deps> <pkg>
+    Show list all dependencies for package from SlackBuilds.org (sbo)
+    repository. The packages already installed in the system are
+    highlighted in green.
+
+B<-s>, B<--view-slackbuild> <pkg>
+    View the contents of files included in SlackBuild archive using
+    pager: README, doinst.sh, patches, slack-desc, <pkg>.SlackBuild,
+    <pkg>.info, etc.
+
+B<-f>, B<--find-pkg> [--strict] <name_or_part_of_the_package_name>
+    Search for package (case-insensitive) from each enabled
+    repository and view info.
+
+    --strict
+      Strict match by package name.
+
+B<-i>, B<--pkglist> <reponame> [--only-installed]
+    Show complete list of the packages on repository. The packages
+    already installed in the system are highlighted in green.
+
+    --only-installed
+      Show only installed packages.
+
+
+B<-k>, B<--check-deps> --sbbdep|--ldd
+    Search for problems with dependencies in the system packages.
+
+    --sbbdep    - using 'sbbdep' tool
+    --ldd       - using 'ldd'
+
+B<-a>, B<--bad-links> <path_to_dir>
+    Search for links to nonexistent files/dir in the specified
+    directory.
+
+=head1 FILES
+
+General configuration file:
+    /etc/spman/spman.conf
+
+List of repositories:
+    /etc/spman/repo-list
+
+List of blacklisted packages:
+    /etc/spman/blacklist
+
+Log files for each repository:
+    /var/log/spman/<repo>/ChangeLog.txt
+
+Lists of packages for each repository:
+    /var/lib/spman/<repo>/PACKAGES.TXT (or SLACKBUILDS.TXT)
+
+List of installed packages
+    /var/lib/spman/pkg-db
+    (generated by command 'spman --history --update')
+
+=head1 AUTHOR
+
+Vladimir MyRequiem <mrvladislavovich@gmail.com>
+
+=head1 HOMEPAGE
+
+https://github.com/MyRequiem/spman
+
+=head1 COPYRIGHT
+
+Copyright 2018 Vladimir MyRequiem

@@ -13,11 +13,11 @@
 * view the contents of files included in SlackBuild archive from SBo repository
 * search package from each enabled repository and view info
 * show complete list of the packages in the repository
-* search dependency problems in the system packages using Slackware binary dependency checker (sbbdep) tool or ldd
+* search for problems with dependencies in the system packages using Slackware binary dependency checker ([sbbdep][32]) tool or ldd
 * search for links to nonexistent files/dir in the specified directory
 * check health installed packages
 * search for *.new config files on the system
-* autocompletion of input parameters
+* commands autocompletion
 
 Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][3] [[Alien's multilib]][4]
 
@@ -25,13 +25,13 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 * Slackware Linux
 * GNU coreutils
 * pkgtools
-* Python 3.0+ (available on SlackBuilds.org)
-* python-requests (available on SlackBuilds.org)
+* Python 3.0+ (available on [SlackBuilds.org][30])
+* python-requests (available on [SlackBuilds.org][31])
 
 ##### Optional dependencies:
-* bash-completion - for autocomplete the input parameters (from standard Slackware repository, group extra)
-* sbbdep - Slackware binary dependency checker for search dependency problems functionality (available on SlackBuilds.org)
-* tqdm - show progress bar for some parameters (available on SlackBuilds.org)
+* bash-completion - for autocomplete the input parameters (from [standard Slackware repository][1], group extra)
+* sbbdep - Slackware binary dependency checker for search dependency problems functionality (available on [SlackBuilds.org][32])
+* tqdm - show progress bar for some parameters (available on [SlackBuilds.org][33])
 
 ##### Build and install:
 1. `~# wget https://github.com/MyRequiem/spman/archive/2.1.0/spman-2.1.0.tar.gz
@@ -40,7 +40,7 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 4. `~# ./spman.SlackBuild`
 5. `~# upgradepkg --install-new --reinstall /tmp/spman-2.1.0-*.t?z`
 
-##### Usage:
+##### Usage: spman \<param> [param[, param ...]]
 ##### -h, --help
 
 Print help message and exit:
@@ -68,27 +68,30 @@ Show information about all active repositories:
 
 ##### -b, --blacklist
 
-Show blacklisted packages in /etc/spman/blacklist
+Show blacklisted packages from /etc/spman/blacklist
 
 ![blacklist][9]
 
 ##### -u, --update
 
-Update local data for all repositories specified in /etc/spman/spman.conf
+Update local data for all repositories. The paths to the log files and
+lists of packages are specified in /etc/spman/spman.conf
 
 By default:
-* `/var/lib/spman/repository_name`  - PACKAGES.TXT or SLACKBUILDS.TXT
-* `/var/log/spman/repository_name`  - ChangeLog.txt
+* `/var/log/spman/repo_name/ChangeLog.txt`
+* `/var/lib/spman/repo_name/PACKAGES.TXT (or SLACKBUILDS.TXT)`
 
-**NOTE**: You must run this command immediately after installing spman and
-configuring /etc/spman/spman.conf
+where repo_name: slack, sbo, alienbob or multilib
+
+**NOTE**: You must run command `'spman --update'` immediately after
+installing spman and configuring /etc/spman/spman.conf
 
 ![update][10]
 
 ##### -t, --health
 
-Check health installed packages. Displayed detailed information about
-installed packages:
+Check the health of all installed packages on the system and display
+detailed information:
 
 ![health][11]
 
@@ -102,67 +105,64 @@ Check all installed packages for upgrade:
 
 ![check-upgrade][13]
 
-##### -d, --download --pkg|--src reponame pkg1[ pkg2...]
-Download binary package(s) or source code from specified repository.
+##### -d, --download --pkg|--src \<reponame> \<pkg>[ \<pkg> ...]
+Download binary package(s) or source code from specified repository. Binary
+packages will be downloaded to the directory specified in the BUILD_PATH
+parameter from /etc/spman/spman.conf (default: /root/spman/build/). Source
+code and build scripts will be downloaded to BUILD_PATH/pkg_name/ directory.
 
 **NOTE**:
-for reposytory 'multilib' only `--pkg`, for reposytory 'sbo' only `--src`
-
-**Examples:**
-
-* ###### download flashplayer-plugin package from alienbob repository:
-    `~# spman --download --pkg alienbob flashplayer-plugin`
-
-* ###### download 'emacs' and 'kdelibs' source code with SlackBuild scripts from standard Slackware repository:
-    `~# spman --download --src slack emacs kdelibs`
+only `'--pkg'` for reposytory 'multilib', only '--src' for reposytory 'sbo'
 
 ![download][14]
 
 ##### -m, --upgrade-pkgs [--only-new]
-Upgrade packages in the current directory
-* `--only-new` - install only new packages
+Install/Upgrade packages in the current directory.
+
+* `--only-new`<br>packages already installed on the system with the same name,
+    version, build number and tag will not be reinstalled.
 
 ![upgrade-pkgs][28]
 
 ##### -e, --remove-pkgs
-Remove packages in the current directory
+If there are *.t?z packages in the current directory and they are installed,
+then these packages will be removed from the system.
 
 ![remove-pkgs][27]
 
-##### -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install
-Download, build and install package(s) in the queue from SlackBuilds.org
+##### -q, --queue --add|--remove|--clear|--show|--install
+Download, build and install packages in the queue from SlackBuilds.org (sbo)
 
-**NOTE**: pkglist - list of names of packages
-
-* `--add pkglist` - add package(s) to the queue
-* `--remove pkglist` - remove package(s) from the queue
-* `--clear` - clear queue
-* `--show` - print queue
-* `--install` - download, build and install package(s)
+* `--add <pkg>[ <pkg> ...]`<br>add package(s) to the queue
+* `--remove <pkg>[ <pkg> ...]`<br>remove package(s) from the queue
+* `--clear`<br>clear queue
+* `--show`<br>print queue
+* `--install`<br>download, build and install package(s)
 
 ![queue][15]
 
 ##### -y, --history [--update]
-View the history of installing/updating/removing packages
-* `--update` - update the package database (reset history)
+View the history of installing/updating/removing packages.
+* `--update`<br>update the installed packages database (reset history)
 
 ![history][29]
 
-#####  -p, --find-deps pkgname
-Show list all dependencies for package from 'sbo' repository. Installed packages are highlighted in green:
+#####  -p, --find-deps \<pkg>
+Show list all dependencies for package from SlackBuilds.org (sbo) repository.
+The packages already installed in the system are highlighted in green:
 
 ![find-deps][16]
 
-##### -s, --view-slackbuild pkgname
+##### -s, --view-slackbuild \<pkg>
 View the contents of files included in SlackBuild archive using pager:
 
 ![view-slackbuild1][17]
 
 ![view-slackbuild2][18]
 
-##### -f, --find-pkg [--strict] pkgname
-Search package from each enabled repository and view info (case-insensitive)
-* `--strict` - strict match by package name
+##### -f, --find-pkg [--strict] \<pattern>
+Search for package (case-insensitive) from each enabled repository and view info.
+* `--strict`<br>strict match by package name
 
 ![find-pkg1][19]
 
@@ -170,22 +170,22 @@ Search package from each enabled repository and view info (case-insensitive)
 
 ![find-pkg3][21]
 
-##### -i, --pkglist reponame [--only-installed]
-Show complete list of the packages on repository. Installed packages are
-highlighted in green.
-* `--only-installed` - output only installed packages
+##### -i, --pkglist \<reponame> [--only-installed]
+Show complete list of the packages on repository. The packages already
+installed in the system are highlighted in green.
+* `--only-installed`<br>show only installed packages
 
 ![pkglist][22]
 
 ##### -k, --check-deps --sbbdep|--ldd
-Search dependency problems in the system packages
-* `--sbbdep` - using 'sbbdep' tool
-* `--ldd` - using 'ldd' tool
+Search for problems with dependencies in the system packages.
+* `--sbbdep`<br>using '[sbbdep][32]' tool
+* `--ldd`<br>using 'ldd' tool
 
 ![check-deps-sbbdep][23]
 ![check-deps-ldd][24]
 
-##### -a, --bad-links /path/to/dir
+##### -a, --bad-links \<path_to_dir>
 Search for links to nonexistent files/dirs in the specified directory.
 
 ![bad-links][25]
@@ -219,3 +219,7 @@ Search for links to nonexistent files/dirs in the specified directory.
 [27]: https://github.com/MyRequiem/spman/raw/master/imgs/remove-pkgs.png
 [28]: https://github.com/MyRequiem/spman/raw/master/imgs/upgrade-pkgs.png
 [29]: https://github.com/MyRequiem/spman/raw/master/imgs/history.png
+[30]: https://slackbuilds.org/repository/14.2/python/python3/
+[31]: https://slackbuilds.org/repository/14.2/python/python-requests/
+[32]: https://slackbuilds.org/repository/14.2/system/sbbdep/
+[33]: http://slackbuilds.org/repository/14.2/python/tqdm/

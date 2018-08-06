@@ -47,7 +47,6 @@ Supported repositories:
   Multilib (multilib)
       http://bear.alienbase.nl/mirrors/people/alien/multilib/
 
-
 =head1 OPTIONS
 
 B<-h>, B<--help>
@@ -55,7 +54,6 @@ B<-h>, B<--help>
 
 B<-v>, B<--check-version>
     Check program version for update.
-
 
 B<-l>, B<--repolist>
     Print a list of all the repositories allowed in
@@ -177,7 +175,6 @@ B<-i>, B<--pkglist> <reponame> [--only-installed]
 
     --only-installed
       Show only installed packages.
-
 
 B<-k>, B<--check-deps> --sbbdep|--ldd
     Search for problems with dependencies in the system packages.

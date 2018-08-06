@@ -50,7 +50,6 @@ Supported repositories:
 
 =head1 OPTIONS
 
-
 B<-h>, B<--help>
     Print help message and exit.
 

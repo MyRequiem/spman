@@ -1,18 +1,9 @@
 #! /bin/bash
 
-PODFILENAME="$1"
-OUTPUT="$(basename "${PODFILENAME}" .pod)".8
-
-if [ -z "${PODFILENAME}" ]; then
-    echo "Usage: $0 program_name.pod"
-    exit 0
-fi
-
-if ! [ -e "${PODFILENAME}" ]; then
-    echo "File '$1' not found"
-    exit 1
-fi
-
+PRGNAME="spman"
+MANSECTION="8"
+PODFILENAME="${PRGNAME}.pod"
+OUTPUT="${PRGNAME}.${MANSECTION}"
 
 pod2man "${PODFILENAME}" > "${OUTPUT}"
 sed -i 's/^\\.IX.*/\\.IX Title "SPMAN 8"/' "${OUTPUT}"

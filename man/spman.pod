@@ -6,12 +6,12 @@ spman - powerful Slackware package manager
 
 =head1 SYNOPSIS
 
-spman command [param[, param ...]]
+spman <param> [param[, param ...]]
 
 =head1 DESCRIPTION
 
 Spman is a powerful Slackware package manager implemented on Python3
-and licensed under the MIT license.
+ and licensed under the MIT license.
 
 Main futeares:
   - check packages for upgrade
@@ -140,8 +140,8 @@ B<-e>, B<--remove-pkgs>
     system.
 
 B<-q>, B<--queue> --add|--remove|--clear|--show|--install
-    Download, build and install SBo packages from the queue
-    (only sbo repository)
+    Download, build and install packages in the queue from
+    SlackBuilds.org (sbo)
 
     --add <pkg>[ <pkg> ...]    - add package(s) to the queue
     --remove <pkg>[ <pkg> ...] - remove package(s) from the queue
@@ -165,7 +165,7 @@ B<-s>, B<--view-slackbuild> <pkg>
     pager: README, doinst.sh, patches, slack-desc, <pkg>.SlackBuild,
     <pkg>.info, etc.
 
-B<-f>, B<--find-pkg> [--strict] <name_or_part_of_the_package_name>
+B<-f>, B<--find-pkg> [--strict] <pattern>
     Search for package (case-insensitive) from each enabled
     repository and view info.
 

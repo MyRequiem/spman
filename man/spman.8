@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "SPMAN 1"
-.TH "SPMAN" "8" "2018-08-05" "System" "Linux User Manual"
+.TH "SPMAN" "8" "2018-08-06" "System" "Linux User Manual"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -142,11 +142,11 @@
 spman \- powerful Slackware package manager
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-spman command [param[, param ...]]
+spman <param> [param[, param ...]]
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 Spman is a powerful Slackware package manager implemented on Python3
-and licensed under the \s-1MIT\s0 license.
+ and licensed under the \s-1MIT\s0 license.
 .PP
 Main futeares:
   \- check packages for upgrade
@@ -279,8 +279,8 @@ Supported repositories:
     system.
 .PP
 \&\fB\-q\fR, \fB\-\-queue\fR \-\-add|\-\-remove|\-\-clear|\-\-show|\-\-install
-    Download, build and install SBo packages from the queue
-    (only sbo repository)
+    Download, build and install packages in the queue from
+    SlackBuilds.org (sbo)
 .PP
 .Vb 5
 \&    \-\-add <pkg>[ <pkg> ...]    \- add package(s) to the queue
@@ -308,7 +308,7 @@ Supported repositories:
     pager: \s-1README,\s0 doinst.sh, patches, slack-desc, <pkg>.SlackBuild,
     <pkg>.info, etc.
 .PP
-\&\fB\-f\fR, \fB\-\-find\-pkg\fR [\-\-strict] <name_or_part_of_the_package_name>
+\&\fB\-f\fR, \fB\-\-find\-pkg\fR [\-\-strict] <pattern>
     Search for package (case-insensitive) from each enabled
     repository and view info.
 .PP

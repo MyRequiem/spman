@@ -24,64 +24,92 @@ def show_help_mess(repo: str = '') -> None:
 Home page: {4}
 {3}{5}
 
-Usage: spman command [param[, param ...]]
+Usage: spman <param> [param[, param ...]]
 
 {2} -h, --help{5}
-    Print this help message and exit
+    Print this help message and exit.
+
 {2} -v, --check-version{5}
-    Check program version for update
+    Check program version for update.
+
 {2} -l, --repolist{5}
-    Print a list of all the repositories
+    Print a list of all the repositories.
+
 {2} -r, --repoinfo{5}
-    Show information about all active repositories
+    Show information about all active repositories.
+
 {2} -b, --blacklist{5}
-    Show blacklist
+    Show blacklisted packages from /etc/spman/blacklist
+
 {2} -u, --update{5}
-    Update local data for all repositories
+    Update local data for all repositories.
+
 {2} -t, --health{5}
-    Check health installed packages
+    Check the health of all installed packages on the system and
+    display detailed information.
+
 {2} -w, --new-config{5}
-    Search for *.new config files on the system
+    Search for *.new config files on the system.
+
 {2} -g, --check-upgrade{5}
-    Check all installed packages for upgrade
-{2} -d, --download --pkg|--src reponame pkg1[ pkg2...]{5}
-    Download binary package(s) or source code from specified repository
-{6}    Note:{5} for reposytory 'multilib' only --pkg
-          for reposytory 'sbo' only --src
+    Check all installed packages for upgrade.
+
+{2} -d, --download --pkg|--src <reponame> <pkg>[ <pkg> ...]{5}
+    Download binary package(s) or source code from specified repository.
+{6}    Note:{5}
+      only '--pkg' for reposytory 'multilib'
+      only '--src' for reposytory 'sbo'
+
 {2} -m, --upgrade-pkgs [--only-new]{5}
-    Upgrade packages in the current directory
-      --only-new    - install only new packages
+    Install/Upgrade packages in the current directory.
+      {2}--only-new{5}
+          Packages already installed on the system with the same name,
+          version, build number and tag will not be reinstalled.
+
 {2} -e, --remove-pkgs{5}
-    Remove packages in the current directory
-{2} -q, --queue --add pkglist|--remove pkglist|--clear|--show|--install{5}
+    If there are *.t?z packages in the current directory and they
+    are installed, then these packages will be removed from the
+    system.
+
+{2} -q, --queue --add|--remove|--clear|--show|--install{5}
     Download, build and install package(s) in the queue from SlackBuilds.org
-{6}    Note:{5} pkglist - list of names of packages
-      --add pkglist{5}      add package(s) to the queue
-      --remove pkglist{5}   remove package(s) from the queue
-      --clear{5}            clear queue
-      --show{5}             print queue
-      --install{5}          download, build and install package(s)
+      {2}--add{5} <pkg>[ <pkg> ...]    - add package(s) to the queue
+      {2}--remove{5} <pkg>[ <pkg> ...] - remove package(s) from the queue
+      {2}--clear{5}                    - clear queue
+      {2}--show{5}                     - print queue
+      {2}--install{5}                  - download, build and install packages
+
 {2} -y, --history [--update]{5}
-    View the history of installing/updating/removing packages
-      --update      - update the package database (reset history)
-{2} -p, --find-deps pkgname{5}
-    Show list all dependencies for package from 'sbo' repository. Installed
-    packages are highlighted in green.
-{2} -s, --view-slackbuild pkgname{5}
-    View the contents of files included in SlackBuild archive using pager
-{2} -f, --find-pkg [--strict] pkgname{5}
-    Search package from each enabled repository and view info
-    (case-insensitive)
-      --strict    - strict match by package name
-{2} -i, --pkglist reponame [--only-installed]{5}
-    Show complete list of the packages on repository. Installed packages are
+    View the history of installing/updating/removing packages.
+      {2}--update{5}
+          Update the installed packages database (reset history).
+
+{2} -p, --find-deps <pkg>{5}
+    Show list all dependencies for package from SlackBuilds.org (sbo)
+    repository. The packages already installed in the system are
     highlighted in green.
-      --only-installed      output only installed packages
+
+{2} -s, --view-slackbuild <pkg>{5}
+    View the contents of files included in SlackBuild archive using
+    pager: README, doinst.sh, patches, slack-desc, <pkg>.SlackBuild,
+    <pkg>.info, etc.
+
+{2} -f, --find-pkg [--strict] <pattern>{5}
+    Search for package (case-insensitive) from each enabled
+    repository and view info.
+      {2}--strict{5}    - strict match by package name
+
+{2} -i, --pkglist <reponame> [--only-installed]{5}
+    Show complete list of the packages on repository. The packages
+    already installed in the system are highlighted in green.
+      {2}--only-installed{5}    - show only installed packages
+
 {2} -k, --check-deps --sbbdep|--ldd{5}
-    Search dependency problems in the system packages
-      --sbbdep      using \'sbbdep\' tool
-      --ldd         using \'ldd\' tool
-{2} -a, --bad-links /path/to/dir{5}
+    Search for problems with dependencies in the system packages.
+      {2}--sbbdep{5}      - using \'sbbdep\' tool
+      {2}--ldd{5}         - using \'ldd\'
+
+{2} -a, --bad-links <path_to_dir>{5}
     Search for links to nonexistent files/dir in the specified directory.
 """
 

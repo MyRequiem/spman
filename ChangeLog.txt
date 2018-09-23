@@ -1,3 +1,6 @@
+2.2.0 [24.09.18]
+Corrected comparison of remote and local ChangeLog.txt/PACKAGES.TXT
+
 2.1.0 [29.07.18]
 For parameters:
 --check-version

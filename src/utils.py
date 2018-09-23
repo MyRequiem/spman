@@ -193,6 +193,45 @@ def get_remote_file_size(url: str = '', httpresponse: object = False) -> int:
     return int(content_length) if content_length else 0
 
 
+def get_md5_hash(file_path: str) -> str:
+    """
+    get md5sum of remote or local file
+    """
+    from hashlib import md5
+
+    # local file
+    if file_path.startswith('/'):
+        return md5(open(file_path, 'rb').read()).hexdigest()
+
+    # remote file
+    httpresponse = url_is_alive(file_path)
+    if not httpresponse:
+        error_open_mess(file_path)
+        return ''
+
+    md5hash = md5()
+    max_file_size = 100 * 1024 * 1024
+    total_read = 0
+    while True:
+        data = httpresponse.read(4096)
+        total_read += 4096
+
+        if not data or total_read > max_file_size:
+            break
+
+        md5hash.update(data)
+
+    httpresponse.close()
+    return md5hash.hexdigest()
+
+
+def check_md5sum(file1: str, file2: str) -> bool:
+    """
+    check md5sum of two files
+    """
+    return get_md5_hash(file1) == get_md5_hash(file2)
+
+
 def check_internet_connection() -> bool:
     """
     checking Internet connection

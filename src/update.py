@@ -22,7 +22,7 @@ from os import path, remove, rename
 
 from .download import Download
 from .maindata import MainData
-from .utils import get_line, get_remote_file_size
+from .utils import check_md5sum, get_line
 
 
 class Update:
@@ -121,8 +121,8 @@ class Update:
                        'local log{1}').format(self.meta.clrs['grey'],
                                               self.meta.clrs['reset']))
 
-                if (not self.check_file_size(repo_file, repo_url) or
-                        not self.check_file_size(log_file, log_url)):
+                if (not check_md5sum(repo_file, repo_url) or
+                        not check_md5sum(log_file, log_url)):
                     # if repository == 'multilib' show diff PACKAGES.TXT
                     # otherwise show diff ChangeLog.txt
                     if repo == 'multilib':
@@ -147,7 +147,7 @@ class Update:
                 repo_file = repo_file.replace(repo_txt, all_repo_txt)
                 repo_url = '{0}/{1}'.format(rep, repo_txt)
                 if (not path.isfile(repo_file) or
-                        not self.check_file_size(repo_file, repo_url)):
+                        not check_md5sum(repo_file, repo_url)):
                     print(('{0}Downloading {1} for all '
                            'repository{2}').format(self.meta.clrs['grey'],
                                                    repo_txt,
@@ -218,9 +218,3 @@ class Update:
         print(('{0}Downloading {1}{2}').format(self.meta.clrs['grey'],
                                                mess,
                                                self.meta.clrs['reset']))
-
-    def check_file_size(self, file_path: str, remote_url: str) -> bool:
-        """
-        check size local and remote ChangeLog.txt
-        """
-        return get_remote_file_size(remote_url) == path.getsize(file_path)

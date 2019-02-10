@@ -22,7 +22,7 @@ from shutil import rmtree
 from ssl import _create_unverified_context
 from sys import stderr, stdout
 
-from requests import get
+import requests
 
 from .maindata import MainData
 from .utils import error_open_mess, get_remote_file_size, url_is_alive
@@ -215,6 +215,16 @@ class Download:
                                            self.meta.clrs['reset']))
             return
 
+        header = {'Range': 'bytes={0}-{1}'.format(first_byte, file_size)}
+        try:
+            req = requests.get(url, headers=header, stream=True, timeout=10)
+        except requests.exceptions.Timeout:
+            error_open_mess(url)
+            return
+        except requests.exceptions.RequestException:
+            error_open_mess(url)
+            return
+
         pbar = tqdm(total=file_size,
                     initial=first_byte,
                     unit='B',
@@ -224,8 +234,6 @@ class Download:
                     leave=False)
 
         is_tqdm = type(pbar) is tqdm
-        header = {'Range': 'bytes={0}-{1}'.format(first_byte, file_size)}
-        req = get(url, headers=header, stream=True)
         size_chunk = 4096
         with open(local_file, 'ab') as dfile:
             for chunk in req.iter_content(chunk_size=size_chunk):

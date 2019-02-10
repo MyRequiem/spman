@@ -256,12 +256,13 @@ def check_internet_connection() -> bool:
 
     try:
         import socket
-
-        socket.setdefaulttimeout(3)
-        socket.socket(socket.AF_INET,
-                      socket.SOCK_STREAM).connect((host, port))
+        sockt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sockt.settimeout(7)
+        sockt.connect((host, port))
+        sockt.shutdown(1)
+        sockt.close()
         return True
-    except Exception:
+    except socket.error:
         print(('{0}No internet connection!{1}\nIP address and port '
                'for verification: {3}{4}:{5}{1}\nCheck your internet '
                'connection and see parameters\n{2}TEST_CONNECTION_HOST{1} '

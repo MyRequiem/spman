@@ -402,7 +402,7 @@ class DownloadPkg:
                     script.endswith('.csh') or
                     script.endswith('.SlackBuild') or
                     '/rc.d/rc.' in script):
-                chmod(script, 0o755)
+                chmod(script, mode)
 
     def get_pkg_data(self, pkg: str) -> list:
         """

@@ -1,7 +1,7 @@
 Build and install spman:
 
-1. ~# wget https://github.com/MyRequiem/spman/archive/2.2.1/spman-2.2.1.tar.gz
-2. ~# tar -xvzf spman-2.2.1.tar.gz
-3. ~# cd spman-2.2.1/slackbuild
+1. ~# wget https://github.com/MyRequiem/spman/archive/2.2.2/spman-2.2.2.tar.gz
+2. ~# tar -xvzf spman-2.2.2.tar.gz
+3. ~# cd spman-2.2.2/slackbuild
 4. ~# ./spman.SlackBuild
-5. ~# upgradepkg --install-new --reinstall /tmp/spman-2.2.1-*.t?z
+5. ~# upgradepkg --install-new --reinstall /tmp/spman-2.2.2-*.t?z

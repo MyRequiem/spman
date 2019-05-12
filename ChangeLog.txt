@@ -1,5 +1,5 @@
 2.2.2 [12.05.19]
-Changed behavior of option --pkglist
+Changed behavior of option --pkglist for SBo and alienbob repository
 
 2.2.1 [11.02.19]
 Internet connection check fixed

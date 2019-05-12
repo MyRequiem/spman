@@ -29,6 +29,7 @@ class PkgList:
         self.repo = repo
         self.only_installed = only_installed
         self.pkgs = Pkgs()
+        self.num_installed_pkgs = 0
 
     def start(self) -> None:
         """
@@ -40,12 +41,30 @@ class PkgList:
         for pkg in sorted(rdata['pkgs']):
             full_pkg_name = self.get_full_pkg_name(pkg)
             if full_pkg_name:
+                # the package is installed but not from the SBo repository
+                if self.repo == 'sbo' and not full_pkg_name.endswith('_SBo'):
+                    if not self.only_installed:
+                        print(pkg)
+                        continue
+                    else:
+                        continue
+
+                # the package is installed but not from the alienbob repository
+                if (self.repo == 'alienbob' and
+                        not full_pkg_name.endswith('alien')):
+                    if not self.only_installed:
+                        print(pkg)
+                        continue
+                    else:
+                        continue
+
                 print(('{0}{1}{2}-{3}'
                        '{4}').format(meta.clrs['lgreen'],
                                      pkg,
                                      meta.clrs['grey'],
                                      '-'.join(full_pkg_name.split('-')[-3:]),
                                      meta.clrs['reset']))
+                self.num_installed_pkgs += 1
             elif not self.only_installed:
                 print(pkg)
 
@@ -53,6 +72,9 @@ class PkgList:
                'the repository:{2} {1}').format(meta.clrs['lyellow'],
                                                 rdata['numpkgs'],
                                                 meta.clrs['reset']))
+        print('{0}Installed:{1} {2}'.format(meta.clrs['lgreen'],
+                                            meta.clrs['reset'],
+                                            self.num_installed_pkgs))
 
     def get_full_pkg_name(self, pkg: str) -> str:
         """

@@ -23,10 +23,6 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 
 ##### Requirements:
 * Slackware Linux
-* GNU coreutils
-* pkgtools
-* Python 3.0+ (available on [SlackBuilds.org][30])
-* python-requests (available on [SlackBuilds.org][31])
 
 ##### Optional dependencies:
 * bash-completion - for autocomplete the input parameters (from [standard Slackware repository][1], group extra)
@@ -34,11 +30,11 @@ Available repositories: [[Slackware.com]][1] [[SlackBuilds.org]][2] [[Alien's]][
 * tqdm - show progress bar for some parameters (available on [SlackBuilds.org][33])
 
 ##### Build and install:
-1. `~# wget https://github.com/MyRequiem/spman/archive/2.2.2/spman-2.2.2.tar.gz
-2. `~# tar -xvzf spman-2.2.2.tar.gz`
-3. `~# cd spman-2.2.2/slackbuild`
+1. `~# wget https://github.com/MyRequiem/spman/archive/2.2.3/spman-2.2.3.tar.gz
+2. `~# tar -xvzf spman-2.2.3.tar.gz`
+3. `~# cd spman-2.2.3/slackbuild`
 4. `~# ./spman.SlackBuild`
-5. `~# upgradepkg --install-new --reinstall /tmp/spman-2.2.2-*.t?z`
+5. `~# upgradepkg --install-new --reinstall /tmp/spman-2.2.3-*.t?z`
 
 ##### Usage: spman \<param> [param[, param ...]]
 ##### -h, --help
@@ -215,11 +211,9 @@ Search for links to nonexistent files/dirs in the specified directory.
 [23]: https://github.com/MyRequiem/spman/raw/master/imgs/check-deps-sbbdep.png
 [24]: https://github.com/MyRequiem/spman/raw/master/imgs/check-deps-ldd.png
 [25]: https://github.com/MyRequiem/spman/raw/master/imgs/bad-links.png
-[26]: https://slackbuilds.org/repository/14.2/system/spman/
+[26]: https://slackbuilds.org/repository/15.0/system/spman/
 [27]: https://github.com/MyRequiem/spman/raw/master/imgs/remove-pkgs.png
 [28]: https://github.com/MyRequiem/spman/raw/master/imgs/upgrade-pkgs.png
 [29]: https://github.com/MyRequiem/spman/raw/master/imgs/history.png
-[30]: https://slackbuilds.org/repository/14.2/python/python3/
-[31]: https://slackbuilds.org/repository/14.2/python/python-requests/
-[32]: https://slackbuilds.org/repository/14.2/system/sbbdep/
-[33]: http://slackbuilds.org/repository/14.2/python/tqdm/
+[32]: https://slackbuilds.org/repository/15.0/system/sbbdep/
+[33]: http://slackbuilds.org/repository/15.0/python/tqdm/

@@ -1,3 +1,7 @@
+2.2.3 [18.03.22]
+src/checkprgver.py fixed
+Updated for Slackware 15.0
+
 2.2.2 [12.05.19]
 Changed behavior of option --pkglist for SBo and alienbob repository
 

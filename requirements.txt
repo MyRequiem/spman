@@ -1,9 +1,5 @@
 Requirements:
     - Slackware Linux
-    - GNU coreutils
-    - pkgtools
-    - Python 3.0+ (available on SlackBuilds.org)
-    - python-requests (available on SlackBuilds.org)
 
 Optional dependencies:
     - bash-completion   - for autocomplete the input parameters

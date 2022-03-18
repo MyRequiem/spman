@@ -43,9 +43,10 @@ def check_prg_ver() -> None:
     # bytes --> str
     html = str(bytes_content, encoding=(stdout.encoding or stderr.encoding))
 
-    # <a href="/MyRequiem/spman/archive/1.1.1.zip" rel="nofollow">
-    # split('/MyRequiem/spman/archive/')
-    spl = '/{0}/archive/'.format('/'.join(meta.home_page.split('/')[3:]))
+    # <a href="/MyRequiem/spman/archive/refs/tags/1.1.1.zip" rel="nofollow">
+    # split('/MyRequiem/spman/archive/refs/tags/')
+    spl = ('/{0}/archive/'
+           'refs/tags/').format('/'.join(meta.home_page.split('/')[3:]))
     version = '.'.join(html.split(spl)[1].split('.')[:3])
 
     if version != local_ver:

@@ -25,7 +25,7 @@ class MainData:
     """
     def __init__(self):
         self.prog_name = 'spman'
-        self.prog_version = '2.2.2'
+        self.prog_version = '2.2.3'
         self.home_page = ('https://github.com/MyRequiem'
                           '/{0}').format(self.prog_name)
         self.mail = '<mrvladislavovich@gmail.com>'
@@ -93,8 +93,8 @@ class MainData:
 
         # if option is not set, write default
         default_opt = {
-            'OS_VERSION': '14.2',
-            'OS_LAST_RELEASE': '14.2',
+            'OS_VERSION': '15.0',
+            'OS_LAST_RELEASE': '15.0',
             'REPOS_PATH': '/var/lib/{0}/'.format(self.prog_name),
             'LOGS_PATH': '/var/log/{0}/'.format(self.prog_name),
             'QUEUE_PATH': '/root/{0}/queue/'.format(self.prog_name),

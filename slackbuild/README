@@ -29,4 +29,4 @@ Supported repositories:
 
 Optional dependencies:
     - sbbdep (for search dependency problems functionality)
-    - tqdm   (progress bar for some parameters)
+    - tqdm (progress bar for some parameters)

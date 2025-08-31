@@ -130,12 +130,7 @@ class CheckDeps:
             '/usr/local/sbin/',
             '/usr/local/lib/',
             '/usr/local/lib64/',
-            '/usr/X11R6/bin/',
-            '/usr/X11R6/lib/',
-            '/usr/X11R6/lib64/',
-            '/opt/',
-            '/usr/games/',
-            '/usr/share/texmf/bin/'
+            '/opt/'
         ]
 
         lddlog = '/tmp/ldd.log'

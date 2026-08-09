@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # checkprgver.py file is part of spman
 #
 # spman - Slackware package manager
@@ -12,53 +9,85 @@
 # See LICENSE for details.
 
 
-"""
-Check program version
-"""
+"""Check program version."""
 
-from ssl import _create_unverified_context
-from sys import stderr, stdout
-from urllib.request import urlopen
+
+import re
+from urllib.parse import urlparse
+
+import requests
 
 from .maindata import MainData
 
 
 def check_prg_ver() -> None:
-    """
-    check program version
-    """
+    """Check program version using requests and raw file parsing."""
     meta = MainData()
     local_ver = meta.prog_version
-    print(('Installed version: {0}\n{1}Checking '
-           'latest release version...{2}').format(local_ver,
-                                                  meta.clrs['grey'],
-                                                  meta.clrs['reset']))
 
-    # search latest release on https://github.com/MyRequiem/spman/releases
-    url = '{0}/releases'.format(meta.home_page)
-    _context = _create_unverified_context()
-    open_url = urlopen(url, context=_context)
-    bytes_content = open_url.read()
-    open_url.close()
-    # bytes --> str
-    html = str(bytes_content, encoding=(stdout.encoding or stderr.encoding))
+    print(
+        f"Installed version: {local_ver}\n"
+        f"{meta.clrs['grey']}Checking latest release version..."
+        f"{meta.clrs['reset']}",
+    )
 
-    # <a href="/MyRequiem/spman/archive/refs/tags/1.1.1.zip" rel="nofollow">
-    # split('/MyRequiem/spman/archive/refs/tags/')
-    spl = ('/{0}/archive/'
-           'refs/tags/').format('/'.join(meta.home_page.split('/')[3:]))
-    version = '.'.join(html.split(spl)[1].split('.')[:3])
+    """
+    Safely extract owner and repository name (e.g., 'MyRequiem/spman'). Works
+    correctly even if home_page has a trailing slash:
+
+    >>> home_page = "https://github.com/MyRequiem/spman"
+    >>> urlparse(home_page)
+    ParseResult(..., path='/MyRequiem/spman', ...)
+    >>> urlparse(home_page).path
+    '/MyRequiem/spman'
+    >>> urlparse(home_page).path.strip("/")
+    'MyRequiem/spman'
+    """
+    repo_path = urlparse(meta.home_page).path.strip("/")
+
+    raw_url = (
+        f"https://raw.githubusercontent.com/{repo_path}"
+        f"/refs/heads/master/src/maindata.py"
+    )
+
+    try:
+        response = requests.get(raw_url, timeout=10)
+        # Raises an exception on 404, 500, or other HTTP errors.
+        response.raise_for_status()
+        remote_text = response.text
+    except requests.RequestException as e:
+        print(
+            f"{meta.clrs['lred']}Error checking version: "
+            f"{e}{meta.clrs['reset']}",
+        )
+        return
+
+    match = re.search(
+        r"self\.prog_version\s*=\s*['\"]([^'\"]+)['\"]",
+        remote_text,
+    )
+
+    if not match:
+        print(
+            f"{meta.clrs['lred']}Error checking version: "
+            f"self.prog_version not found in remote file{meta.clrs['reset']}",
+        )
+
+        return
+
+    version = match.group(1)
 
     if version != local_ver:
-        # https://github.com/MyRequiem/spman/archive/1.5.4/spman-1.5.4.tar.gz
-        print(('{0}New version are available:{1} {3}\n' +
-               'Visit: {2}/releases\nor download new version source code:\n' +
-               '{2}/archive/{3}/{4}-{3}.tar.gz').format(meta.clrs['lred'],
-                                                        meta.clrs['reset'],
-                                                        meta.home_page,
-                                                        version,
-                                                        meta.prog_name))
+        print(
+            f"{meta.clrs['lred']}New version is available:"
+            f"{meta.clrs['reset']} {version}\n"
+            f"Visit: {meta.home_page}/releases\n"
+            f"Or download new version source code:\n"
+            f"{meta.home_page}/archive/"
+            f"{version}/{meta.prog_name}-{version}.tar.gz",
+        )
     else:
-        print(('{0}You are using the latest program '
-               'version{1}').format(meta.clrs['green'],
-                                    meta.clrs['reset']))
+        print(
+            f"{meta.clrs['green']}You are using the latest program version."
+            f"{meta.clrs['reset']}",
+        )

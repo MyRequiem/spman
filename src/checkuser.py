@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # checkuser.py file is part of spman
 #
 # spman - Slackware package manager
@@ -11,18 +8,18 @@
 # All rights reserved
 # See LICENSE for details.
 
+"""Check superuser privileges."""
 
-"""
-Check super user
-"""
+import os
 
-import getpass
-
+ERROR_NOT_ROOT = "spman can only be run as root."
 
 def check_root_user() -> None:
+    """Verify that the script is executed with root privileges.
+
+    Raises:
+        PermissionError: If the current effective user ID is not 0 (root).
+
     """
-    Check super user
-    """
-    if getpass.getuser() != 'root':
-        print('spman can only be run as root')
-        raise SystemExit
+    if os.getuid() != 0:
+        raise PermissionError(ERROR_NOT_ROOT)

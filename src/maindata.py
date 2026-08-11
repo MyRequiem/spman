@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # maindata.py file is part of spman
 #
 # spman - Slackware package manager
@@ -11,128 +8,148 @@
 # All rights reserved
 # See LICENSE for details.
 
+"""Main configuration and metadata for the program."""
 
-"""
-Main data for program
-"""
+from __future__ import annotations
 
+from pathlib import Path
 from platform import machine
 
 
 class MainData:
-    """
-    Main data for program
-    """
-    def __init__(self):
-        self.prog_name = 'spman'
-        self.prog_version = '2.2.3'
-        self.home_page = ('https://github.com/MyRequiem'
-                          '/{0}').format(self.prog_name)
-        self.mail = '<mrvladislavovich@gmail.com>'
-        self.pkg_db_name = 'pkg-db'
-        self.pkgs_installed_path = '/var/log/packages/'
-        self.configs_path = '/etc/{0}/'.format(self.prog_name)
-        self.arch = machine()
+    """Main data and configuration constants for spman."""
 
-        self.clrs = {
-            'red': '\x1b[0;31m',
-            'lred': '\x1b[1;31m',
-            'green': '\x1b[0;32m',
-            'lgreen': '\x1b[1;32m',
-            'yellow': '\x1b[0;33m',
-            'lyellow': '\x1b[1;33m',
-            'blue': '\x1b[0;34m',
-            'lblue': '\x1b[1;34m',
-            'magenta': '\x1b[0;35m',
-            'lmagenta': '\x1b[1;35m',
-            'cyan': '\x1b[0;36m',
-            'lcyan': '\x1b[1;36m',
-            'grey': '\x1b[38;5;247m',
-            'reset': '\x1b[0m'
+    def __init__(self) -> None:
+        """Initialize MainData with program constants and color codes."""
+        self.prog_name: str = "spman"
+        self.prog_version: str = "2.2.3"
+        self.home_page: str = f"https://github.com/MyRequiem/{self.prog_name}"
+        self.mail: str = "<mrvladislavovich@gmail.com>"
+        self.pkg_db_name: str = "pkg-db"
+        self.pkgs_installed_path: str = "/var/log/packages/"
+        self.configs_path: str = f"/etc/{self.prog_name}/"
+        self.arch: str = machine()
+
+        # Terminal ANSI color codes for stylized CLI output.
+        self.clrs: dict[str, str] = {
+            "red": "\x1b[0;31m",
+            "lred": "\x1b[1;31m",
+            "green": "\x1b[0;32m",
+            "lgreen": "\x1b[1;32m",
+            "yellow": "\x1b[0;33m",
+            "lyellow": "\x1b[1;33m",
+            "blue": "\x1b[0;34m",
+            "lblue": "\x1b[1;34m",
+            "magenta": "\x1b[0;35m",
+            "lmagenta": "\x1b[1;35m",
+            "cyan": "\x1b[0;36m",
+            "lcyan": "\x1b[1;36m",
+            "grey": "\x1b[38;5;247m",
+            "reset": "\x1b[0m",
         }
 
-    def get_repo_dict(self) -> dict:
+
+    def get_repo_dict(self) -> dict[str, str]:
+        """Return a dictionary of enabled repositories from repo-list config.
+
+        Format: {'repo_name': 'url', ...}
+
+        Raises:
+            FileNotFoundError: If the repo-list file does not exist.
+            ValueError: If all repositories in the config are disabled.
+
         """
-        return dict: {'repo_name': 'url', ...} from /etc/spman/repo-list
-        """
-        repo_dict = {}
-        with open('{0}repo-list'.format(self.configs_path)) as config:
+        repo_dict: dict[str, str] = {}
+        config_file = Path(self.configs_path) / "repo-list"
+
+        with config_file.open(encoding="utf-8") as config:
             for line in config:
-                if not line.startswith('#') and line != '\n':
-                    parts = self.process_config_line(line)
-                    repo_dict[parts[0]] = parts[1]
+                clean_line = line.strip()
+                if not clean_line or clean_line.startswith("#"):
+                    continue
 
-        if not config.closed:
-            config.close()
+                parts = self.process_config_line(clean_line)
+                repo_dict[parts[0]] = parts[1]
 
-        # all repositories are disabled
         if not repo_dict:
-            print(('{0}All repositories are disabled\n{1}See config '
-                   'file: {2}repo-list{3}').format(self.clrs['lred'],
-                                                   self.clrs['grey'],
-                                                   self.configs_path,
-                                                   self.clrs['reset']))
-            raise SystemExit
+            # We raise a ValueError to keep this module decoupled from CLI
+            # printing. The calling module will catch this and show a formatted
+            # error message.
+            error_msg = f"All repositories are disabled in {config_file}"
+            raise ValueError(error_msg)
 
         return repo_dict
 
-    def get_spman_conf(self) -> dict:
+
+    def get_spman_conf(self) -> dict[str, str]:
+        """Return a dictionary with all options from spman.conf.
+
+        Fills missing options with default values.
         """
-        return dict all options from /etc/spman/spman.conf
-        """
-        spman_conf = {}
-        with open('{0}{1}.conf'.format(self.configs_path,
-                                       self.prog_name)) as config:
+        spman_conf: dict[str, str] = {}
+        config_file = Path(self.configs_path) / f"{self.prog_name}.conf"
+
+        with config_file.open(encoding="utf-8") as config:
             for line in config:
-                if not line.startswith('#') and line != '\n':
-                    parts = self.process_config_line(line, '=')
-                    spman_conf[parts[0]] = parts[1]
+                clean_line = line.strip()
+                if not clean_line or clean_line.startswith("#"):
+                    continue
 
-        if not config.closed:
-            config.close()
+                parts = self.process_config_line(clean_line, "=")
+                spman_conf[parts[0]] = parts[1]
 
-        # if option is not set, write default
-        default_opt = {
-            'OS_VERSION': '15.0',
-            'OS_LAST_RELEASE': '15.0',
-            'REPOS_PATH': '/var/lib/{0}/'.format(self.prog_name),
-            'LOGS_PATH': '/var/log/{0}/'.format(self.prog_name),
-            'QUEUE_PATH': '/root/{0}/queue/'.format(self.prog_name),
-            'BUILD_PATH': '/root/{0}/build/'.format(self.prog_name),
-            'OUTPUT_PATH': '/root/{0}/build/'.format(self.prog_name),
-            'PKGTYPE': 'txz',
-            'TEST_CONNECTION_HOST': '8.8.8.8',
-            'TEST_CONNECTION_PORT': '53'
+        # Default options used if not explicitly set in the config file.
+        default_opt: dict[str, str] = {
+            "OS_VERSION": "15.0",
+            "OS_LAST_RELEASE": "15.0",
+            "REPOS_PATH": f"/var/lib/{self.prog_name}/",
+            "LOGS_PATH": f"/var/log/{self.prog_name}/",
+            "QUEUE_PATH": f"/root/{self.prog_name}/queue/",
+            "BUILD_PATH": f"/root/{self.prog_name}/build/",
+            "OUTPUT_PATH": f"/root/{self.prog_name}/build/",
+            "PKGTYPE": "txz",
+            "TEST_CONNECTION_HOST": "8.8.8.8",
+            "TEST_CONNECTION_PORT": "53",
         }
 
-        for opt in default_opt:
-            if opt not in spman_conf:
-                spman_conf[opt] = default_opt[opt]
+        # The `|` operator merges dicts (Python 3.9+). It populates missing
+        # keys with values from default_opt and overrides others with
+        # spman_conf.
+        return default_opt | spman_conf
 
-        return spman_conf
 
-    def get_blacklist(self) -> list:
-        """
-        return list blacklisted packages from /etc/spman/blacklist
-        """
-        blacklist = []
-        with open('{0}blacklist'.format(self.configs_path)) as config:
-            for line in config:
-                if not line.startswith('#') and line != '\n':
-                    blacklist.append(line.strip())
+    def get_blacklist(self) -> list[str]:
+        """Return a list of blacklisted packages from the blacklist config."""
+        config_file = Path(self.configs_path) / "blacklist"
 
-        return blacklist
+        with config_file.open(encoding="utf-8") as config:
+            return [
+                clean_line
+                # The walrus operator (:=) strips the line, creates
+                # `clean_line`, checks it for emptiness, and appends it to the
+                # list if it's not a comment.
+                for line in config
+                if (clean_line := line.strip())
+                and not clean_line.startswith("#")
+            ]
+
 
     @staticmethod
-    def process_config_line(line: str, sep: str = None) -> list:
-        """
-        return list [name, value] from line of config file
-        """
+    def process_config_line(
+        line: str,
+        sep: str | None = None,
+    ) -> tuple[str, str]:
+        """Parse a config line into a stripped (name, value) tuple."""
         parts = line.split(sep)
-        parts[0] = parts[0].strip()
-        parts[1] = parts[1].strip()
-        # add slash at the end of URL or path to dir (if not exist)
-        if parts[1].startswith('/') or '://' in parts[1]:
-            if not parts[1].endswith('/'):
-                parts[1] += '/'
-        return [parts[0], parts[1]]
+
+        name = parts[0].strip()
+        value = parts[1].strip()
+
+        # Add a trailing slash to URLs or directory paths if missing.
+        if (
+            (value.startswith("/") or "://" in value)
+            and not value.endswith("/")
+        ):
+            value += "/"
+
+        return name, value

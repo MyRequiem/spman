@@ -94,9 +94,7 @@ class ViewSlackBuild:
         """
         show file
         """
-        from .utils import check_internet_connection
-        if check_internet_connection():
-            open_url = urlopen(url, context=self.context)
-            pager(str(open_url.read(),
-                      encoding=(stdout.encoding or stderr.encoding)))
-            open_url.close()
+        open_url = urlopen(url, context=self.context)
+        pager(str(open_url.read(),
+                    encoding=(stdout.encoding or stderr.encoding)))
+        open_url.close()

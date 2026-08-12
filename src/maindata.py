@@ -108,8 +108,6 @@ class MainData:
             "BUILD_PATH": f"/root/{self.prog_name}/build/",
             "OUTPUT_PATH": f"/root/{self.prog_name}/build/",
             "PKGTYPE": "txz",
-            "TEST_CONNECTION_HOST": "8.8.8.8",
-            "TEST_CONNECTION_PORT": "53",
         }
 
         # The `|` operator merges dicts (Python 3.9+). It populates missing

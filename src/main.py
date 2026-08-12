@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # main.py file is part of spman
 #
 # spman - Slackware package manager

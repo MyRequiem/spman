@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # helpmess.py file is part of spman
 #
 # spman - Slackware package manager
@@ -11,131 +8,118 @@
 # All rights reserved
 # See LICENSE for details.
 
-
-"""
-Help messages and usage
-"""
+"""Help messages and usage information for spman."""
 
 from .maindata import MainData
 
 
-def show_help_mess(repo: str = '') -> None:
-    """{0}Version: {1}
-Home page: {4}
-{3}{5}
+def show_help_mess(repo: str = "") -> None:
+    """Print the program usage help message or specific repository errors."""
+    meta = MainData()
+
+    if repo == "error":
+        error_msg = (
+            f"{meta.clrs['lred']}Wrong parameters "
+            f"{meta.clrs['reset']}({meta.clrs['cyan']}spman --help"
+            f"{meta.clrs['reset']} for help)"
+        )
+        raise ValueError(error_msg)
+
+    if repo:
+        error_msg = (
+            f"{meta.clrs['lred']}Repository {meta.clrs['cyan']}{repo} "
+            f"{meta.clrs['lred']}is not available\n"
+            f"{meta.clrs['reset']}For more info: "
+            f"{meta.clrs['cyan']}spman --repolist{meta.clrs['reset']}"
+        )
+        raise ValueError(error_msg)
+
+    # ruff: noqa: E501
+    help_text = f"""{meta.clrs['grey']}Version: {meta.prog_version}
+Home page: {meta.home_page}
+{meta.mail}{meta.clrs['reset']}
 
 Usage: spman <param> [param[, param ...]]
 
-{2} -h, --help{5}
+{meta.clrs['cyan']} -h, --help{meta.clrs['reset']}
     Print this help message and exit.
 
-{2} -v, --check-version{5}
-    Check program version for update.
+{meta.clrs['cyan']} -v, --check-version{meta.clrs['reset']}
+    Check program version for updates.
 
-{2} -l, --repolist{5}
-    Print a list of all the repositories.
+{meta.clrs['cyan']} -l, --repolist{meta.clrs['reset']}
+    Print a list of all repositories.
 
-{2} -r, --repoinfo{5}
+{meta.clrs['cyan']} -r, --repoinfo{meta.clrs['reset']}
     Show information about all active repositories.
 
-{2} -b, --blacklist{5}
+{meta.clrs['cyan']} -b, --blacklist{meta.clrs['reset']}
     Show blacklisted packages from /etc/spman/blacklist
 
-{2} -u, --update{5}
+{meta.clrs['cyan']} -u, --update{meta.clrs['reset']}
     Update local data for all repositories.
 
-{2} -t, --health{5}
-    Check the health of all installed packages on the system and
-    display detailed information.
+{meta.clrs['cyan']} -t, --health{meta.clrs['reset']}
+    Check the health of all installed packages on the system.
 
-{2} -w, --new-config{5}
+{meta.clrs['cyan']} -w, --new-config{meta.clrs['reset']}
     Search for *.new config files on the system.
 
-{2} -g, --check-upgrade{5}
-    Check all installed packages for upgrade.
+{meta.clrs['cyan']} -g, --check-upgrade{meta.clrs['reset']}
+    Check all installed packages for upgrades.
 
-{2} -d, --download --pkg|--src <reponame> <pkg>[ <pkg> ...]{5}
-    Download binary package(s) or source code from specified repository.
-{6}    Note:{5}
-      only '--pkg' for reposytory 'multilib'
-      only '--src' for reposytory 'sbo'
+{meta.clrs['cyan']} -d, --download --pkg|--src <reponame> <pkg>[ <pkg> ...]{meta.clrs['reset']}
+    Download binary package(s) or source code from a specified repository.
+    {meta.clrs['yellow']}Note:{meta.clrs['reset']}
+      only '--pkg' for repository 'multilib'
+      only '--src' for repository 'sbo'
 
-{2} -m, --upgrade-pkgs [--only-new]{5}
-    Install/Upgrade packages in the current directory.
-      {2}--only-new{5}
+{meta.clrs['cyan']} -m, --upgrade-pkgs [--only-new]{meta.clrs['reset']}
+    Install or upgrade packages in the current directory.
+      {meta.clrs['cyan']}--only-new{meta.clrs['reset']}
           Packages already installed on the system with the same name,
-          version, build number and tag will not be reinstalled.
+          version, build number, and tag will not be reinstalled.
 
-{2} -e, --remove-pkgs{5}
-    If there are *.t?z packages in the current directory and they
-    are installed, then these packages will be removed from the
-    system.
+{meta.clrs['cyan']} -e, --remove-pkgs{meta.clrs['reset']}
+    Remove packages from the system if corresponding *.t?z files
+    in the current directory are already installed.
 
-{2} -q, --queue --add|--remove|--clear|--show|--install{5}
-    Download, build and install package(s) in the queue from SlackBuilds.org
-      {2}--add{5} <pkg>[ <pkg> ...]    - add package(s) to the queue
-      {2}--remove{5} <pkg>[ <pkg> ...] - remove package(s) from the queue
-      {2}--clear{5}                    - clear queue
-      {2}--show{5}                     - print queue
-      {2}--install{5}                  - download, build and install packages
+{meta.clrs['cyan']} -q, --queue --add|--remove|--clear|--show|--install{meta.clrs['reset']}
+    Download, build, and install package(s) in the queue from SlackBuilds.org.
+      {meta.clrs['cyan']}--add{meta.clrs['reset']}    <pkg>[ <pkg> ...] - add package(s) to the queue
+      {meta.clrs['cyan']}--remove{meta.clrs['reset']} <pkg>[ <pkg> ...] - remove package(s) from the queue
+      {meta.clrs['cyan']}--clear{meta.clrs['reset']}                    - clear queue
+      {meta.clrs['cyan']}--show{meta.clrs['reset']}                     - print queue
+      {meta.clrs['cyan']}--install{meta.clrs['reset']}                  - download, build, and install packages
 
-{2} -y, --history [--update]{5}
-    View the history of installing/updating/removing packages.
-      {2}--update{5}
+{meta.clrs['cyan']} -y, --history [--update]{meta.clrs['reset']}
+    View the package installation, update, and removal history.
+      {meta.clrs['cyan']}--update{meta.clrs['reset']}
           Update the installed packages database (reset history).
 
-{2} -p, --find-deps <pkg>{5}
-    Show list all dependencies for package from SlackBuilds.org (sbo)
-    repository. The packages already installed in the system are
-    highlighted in green.
+{meta.clrs['cyan']} -p, --find-deps <pkg>{meta.clrs['reset']}
+    Show a list of all dependencies for a package from the SlackBuilds.org (sbo)
+    repository. Packages already installed in the system are highlighted in green.
 
-{2} -s, --view-slackbuild <pkg>{5}
-    View the contents of files included in SlackBuild archive using
-    pager: README, doinst.sh, patches, slack-desc, <pkg>.SlackBuild,
-    <pkg>.info, etc.
+{meta.clrs['cyan']} -s, --view-slackbuild <pkg>{meta.clrs['reset']}
+    View the contents of files included in a SlackBuild archive using a
+    pager (e.g., README, doinst.sh, patches, slack-desc, .info, .SlackBuild).
 
-{2} -f, --find-pkg [--strict] <pattern>{5}
-    Search for package (case-insensitive) from each enabled
-    repository and view info.
-      {2}--strict{5}    - strict match by package name
+{meta.clrs['cyan']} -f, --find-pkg [--strict] <pattern>{meta.clrs['reset']}
+    Search for a package (case-insensitive) across all enabled repositories.
+      {meta.clrs['cyan']}--strict{meta.clrs['reset']}    - strict match by package name
 
-{2} -i, --pkglist <reponame> [--only-installed]{5}
-    Show complete list of the packages on repository. The packages
-    already installed in the system are highlighted in green.
-      {2}--only-installed{5}    - show only installed packages
+{meta.clrs['cyan']} -i, --pkglist <reponame> [--only-installed]{meta.clrs['reset']}
+    Show a complete list of packages in a repository. Packages already
+    installed in the system are highlighted in green.
+      {meta.clrs['cyan']}--only-installed{meta.clrs['reset']}    - show only installed packages
 
-{2} -k, --check-deps --sbbdep|--ldd{5}
-    Search for problems with dependencies in the system packages.
-      {2}--sbbdep{5}      - using \'sbbdep\' tool
-      {2}--ldd{5}         - using \'ldd\'
+{meta.clrs['cyan']} -k, --check-deps --sbbdep|--ldd{meta.clrs['reset']}
+    Search for dependency issues in system packages.
+      {meta.clrs['cyan']}--sbbdep{meta.clrs['reset']}   - use the 'sbbdep' tool
+      {meta.clrs['cyan']}--ldd{meta.clrs['reset']}      - use 'ldd'
 
-{2} -a, --bad-links <path_to_dir>{5}
-    Search for links to nonexistent files/dir in the specified directory.
+{meta.clrs['cyan']} -a, --bad-links <path_to_dir>{meta.clrs['reset']}
+    Search for broken links to nonexistent files or directories in the specified path.
 """
-
-    meta = MainData()
-
-    if repo == 'error':
-        # parameter input error
-        print(('{0}Wrong parameters {2}({1}'
-               'spman --help{2} for help)').format(meta.clrs['red'],
-                                                   meta.clrs['cyan'],
-                                                   meta.clrs['reset']))
-        raise SystemExit
-    elif repo:
-        # repository does not exist or not available
-        print(('{0}Repository {1}{2} {0}is not available\n{3}For more info: '
-               '{1}spman --repolist{3}').format(meta.clrs['red'],
-                                                meta.clrs['cyan'],
-                                                repo,
-                                                meta.clrs['reset']))
-        raise SystemExit()
-
-    # show usage
-    print(str(show_help_mess.__doc__).format(meta.clrs['grey'],
-                                             meta.prog_version,
-                                             meta.clrs['cyan'],
-                                             meta.mail,
-                                             meta.home_page,
-                                             meta.clrs['reset'],
-                                             meta.clrs['yellow']))
+    print(help_text)

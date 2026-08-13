@@ -48,7 +48,6 @@ class MainData:
             "reset": "\x1b[0m",
         }
 
-
     def get_repo_dict(self) -> dict[str, str]:
         """Return a dictionary of enabled repositories from repo-list config.
 
@@ -79,7 +78,6 @@ class MainData:
             raise ValueError(error_msg)
 
         return repo_dict
-
 
     def get_spman_conf(self) -> dict[str, str]:
         """Return a dictionary with all options from spman.conf.
@@ -115,7 +113,6 @@ class MainData:
         # spman_conf.
         return default_opt | spman_conf
 
-
     def get_blacklist(self) -> list[str]:
         """Return a list of blacklisted packages from the blacklist config."""
         config_file = Path(self.configs_path) / "blacklist"
@@ -130,7 +127,6 @@ class MainData:
                 if (clean_line := line.strip())
                 and not clean_line.startswith("#")
             ]
-
 
     @staticmethod
     def process_config_line(

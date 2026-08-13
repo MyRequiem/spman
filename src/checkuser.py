@@ -12,7 +12,6 @@
 
 import os
 
-ERROR_NOT_ROOT = "spman can only be run as root."
 
 def check_root_user() -> None:
     """Verify that the script is executed with root privileges.
@@ -22,4 +21,5 @@ def check_root_user() -> None:
 
     """
     if os.getuid() != 0:
-        raise PermissionError(ERROR_NOT_ROOT)
+        err = "spman can only be run as root."
+        raise PermissionError(err)

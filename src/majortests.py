@@ -92,8 +92,8 @@ class MajorTests:
                 print(('{0}For some repositories missing files PACKAGES.TXT, '
                        'SLACKBUILDS.txt or ChangeLog.txt\n{1}\'spman -u\' or '
                        '\'spman --update\' for update '
-                       'libraries.{2}').format(self.meta.clrs['red'],
-                                               self.meta.clrs['grey'],
+                       'libraries.{2}').format(self.meta.clrs['lred'],
+                                               self.meta.clrs['cyan'],
                                                self.meta.clrs['reset']))
                 raise SystemExit
 

@@ -8,9 +8,7 @@
 # All rights reserved
 # See LICENSE for details.
 
-
 """Check program version."""
-
 
 import re
 from urllib.parse import urlparse

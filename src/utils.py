@@ -39,7 +39,7 @@ def pkg_not_found_mess(pkgname: str, reponame: str) -> None:
     """
     meta = MainData()
     print(('{0}Package {1}{2} {0}not found in \'{3}\' '
-           'repository.{4}').format(meta.clrs['red'],
+           'repository.{4}').format(meta.clrs['lred'],
                                     meta.clrs['lcyan'],
                                     pkgname,
                                     reponame,

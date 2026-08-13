@@ -1,32 +1,28 @@
-Spman is a powerful Slackware package manager implemented on Python3
+Spman is a powerful Slackware package manager implemented in Python 3
 and licensed under the MIT license.
 
 Main features:
-    - check packages for upgrade
-    - download package or source code from allowed repositories
-    - remove/upgrade packages in the current directory
-    - view the history of installing/updating/removing packages
-    - download, build and install packages in the queue from SBo
-        repository
-    - show list all dependencies for package from SBo repository
-    - view the contents of files included in SlackBuild archive
-        from SBo repository
-    - search package from each enabled repository and view info
-    - show complete list of the packages in the repository
-    - search dependency problems in the system packages using
-        Slackware binary dependency checker (sbbdep) tool or ldd
-    - search for links to nonexistent files/dir in the specified
-        directory
-    - check health installed packages
-    - search for *.new config files on the system
-    - autocompletion of input parameters
+    - Check installed packages for available upgrades
+    - Download binary packages or source code from enabled repositories
+    - Remove or upgrade packages in the current directory
+    - View the installation, update, and removal history of packages
+    - Download, build, and install queued packages from the SBo repository
+    - Show a list of all dependencies for a package from the SBo repository
+    - View the contents of files inside a SlackBuild archive from the SBo repository
+    - Search for packages across all enabled repositories and view their info
+    - Show a complete list of packages available in a repository
+    - Scan for dependency issues in system packages using sbbdep or ldd
+    - Search for broken links to nonexistent files or directories in a specified path
+    - Check the health of installed system packages
+    - Search for *.new configuration files on the system
+    - Support command autocompletion for CLI parameters
 
 Supported repositories:
-    Slackware.com
-    SlackBuilds.org
-    Alien's
-    Alien's multilib
+    - Slackware (standard repositories)
+    - SlackBuilds.org (SBo)
+    - Alien Bob's repository
+    - Alien Bob's multilib repository
 
 Optional dependencies:
-    - sbbdep (for search dependency problems functionality)
-    - tqdm (progress bar for some parameters)
+    - sbbdep (required for dependency issue scanning functionality)
+    - tqdm (provides a progress bar for specific operations)

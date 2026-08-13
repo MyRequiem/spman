@@ -8,12 +8,12 @@
      |-----handy-ruler------------------------------------------------------|
 spman: spman (Slackware package manager)
 spman:
-spman: Spman is a powerful Slackware package manager implemented on Python3
-spman: and licensed under the MIT license. Main features: check packages for
-spman: upgrade, download binary package or source code, build and install
-spman: package(s) in the queue, search packages on repositories, search
-spman: dependency problems, check health installed packages, search for
-spman: *.new config files on the system and more.
+spman: Spman is a powerful Slackware package manager written in Python 3 and
+spman: licensed under the MIT license. Key features include: package upgrade
+spman: checks, source/binary downloading, queued package building, repository
+spman: search, dependency troubleshooting, system health checks, scanning for
+spman: *.new configuration files, and command autocompletion.
+spman:
 spman:
 spman: Homepage: https://github.com/MyRequiem/spman
 spman:

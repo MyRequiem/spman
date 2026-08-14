@@ -16,6 +16,10 @@
 Utils
 """
 
+from __future__ import annotations
+
+import requests
+
 from .maindata import MainData
 
 
@@ -148,81 +152,90 @@ def update_pkg_db(db_path: str = '') -> None:
 
 
 def error_open_mess(url: str) -> None:
-    """
-    Displaying the error message
-    """
+    """Display an error message when a URL cannot be opened."""
     meta = MainData()
-    print(('{0}Can not open URL: {1} {2}{3}').format(meta.clrs['red'],
-                                                     meta.clrs['lblue'],
-                                                     url,
-                                                     meta.clrs['reset']))
+    print(
+        f"{meta.clrs['lred']}Can not open URL: "
+        f"{meta.clrs['lblue']}{url}{meta.clrs['reset']}" # noqa: COM812
+    )
 
 
-def url_is_alive(url: str) -> object:
-    """
-    Checks that a given URL is reachable
-    """
-    from ssl import _create_unverified_context
-    from urllib.error import HTTPError, URLError
-    from urllib.request import urlopen
-
+def url_is_alive(url: str) -> requests.Response | bool:
+    """Check if the given URL is reachable and returns the response object."""
     try:
-        return urlopen(url, context=_create_unverified_context())
-    except HTTPError:
-        return False
-    except URLError:
+        # Use stream=True
+        # to only fetch headers first without downloading the body.
+        response = requests.get(url, stream=True, timeout=10)
+        # Raise an exception for HTTP errors (4xx or 5xx status codes).
+        response.raise_for_status()
+    except requests.RequestException:
         return False
 
+    return response
 
-def get_remote_file_size(url: str = '', httpresponse: object = False) -> int:
-    """
-    Get the size of the remote file
-    """
-    need_to_close = False
-    if not httpresponse:
-        httpresponse = url_is_alive(url)
-        if not httpresponse:
+
+def get_remote_file_size(
+    url: str = "",
+    response: requests.Response | None = None,
+) -> int:
+    """Retrieve the content length of a remote file in bytes."""
+    # If no active response is provided, check if the URL is reachable.
+    if response is None:
+        active_resp = url_is_alive(url)
+        if not active_resp:
             error_open_mess(url)
             return 0
-        need_to_close = True
+    else:
+        active_resp = response
 
-    content_length = httpresponse.getheader('Content-Length')
-    if need_to_close:
-        httpresponse.close()
+    # Extract Content-Length safely from requests headers dict.
+    content_length = active_resp.headers.get("Content-Length")
 
     return int(content_length) if content_length else 0
 
 
-def get_md5_hash(file_path: str) -> str:
-    """
-    get md5sum of remote or local file
-    """
+def get_remote_md5(url: str) -> str:
+    """Calculate the MD5 hash of a remote file using chunked streaming."""
     from hashlib import md5
 
-    # local file
-    if file_path.startswith('/'):
-        return md5(open(file_path, 'rb').read()).hexdigest()
+    response = url_is_alive(url)
+    if not response or not isinstance(response, requests.Response):
+        error_open_mess(url)
+        return ""
 
-    # remote file
-    httpresponse = url_is_alive(file_path)
-    if not httpresponse:
-        error_open_mess(file_path)
-        return ''
-
-    md5hash = md5()
+    md5hash = md5() # noqa: S324
     max_file_size = 100 * 1024 * 1024
     total_read = 0
-    while True:
-        data = httpresponse.read(4096)
-        total_read += 4096
+    size_chunk = 4096
 
-        if not data or total_read > max_file_size:
+    # Iterate over stream chunks safely using requests.
+    for chunk in response.iter_content(chunk_size=size_chunk):
+        if not chunk:
             break
 
-        md5hash.update(data)
+        md5hash.update(chunk)
+        total_read += len(chunk)
 
-    httpresponse.close()
+        if total_read > max_file_size:
+            break
+
     return md5hash.hexdigest()
+
+
+def get_md5_hash(file_path: str) -> str:
+    """Calculate the MD5 hash of a local or remote file."""
+    from hashlib import md5
+    from pathlib import Path
+
+    # Local file handling using clean pathlib syntax.
+    if file_path.startswith("/"):
+        path_obj = Path(file_path)
+        if not path_obj.is_file():
+            return ""
+        return md5(path_obj.read_bytes()).hexdigest() # noqa: S324
+
+    # Remote file handling delegated to a specialized helper
+    return get_remote_md5(file_path)
 
 
 def check_md5sum(file1: str, file2: str) -> bool:

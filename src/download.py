@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # download.py file is part of spman
 #
 # spman - Slackware package manager
@@ -11,244 +8,272 @@
 # All rights reserved
 # See LICENSE for details.
 
+"""Downloading files or directories from remote repositories."""
 
-"""
-Downloading file or directory
-"""
+from __future__ import annotations # noqa: I001
+
+import shutil
 
 from html.parser import HTMLParser
-from os import makedirs, path, remove
-from shutil import rmtree
-from ssl import _create_unverified_context
-from sys import stderr, stdout
+from pathlib import Path
 
 import requests
 
 from .maindata import MainData
 from .utils import error_open_mess, get_remote_file_size, url_is_alive
 
+
+# Safe polyfill for tqdm if the package is missing in the Slackware system.
 try:
     from tqdm import tqdm
 except ImportError:
-    def tqdm(*args, **kwargs):
-        if args:
-            return args[0]
-        return kwargs.get('iterable', None)
+    from collections.abc import Iterable
+    from typing import TypeVar
 
+    T = TypeVar("T")
+
+    def tqdm(
+            iterable: Iterable[T] | None = None,
+            *args: object,    # noqa: ARG001
+            **kwargs: object, # noqa: ARG001
+        ) -> Iterable[T]:
+        """Return the iterable directly if tqdm is not installed."""
+        return iterable
 
 class ListingParser(HTMLParser):
-    """
-    Parses an HTML page and build a list of links in the directory.
-    Links are stored into the 'links' list.
-    """
-    def __init__(self, url: str):
-        HTMLParser.__init__(self)
-        self.__url = url
-        self.links = []
+    """Parse an HTML directory listing page to extract all hyperlinks.
 
-    def handle_starttag(self, tag: str, attrs: list) -> None:
+    Extracted URLs are stored in the 'links' list attribute.
+    """
+
+    def __init__(self, url: str) -> None:
+        """Initialize the HTML parser with a target repository URL."""
+        super().__init__()
+        self._url: str = url
+        self.links: list[str] = []
+
+    def handle_starttag(
+            self,
+            tag: str,
+            attrs: list[tuple[str, str | None]],
+        ) -> None:
+        """Process HTML start tags.
+
+        Process HTML start tags to extract and resolve 'href' link values.
         """
-        HTMLParser.handle_starttag method redefinition
-        """
-        if tag == 'a':
+        if tag == "a":
             for key, value in attrs:
-                if key == 'href' and value:
-                    value = self.resolve_link(value)
-                    if value:
-                        self.links.append(value)
+                if key == "href" and value:
+                    resolved = self.resolve_link(value)
+                    if resolved:
+                        self.links.append(resolved)
                     break
 
-    def resolve_link(self, link: str) -> str:
-        """
-        discard unnecessary links
-        """
-        if (not link.startswith('/') and
-                '?' not in link and
-                'http://' not in link and
-                'https://' not in link and
-                'ftp://' not in link):
-            return '{0}{1}'.format(self.__url, link)
+    def resolve_link(self, link: str) -> str | None:
+        """Discard unnecessary links.
 
+        Return absolute URLs for repository contents.
+        """
+        # Clean query strings, absolute external URLs, or absolute root paths.
+        if "?" in link or link.startswith(
+                ("/", "http://", "https://", "ftp://"),
+            ):
+            return None
+
+        return f"{self._url}{link}"
 
 class Download:
-    """
-    Downloading file or directory
-    """
-    def __init__(self,
-                 url: str,
-                 dest: str,
-                 remove_dest: bool = False,
-                 new_file_name: str = ''):
+    """Handle downloading of files.
 
-        self.meta = MainData()
-        self.url = url
-        self.dest = dest
-        self.downdir = False
-        self.remove_dest = remove_dest
-        self.new_file_name = new_file_name
-        self.links = []
-        self.dirs = []
-        self.context = _create_unverified_context()
+    Handle downloading of files or entire directories from remote locations.
+    """
+
+    def __init__(
+        self,
+        url: str,
+        dest: str,
+        *, # All arguments below must be passed as keyword-only arguments.
+        remove_dest: bool = False,
+        new_file_name: str = "",
+    ) -> None:
+        """Initialize the downloader.
+
+        Initialize the downloader with target URLs, destinations, and paths.
+        """
+        self.meta: MainData = MainData()
+        self.url: str = url
+        self.dest: str = dest
+        self.downdir: bool = False
+        self.remove_dest: bool = remove_dest
+        self.new_file_name: str = new_file_name
+        self.links: list[str] = []
+        self.dirs: list[str] = []
 
     def start(self) -> None:
-        """
-        start
-        """
-        print(('{0}URL verification...{1}').format(self.meta.clrs['grey'],
-                                                   self.meta.clrs['reset']))
-        httpresponse = url_is_alive(self.url)
-        if not httpresponse:
+        """Verify the target URL and dispatch file or directory downloading."""
+        print(
+            f"{self.meta.clrs['grey']}URL verification..."
+            f"{self.meta.clrs['reset']}" # noqa: COM812
+        )
+
+        # url_is_alive should return a requests.Response object or None/False.
+        response = url_is_alive(self.url)
+        if not response:
             error_open_mess(self.url)
             return
 
-        # if content type of url == 'text/html'
-        # then download the entire directory, else download file
-        if httpresponse.info().get_content_type() == 'text/html':
+        # Check if the URL points to an HTML directory listing or a raw file.
+        content_type = response.headers.get("Content-Type", "")
+        if "text/html" in content_type:
             self.downdir = True
-            # add a trailing slash to the URL if it does not exist
-            if not self.url.endswith('/'):
-                self.url = '{0}/'.format(self.url)
+            if not self.url.endswith("/"):
+                self.url = f"{self.url}/"
 
-        # add a trailing slash to the destination
-        # directory if it does not exist
-        if not self.dest.endswith('/'):
-            self.dest = '{0}/'.format(self.dest)
+        if not self.dest.endswith("/"):
+            self.dest = f"{self.dest}/"
 
         if self.downdir:
-            print(('{0}Creating a list of '
-                   'links...{1}').format(self.meta.clrs['grey'],
-                                         self.meta.clrs['reset']))
-            self.get_links_in_remote_dir(response=httpresponse)
+            print(
+                f"{self.meta.clrs['grey']}Creating a list of "
+                f"links...{self.meta.clrs['reset']}" # noqa: COM812
+            )
+            # Pass the modern requests response object.
+            self.get_links_in_remote_dir(response=response)
 
-            if self.remove_dest and path.isdir(self.dest):
-                rmtree(self.dest)
+            if self.remove_dest and Path(self.dest).is_dir():
+                shutil.rmtree(self.dest)
 
             for link in self.links:
                 self.download(link)
         else:
             self.download(self.url)
 
-    def get_links_in_remote_dir(self,
-                                url: str = '',
-                                response: object = False) -> None:
+    def get_links_in_remote_dir(
+        self,
+        url: str = "",
+        response: requests.Response | None = None,
+    ) -> None:
+        """Recursively extract.
+
+        Recursively extract all file and directory links from a remote path.
         """
-        get links in the remote directory
-        """
-        if not response:
+        # If no active response is provided, try to establish a connection.
+        if response is None:
             response = url_is_alive(url)
             if not response:
                 error_open_mess(url)
+                return
         else:
             url = self.url
 
-        if response:
-            # byte --> str
-            content = str(response.read(),
-                          encoding=(stdout.encoding or stderr.encoding))
-            parser = ListingParser(url)
-            parser.feed(content)
-            response.close()
+        # Now we can safely read the clean HTML text using requests.
+        content = response.text
 
-            for found_link in parser.links:
-                if not found_link.endswith('/'):
-                    self.links.append(found_link)
-                elif found_link not in self.dirs:
-                    self.dirs.append(found_link)
+        parser = ListingParser(url)
+        parser.feed(content)
 
+        # Separate links into files and subdirectories.
+        for found_link in parser.links:
+            if not found_link.endswith("/"):
+                self.links.append(found_link)
+            elif found_link not in self.dirs:
+                self.dirs.append(found_link)
+
+        # Recursively process remaining directories in the stack.
         if self.dirs:
-            self.get_links_in_remote_dir(self.dirs.pop())
+            self.get_links_in_remote_dir(url=self.dirs.pop())
 
-    def download(self, url: str) -> None:
-        """
-        download the file
+    def download(self, url: str) -> None: # noqa: C901
+        """Download a specific file.
+
+        Download a specific file supporting chunked streaming and resume.
         """
         response = url_is_alive(url)
         if not response:
             error_open_mess(url)
             return
 
-        file_name = (self.new_file_name
-                     if self.new_file_name else url.split('/')[-1])
-        file_size = get_remote_file_size(httpresponse=response)
+        file_name = self.new_file_name or url.rsplit("/", 1)[-1]
+        file_size = get_remote_file_size(response=response)
 
         if self.downdir:
-            local_dir = ('{0}'
-                         '{1}').format(self.dest,
-                                       path.dirname(url.replace(self.url, '')))
-            if not local_dir.endswith('/'):
-                local_dir = '{0}/'.format(local_dir)
+            clean_path = Path(url.replace(self.url, "")).parent
+            clean_path = "" if str(clean_path) == "." else clean_path
+            local_dir = f"{self.dest}{clean_path}"
+            if not local_dir.endswith("/"):
+                local_dir = f"{local_dir}/"
         else:
             local_dir = self.dest
 
-        local_file = '{0}{1}'.format(local_dir, file_name)
+        local_file = f"{local_dir}{file_name}"
 
-        if self.remove_dest and path.isfile(local_file):
-            remove(local_file)
+        path_file = Path(local_file)
+        path_dir = Path(local_dir)
 
-        if not path.isdir(local_dir):
-            makedirs(local_dir)
+        if self.remove_dest and path_file.is_file():
+            path_file.unlink()
 
-        first_byte = 0
-        if path.exists(local_file):
-            first_byte = path.getsize(local_file)
+        path_dir.mkdir(parents=True, exist_ok=True)
 
-        new_name = (' (renamed to: {0})'.format(self.new_file_name)
-                    if self.new_file_name else '')
-        print(('{0}Downloading: {1}{2}{7}\nURL: {4}{3}{7}\nto: '
-               '{4}{5}{6}{7}').format(self.meta.clrs['lyellow'],
-                                      self.meta.clrs['lblue'],
-                                      path.basename(url),
-                                      url,
-                                      self.meta.clrs['grey'],
-                                      local_dir,
-                                      new_name,
-                                      self.meta.clrs['reset']))
+        first_byte = path_file.stat().st_size if path_file.exists() else 0
 
-        if not file_size and path.isfile(local_file):
-            remove(local_file)
+        new_name = (
+            f" (renamed to: {self.new_file_name})"
+            if self.new_file_name
+            else ""
+        )
+
+        print(
+            f"{self.meta.clrs['lyellow']}Downloading: "
+            f"{self.meta.clrs['lblue']}{Path(url).name}{new_name}"
+            f"{self.meta.clrs['reset']}\n"
+            f"URL: {self.meta.clrs['grey']}{url}{self.meta.clrs['reset']}\n"
+            f"to: {self.meta.clrs['grey']}{local_dir}"
+            f"{self.meta.clrs['reset']}" # noqa: COM812
+        )
+
+        if not file_size and path_file.is_file():
+            path_file.unlink()
 
         if file_size and first_byte >= file_size:
-            print(('{0}{1} {2}is already fully '
-                   'downloaded{3}').format(self.meta.clrs['cyan'],
-                                           local_file,
-                                           self.meta.clrs['green'],
-                                           self.meta.clrs['reset']))
+            print(
+                f"{self.meta.clrs['cyan']}{local_file} "
+                f"{self.meta.clrs['green']}is already fully downloaded"
+                f"{self.meta.clrs['reset']}" # noqa: COM812
+            )
             return
 
-        header = {'Range': 'bytes={0}-{1}'.format(first_byte, file_size)}
+        header = {"Range": f"bytes={first_byte}-{file_size}"}
         try:
             req = requests.get(url, headers=header, stream=True, timeout=10)
-        except requests.exceptions.Timeout:
-            error_open_mess(url)
-            return
-        except requests.exceptions.RequestException:
+            req.raise_for_status()
+        except requests.RequestException:
             error_open_mess(url)
             return
 
-        pbar = tqdm(total=file_size,
-                    initial=first_byte,
-                    unit='B',
-                    unit_scale=True,
-                    ncols=80,
-                    ascii=True,
-                    leave=False)
+        pbar = tqdm(
+            total=file_size,
+            initial=first_byte,
+            unit="B",
+            unit_scale=True,
+            ncols=80,
+            ascii=True,
+            leave=False,
+        )
 
-        is_tqdm = type(pbar) is tqdm
+        # Check if pbar is a real tqdm instance object or our placeholder
+        # function.
+        has_pbar = hasattr(pbar, "update")
         size_chunk = 4096
-        with open(local_file, 'ab') as dfile:
+
+        with path_file.open("ab") as dfile:
             for chunk in req.iter_content(chunk_size=size_chunk):
                 if chunk:
                     dfile.write(chunk)
-                    if is_tqdm:
-                        pbar.update(size_chunk)
+                    if has_pbar:
+                        pbar.update(len(chunk))
 
-        if is_tqdm:
+        if has_pbar:
             pbar.close()
-        req.close()
-        if not dfile.closed:
-            dfile.close()
-        if not response.closed:
-            response.close()
 
-        print('{0}Done{1}'.format(self.meta.clrs['lgreen'],
-                                  self.meta.clrs['reset']))
+        print(f"{self.meta.clrs['lgreen']}Done{self.meta.clrs['reset']}")

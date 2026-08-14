@@ -127,13 +127,13 @@ class Update:
                     # otherwise show diff ChangeLog.txt
                     if repo == 'multilib':
                         self.show_download_mess(log_txt)
-                        Download(log_url, dest_log, True).start()
+                        Download(log_url, dest_log, remove_dest=True).start()
                         self.download_and_show_diff(repo_file,
                                                     repo_url,
                                                     dest_repo)
                     else:
                         self.show_download_mess(repo_txt)
-                        Download(repo_url, dest_repo, True).start()
+                        Download(repo_url, dest_repo, remove_dest=True).start()
                         self.download_and_show_diff(log_file,
                                                     log_url,
                                                     dest_log)
@@ -152,7 +152,7 @@ class Update:
                            'repository{2}').format(self.meta.clrs['grey'],
                                                    repo_txt,
                                                    self.meta.clrs['reset']))
-                    Download(repo_url, dest_repo, True, all_repo_txt).start()
+                    Download(repo_url, dest_repo, remove_dest=True, new_file_name=all_repo_txt).start()
 
         print()
 
@@ -172,7 +172,7 @@ class Update:
 
         # download new file
         self.show_download_mess(path.basename(file_path))
-        Download(remote_url, dest, True).start()
+        Download(remote_url, dest, remove_dest=True).start()
         if not path.isfile(file_path):
             remove(old_file)
             return

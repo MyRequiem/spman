@@ -64,13 +64,7 @@ class ListingParser(HTMLParser):
         if tag == "a":
             for key, value in attrs:
                 if key == "href" and value:
-                    val = (
-                        value
-                        if not value.startswith("/")
-                        else value.rsplit("/", 1)[1]
-                    )
-
-                    if resolved := self.resolve_link(val):
+                    if resolved := self.resolve_link(value):
                         self.links.append(resolved)
                     break
 
@@ -82,7 +76,7 @@ class ListingParser(HTMLParser):
         # Clean query strings, absolute external URLs, or absolute root paths.
         if link == "" or "?" in link or link.startswith(
                 ("..", "/", "http://", "https://", "ftp://"),
-            ):
+            ) or link.endswith(".mirrorlist"):
             return None
 
         return f"{self._url}{link}"
@@ -250,7 +244,7 @@ class Download:
 
         try:
             import time
-            time.sleep(1)
+            time.sleep(0.5)
 
             user_agent_type = self.meta.get_spman_conf()["USER_AGENT_TYPE"]
 

@@ -170,7 +170,7 @@ def url_is_alive(url: str) -> requests.Response | bool:
     """Check if the given URL is reachable and returns the response object."""
     try:
         import time
-        time.sleep(1)
+        time.sleep(0.5)
 
         user_agent_type = MainData().get_spman_conf()["USER_AGENT_TYPE"]
 

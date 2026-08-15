@@ -106,6 +106,7 @@ class MainData:
             "BUILD_PATH": f"/root/{self.prog_name}/build/",
             "OUTPUT_PATH": f"/root/{self.prog_name}/build/",
             "PKGTYPE": "txz",
+            "USER_AGENT_TYPE": "curl",
         }
 
         # The `|` operator merges dicts (Python 3.9+). It populates missing

@@ -11,12 +11,13 @@
 # All rights reserved
 # See LICENSE for details.
 
-
 """
 Utils
 """
 
 from __future__ import annotations
+
+from pathlib import Path
 
 import requests
 
@@ -29,49 +30,45 @@ def get_line(char: str, length: int) -> str:
     """
     return char * length
 
-
 def get_indent(width1: int, width2: int) -> str:
     """
     get space indent for format print
     """
-    return ' ' * (width2 - width1)
-
+    return " " * (width2 - width1)
 
 def pkg_not_found_mess(pkgname: str, reponame: str) -> None:
-    """
-    print message if package not found in repository
-    """
+    """Print an error message if the package is not found in the repository."""
     meta = MainData()
-    print(('{0}Package {1}{2} {0}not found in \'{3}\' '
-           'repository.{4}').format(meta.clrs['lred'],
-                                    meta.clrs['lcyan'],
-                                    pkgname,
-                                    reponame,
-                                    meta.clrs['reset']))
+    print(
+        f"{meta.clrs['lred']}Package {meta.clrs['lcyan']}{pkgname} "
+        f"{meta.clrs['lred']}not found in '{reponame}' repository."
+        f"{meta.clrs['reset']}" # noqa: COM812
+    )
 
+def get_all_files(pathdir: str) -> list[str]:
+    """Return a list of absolute paths.
 
-def get_all_files(pathdir: str) -> list:
+    Return a list of absolute paths for all files in a directory and its
+    subdirectories.
     """
-    return list of all files in directory and subdirectories
-    """
-    from os import path, walk
+    import os
 
-    '''
+    """
     os.walk(root_path) - directory tree generator.
     For each directory on root_path return a tuple:
     (path_for_dir, list_dirs_on_the_dir, list_files_on_the_dir)
 
     trash
     ├── dir1
-    │   ├── dir2
-    │   │   ├── dir3
-    │   │   └── file3
-    │   ├── file1
-    │   └── file2
+    │.. ├── dir2
+    │.. │.. ├── dir3
+    │.. │.. └── file3
+    │.. ├── file1
+    │.. └── file2
     └── dir4
         ├── dir5
-        │   ├── file5
-        │   └── file6
+        │.. ├── file5
+        │.. └── file6
         └── file4
 
     >>> import os
@@ -84,26 +81,38 @@ def get_all_files(pathdir: str) -> list:
         ('trash/dir4', ['dir5'], ['file4']),
         ('trash/dir4/dir5', [], ['file5', 'file6'])
     ]
-    '''
+    """
 
-    allfiles = []
-
+    # Safe polyfill for tqdm if the package is missing in the Slackware system.
     try:
         from tqdm import tqdm
     except ImportError:
-        def tqdm(*args, **kwargs):
-            if args:
-                return args[0]
-            return kwargs.get('iterable', None)
+        from collections.abc import Iterable
+        from typing import TypeVar
 
-    for root, dirs, files in tqdm(walk(pathdir), leave=False,
-                                  ncols=80, unit=''):
-        del dirs
-        for fls in files:
-            allfiles.append(path.join(root, fls))
+        T = TypeVar("T")
+
+        def tqdm(
+            iterable: Iterable[T] | None = None,
+            *args: object,    # noqa: ARG001
+            **kwargs: object, # noqa: ARG001
+        ) -> Iterable[T] | None:
+            """Return the iterable directly if tqdm is not installed."""
+            return iterable
+
+    allfiles: list[str] = []
+
+    # Use underscore '_' for unused directory list instead of explicit
+    # 'del dirs'.
+    for root, _, files in tqdm(
+        os.walk(pathdir),
+        leave=False,
+        ncols=80,
+        unit="",
+    ):
+        allfiles.extend(str(Path(root) / fl) for fl in files)
 
     return allfiles
-
 
 def get_packages_in_current_dir() -> list:
     """
@@ -118,7 +127,6 @@ def get_packages_in_current_dir() -> list:
             pkgs.append(file_in_current_dir)
 
     return pkgs
-
 
 def update_pkg_db(db_path: str = '') -> None:
     """
@@ -150,7 +158,6 @@ def update_pkg_db(db_path: str = '') -> None:
         pkgdb.write('{0}\n'.format(pkg.strip()))
     pkgdb.close()
 
-
 def error_open_mess(url: str) -> None:
     """Display an error message when a URL cannot be opened."""
     meta = MainData()
@@ -159,20 +166,51 @@ def error_open_mess(url: str) -> None:
         f"{meta.clrs['lblue']}{url}{meta.clrs['reset']}" # noqa: COM812
     )
 
-
 def url_is_alive(url: str) -> requests.Response | bool:
     """Check if the given URL is reachable and returns the response object."""
     try:
+        import time
+        time.sleep(1)
+
+        user_agent_type = MainData().get_spman_conf()["USER_AGENT_TYPE"]
+
+        if user_agent_type == "curl":
+            agent = "curl/8.17.0"
+            accept = "*/*"
+        elif user_agent_type == "wget":
+            agent = "Wget/1.25.0 (linux-gnu)"
+            accept = "*/*"
+        else:  # browser
+            agent = (
+                "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) "
+                "Gecko/20100101 Firefox/153.0"
+            )
+            accept = (
+                "text/html,application/xhtml+xml,"
+                "application/xml;q=0.9,*/*;q=0.8"
+            )
+
+        headers = {
+            "User-Agent": agent,
+            "Accept": accept,
+        }
+        if user_agent_type == "browser":
+            headers["Accept-Language"] = "en-US,en;q=0.5"
+
         # Use stream=True
         # to only fetch headers first without downloading the body.
-        response = requests.get(url, stream=True, timeout=10)
+        response = requests.get(
+            url,
+            headers=headers,
+            stream=True,
+            timeout=(5, 30),
+        )
         # Raise an exception for HTTP errors (4xx or 5xx status codes).
         response.raise_for_status()
     except requests.RequestException:
         return False
 
     return response
-
 
 def get_remote_file_size(
     url: str = "",
@@ -184,7 +222,7 @@ def get_remote_file_size(
         active_resp = url_is_alive(url)
         if not active_resp:
             error_open_mess(url)
-            return 0
+            raise SystemExit(1)
     else:
         active_resp = response
 
@@ -193,7 +231,6 @@ def get_remote_file_size(
 
     return int(content_length) if content_length else 0
 
-
 def get_remote_md5(url: str) -> str:
     """Calculate the MD5 hash of a remote file using chunked streaming."""
     from hashlib import md5
@@ -201,31 +238,33 @@ def get_remote_md5(url: str) -> str:
     response = url_is_alive(url)
     if not response or not isinstance(response, requests.Response):
         error_open_mess(url)
-        return ""
+        raise SystemExit(1)
 
     md5hash = md5() # noqa: S324
     max_file_size = 100 * 1024 * 1024
     total_read = 0
     size_chunk = 4096
 
-    # Iterate over stream chunks safely using requests.
-    for chunk in response.iter_content(chunk_size=size_chunk):
-        if not chunk:
-            break
+    try:
+        # Iterate over stream chunks safely using requests.
+        for chunk in response.iter_content(chunk_size=size_chunk):
+            if not chunk:
+                break
 
-        md5hash.update(chunk)
-        total_read += len(chunk)
+            md5hash.update(chunk)
+            total_read += len(chunk)
 
-        if total_read > max_file_size:
-            break
+            if total_read > max_file_size:
+                break
+    except requests.RequestException:
+        error_open_mess(url)
+        raise SystemExit(1)
 
     return md5hash.hexdigest()
-
 
 def get_md5_hash(file_path: str) -> str:
     """Calculate the MD5 hash of a local or remote file."""
     from hashlib import md5
-    from pathlib import Path
 
     # Local file handling using clean pathlib syntax.
     if file_path.startswith("/"):
@@ -236,7 +275,6 @@ def get_md5_hash(file_path: str) -> str:
 
     # Remote file handling delegated to a specialized helper
     return get_remote_md5(file_path)
-
 
 def check_md5sum(file1: str, file2: str) -> bool:
     """

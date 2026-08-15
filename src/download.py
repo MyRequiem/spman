@@ -64,8 +64,13 @@ class ListingParser(HTMLParser):
         if tag == "a":
             for key, value in attrs:
                 if key == "href" and value:
-                    resolved = self.resolve_link(value)
-                    if resolved:
+                    val = (
+                        value
+                        if not value.startswith("/")
+                        else value.rsplit("/", 1)[1]
+                    )
+
+                    if resolved := self.resolve_link(val):
                         self.links.append(resolved)
                     break
 
@@ -75,8 +80,8 @@ class ListingParser(HTMLParser):
         Return absolute URLs for repository contents.
         """
         # Clean query strings, absolute external URLs, or absolute root paths.
-        if "?" in link or link.startswith(
-                ("/", "http://", "https://", "ftp://"),
+        if link == "" or "?" in link or link.startswith(
+                ("..", "/", "http://", "https://", "ftp://"),
             ):
             return None
 
@@ -120,7 +125,7 @@ class Download:
         response = url_is_alive(self.url)
         if not response:
             error_open_mess(self.url)
-            return
+            raise SystemExit(1)
 
         # Check if the URL points to an HTML directory listing or a raw file.
         content_type = response.headers.get("Content-Type", "")
@@ -162,7 +167,7 @@ class Download:
             response = url_is_alive(url)
             if not response:
                 error_open_mess(url)
-                return
+                raise SystemExit(1)
         else:
             url = self.url
 
@@ -183,7 +188,7 @@ class Download:
         if self.dirs:
             self.get_links_in_remote_dir(url=self.dirs.pop())
 
-    def download(self, url: str) -> None: # noqa: C901
+    def download(self, url: str) -> None: # noqa: C901,PLR0912,PLR0915
         """Download a specific file.
 
         Download a specific file supporting chunked streaming and resume.
@@ -191,7 +196,7 @@ class Download:
         response = url_is_alive(url)
         if not response:
             error_open_mess(url)
-            return
+            raise SystemExit(1)
 
         file_name = self.new_file_name or url.rsplit("/", 1)[-1]
         file_size = get_remote_file_size(response=response)
@@ -243,13 +248,45 @@ class Download:
             )
             return
 
-        header = {"Range": f"bytes={first_byte}-{file_size}"}
         try:
-            req = requests.get(url, headers=header, stream=True, timeout=10)
+            import time
+            time.sleep(1)
+
+            user_agent_type = self.meta.get_spman_conf()["USER_AGENT_TYPE"]
+
+            if user_agent_type == "curl":
+                agent = "curl/8.17.0"
+                accept = "*/*"
+            elif user_agent_type == "wget":
+                agent = "Wget/1.25.0 (linux-gnu)"
+                accept = "*/*"
+            else:  # browser
+                agent = (
+                    "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) "
+                    "Gecko/20100101 Firefox/153.0"
+                )
+                accept = (
+                    "text/html,application/xhtml+xml,"
+                    "application/xml;q=0.9,*/*;q=0.8"
+                )
+
+            headers = {
+                "User-Agent": agent,
+                "Accept": accept,
+            }
+            if user_agent_type == "browser":
+                headers["Accept-Language"] = "en-US,en;q=0.5"
+
+            req = requests.get(
+                url,
+                headers=headers,
+                stream=True,
+                timeout=(5, 30),
+            )
             req.raise_for_status()
         except requests.RequestException:
             error_open_mess(url)
-            return
+            raise SystemExit(1) from None
 
         pbar = tqdm(
             total=file_size,
@@ -266,14 +303,21 @@ class Download:
         has_pbar = hasattr(pbar, "update")
         size_chunk = 4096
 
-        with path_file.open("ab") as dfile:
-            for chunk in req.iter_content(chunk_size=size_chunk):
-                if chunk:
-                    dfile.write(chunk)
-                    if has_pbar:
-                        pbar.update(len(chunk))
+        try:
+            with path_file.open("ab") as dfile:
+                for chunk in req.iter_content(chunk_size=size_chunk):
+                    if chunk:
+                        dfile.write(chunk)
+                        if has_pbar:
+                            pbar.update(len(chunk))
 
-        if has_pbar:
-            pbar.close()
+            if has_pbar:
+                pbar.close()
 
-        print(f"{self.meta.clrs['lgreen']}Done{self.meta.clrs['reset']}")
+            print(f"{self.meta.clrs['lgreen']}Done{self.meta.clrs['reset']}")
+        except requests.RequestException:
+            if has_pbar:
+                pbar.close()
+
+            error_open_mess(self.url)
+            raise SystemExit(1) from None

@@ -1,6 +1,6 @@
-# Blacklisted packages (only package name)
+# Blacklisted packages (package names only)
 
-# For example:
+# Examples:
 # kernel-firmware
 # kernel-generic
 # kernel-huge

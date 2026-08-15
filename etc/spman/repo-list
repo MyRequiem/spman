@@ -1,8 +1,37 @@
-### Allowed Repositories: alienbob, multilib, sbo, slack
-## To disable the repository comment it.
+### Allowed repositories: alienbob, multilib, sbo, slack
+## To enable or disable a repository, uncomment or comment out its URL.
 
-alienbob    http://bear.alienbase.nl/mirrors/people/alien/sbrepos/
+# ===========
+# Slackware
+# ===========
+# slack       https://mirrors.slackware.com/slackware/
+# slack       https://ftp.osuosl.org/.2/slackware/
+# slack       https://mirror.yandex.ru/slackware/
+# slack       https://mirror.truenetwork.ru/slackware/
+# slack       https://ftp.gwdg.de/pub/linux/slackware/
+# slack       https://slackware.nl/slackware/
+# slack       https://slackware.uk/slackware/
+
+# ===========
+# SBo
+# ===========
+# sbo         https://slackbuilds.org/slackbuilds/
+# sbo         https://bear.alienbase.nl/mirrors/slackbuilds.org/
+# sbo         https://slackware.nl/slackbuilds.org/
+
+# ===========
+# Alien BOB's
+# ===========
+# alienbob    http://www.slackware.com/~alien/sbrepos/
+# alienbob    http://ftp.lip6.fr/pub/linux/distributions/slackware/people/alien/sbrepos/
+# alienbob    https://bear.alienbase.nl/mirrors/people/alien/sbrepos/
+# alienbob    https://slackware.nl/people/alien/sbrepos/
+# alienbob    https://slackware.uk/people/alien/sbrepos/
+
+# ===========
+# Multilib
+# ===========
 # multilib    http://www.slackware.com/~alien/multilib/
-multilib    http://bear.alienbase.nl/mirrors/people/alien/multilib/
-sbo         http://slackbuilds.org/slackbuilds/
-slack       http://ftp.osuosl.org/.2/slackware/
+# multilib    https://bear.alienbase.nl/mirrors/people/alien/multilib/
+# multilib    https://slackware.nl/people/alien/multilib/
+# multilib    https://slackware.uk/people/alien/multilib/

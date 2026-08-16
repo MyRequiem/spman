@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 # checkupgrade.py file is part of spman
 #
 # spman - Slackware package manager
@@ -11,135 +8,166 @@
 # All rights reserved
 # See LICENSE for details.
 
+"""Check installed Slackware packages for available upgrades."""
 
-"""
-Check packages for upgrade
-"""
+from typing import Any
 
 from .getrepodata import GetRepoData
 from .maindata import MainData
 from .pkgs import Pkgs
-from .utils import get_indent
 
 
 class CheckUpgrade:
+    """Analyze system packages.
+
+    Analyze system packages and match them against repository metadata for
+    upgrades.
     """
-    Check packages for upgrade
-    """
-    def __init__(self):
-        self.meta = MainData()
-        self.pkgs = Pkgs()
-        self.blacklist = self.meta.get_blacklist()
-        self.repos = ['alienbob', 'sbo', 'multilib', 'slack']
-        self.reposdata = [{}, {}, {}, {}]
-        self.upgrpkgs = [[], [], [], []]
+
+    def __init__(self) -> None:
+        """Initialize upgrade checker.
+
+        Initialize upgrade checker with system specifications and database
+        tracks.
+        """
+        self.meta: MainData = MainData()
+        self.pkgs: Pkgs = Pkgs()
+        self.blacklist: list[str] = self.meta.get_blacklist()
+        self.repos: list[str] = ["alienbob", "sbo", "multilib", "slack"]
+        self.reposdata: list[dict[str, Any]] = [{}, {}, {}, {}]
+        self.upgrpkgs: list[list[tuple[str, str]]] = [[], [], [], []]
 
     def start(self) -> None:
-        """
-        start check packages for upgrade
+        """Execute the upgrade.
+
+        Execute the upgrade verification loop against all tracked
+        repositories.
         """
         self.get_repos_data()
 
         for pkg in self.pkgs.find_pkgs_on_system():
             parts = self.pkgs.get_parts_pkg_name(pkg)
-            if parts[0] not in self.blacklist:
-                # gcc-5.3.0_multilib-x86_64-3alien --> multilib
-                # compat32-tools-3.7-noarch-1alien --> multilib
-                # mozilla-firefox-l10n-ru-45.2.0-x86_64-1alien
+            if not parts or parts[0] in self.blacklist:
+                continue
 
-                # alienbob
-                if (self.reposdata[0] and
-                        'alien' in parts[3] and
-                        'multilib' not in parts[1] and
-                        parts[0] != 'compat32-tools'):
-                    self.check_pkg(parts, 0)
-                # sbo
-                elif self.reposdata[1] and 'SBo' in parts[3]:
-                    self.check_pkg(parts, 1)
-                # multilib
-                elif self.reposdata[2] and ('compat32' in parts[3] or
-                                            parts[0] == 'compat32-tools' or
-                                            'multilib' in parts[1]):
-                    self.check_pkg(parts, 2)
-                # slack
-                elif self.reposdata[3]:
-                    self.check_pkg(parts, 3)
+            pkg_name, pkg_ver, _, pkg_build = parts
+
+            # alienbob repository match rules
+            if (
+                self.reposdata[0]
+                and "alien" in pkg_build
+                and "multilib" not in pkg_ver
+                and pkg_name != "compat32-tools"
+            ):
+                self.check_pkg(parts, 0)
+
+            # sbo (SlackBuilds.org) repository match rules
+            elif self.reposdata[1] and "SBo" in pkg_build:
+                self.check_pkg(parts, 1)
+
+            # multilib repository match rules
+            elif self.reposdata[2] and (
+                "compat32" in pkg_build
+                or pkg_name == "compat32-tools"
+                or "multilib" in pkg_ver
+            ):
+                self.check_pkg(parts, 2)
+
+            # slack (Official core Slackware) repository fallback match rules
+            elif self.reposdata[3]:
+                self.check_pkg(parts, 3)
 
         self.show_rezult()
 
     def get_repos_data(self) -> None:
-        """
-        get data from PACKAGES.TXT (SLACKBUILDS.TXT)
-        """
+        """Get data from PACKAGES.TXT or SLACKBUILDS.TXT."""
         repos = self.meta.get_repo_dict()
-        ind = 0
-        for repo in self.repos:
+
+        # Elegant unpacking using enumerate() to track indices automatically.
+        for ind, repo in enumerate(self.repos):
             if repo in repos:
                 self.reposdata[ind] = GetRepoData(repo).start()
-            ind += 1
 
-    def check_pkg(self, parts: list, ind: int) -> None:
-        """
-        check pkg for upgrade
+    def check_pkg(self, parts: list[str], ind: int) -> None:
+        """Compare the installed package version.
+
+        Compare the installed package version against repository metadata for
+        updates.
         """
         data = self.reposdata[ind]
+        pkg_name = parts[0]
 
-        pkgdata = ''
-        if parts[0] in data['pkgs']:
-            pkgdata = data['pkgs'][parts[0]]
+        if pkg_name not in data["pkgs"]:
+            return
 
-        if pkgdata:
-            newpkg = ''
-            # alienbob, multilib, slack
-            if ind != 1:
-                if (parts[1] != pkgdata[0][1] or
-                        parts[2] != pkgdata[0][2] or
-                        parts[3] != pkgdata[0][3]):
-                    newpkg = '-'.join(pkgdata[0])
-            # sbo
-            else:
-                # fix check version for virtualbox-kernel* packages
-                #   virtualbox-kernel*-${VERSION}_${KERNEL_VERSION}-... -->
-                #   virtualbox-kernel*-${VERSION}-...
-                # fix check version for nvidia-kernel packages
-                #   nvidia-...-kernel-${VERSION}_${KERNEL_VERSION}-... -->
-                #   nvidia-...-kernel-${VERSION}-...
-                if (parts[0].startswith('virtualbox-kernel') or
-                        (parts[0].startswith('nvidia-') and
-                         parts[0].endswith('-kernel'))):
-                    if '_' in parts[1]:
-                        parts[1] = parts[1].split('_')[0]
+        pkgdata = data["pkgs"][pkg_name]
+        newpkg = ""
 
-                if parts[1] != pkgdata[0]:
-                    newpkg = '-'.join(
-                        [parts[0], pkgdata[0], parts[2], parts[3]])
+        # Repositories: alienbob, multilib, slack.
+        if ind != 1:
+            repo_parts = pkgdata[0]
+            if (
+                parts[1] != repo_parts[1]
+                or parts[2] != repo_parts[2]
+                or parts[3] != repo_parts[3]
+            ):
+                newpkg = "-".join(repo_parts)
 
-            if newpkg:
-                oldpkg = '-'.join(parts)
-                self.upgrpkgs[ind].append(
-                    ('{0}{1}{2}{3} --> '
-                     '{4}{5}{2}').format(self.meta.clrs['yellow'],
-                                         oldpkg,
-                                         self.meta.clrs['reset'],
-                                         get_indent(len(oldpkg), 37),
-                                         self.meta.clrs['green'],
-                                         newpkg))
+        # SBo repository.
+        else:
+            # Clean composite kernel versions for virtualbox/nvidia modules
+            if (
+                pkg_name.startswith("virtualbox-kernel")
+                or (
+                    pkg_name.startswith("nvidia-") and
+                    pkg_name.endswith("-kernel")
+                )
+            ) and "_" in parts[1]:
+                parts[1] = parts[1].split("_", 1)[0]
+
+            if parts[1] != pkgdata[0]:
+                newpkg = "-".join([pkg_name, pkgdata[0], parts[2], parts[3]])
+
+        if newpkg:
+            oldpkg = "-".join(parts)
+
+            self.upgrpkgs[ind].append((oldpkg, newpkg))
 
     def show_rezult(self) -> None:
-        """
-        show pkgs for upgrade
+        """Display colorized information.
+
+        Display colorized information about packages available for upgrade.
         """
         new_pkgs = False
-        for ind in range(len(self.repos)):
+
+        for ind, repo_name in enumerate(self.repos):
             if self.upgrpkgs[ind]:
                 new_pkgs = True
-                print('\nRepository: {0}{1}{2}'.format(self.meta.clrs['lcyan'],
-                                                       self.repos[ind],
-                                                       self.meta.clrs['reset']))
-                for pkg in self.upgrpkgs[ind]:
-                    print(pkg)
+                print(
+                    f"\nRepository: {self.meta.clrs['lcyan']}{repo_name}"
+                    f"{self.meta.clrs['reset']}" # noqa: COM812
+                )
+
+                max_len = max(
+                    (
+                        len(pair[0])
+                        for pair in self.upgrpkgs[ind]
+                    ),
+                    default=0,
+                )
+
+                for oldpkg, newpkg in self.upgrpkgs[ind]:
+                    padded_old = f"{oldpkg:<{max_len}}"
+
+                    print(
+                        f"{self.meta.clrs['yellow']}{padded_old}"
+                        f"{self.meta.clrs['reset']} --> "
+                        f"{self.meta.clrs['green']}{newpkg}"
+                        f"{self.meta.clrs['reset']}" # noqa: COM812
+                    )
 
         if not new_pkgs:
-            print(('{0}Packages for upgrade not '
-                   'found.{1}').format(self.meta.clrs['green'],
-                                       self.meta.clrs['reset']))
+            print(
+                f"{self.meta.clrs['green']}Packages for upgrade not found."
+                f"{self.meta.clrs['reset']}" # noqa: COM812
+            )
